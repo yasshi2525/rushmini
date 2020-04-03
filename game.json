@@ -1,8 +1,8 @@
 {
-	"width": 320,
-	"height": 320,
+	"width": 640,
+	"height": 360,
 	"fps": 30,
-	"main": "./script/main.js",
+	"main": "./script/_bootstrap.js",
 	"assets": {
 		"player": {
 			"type": "image",
@@ -26,10 +26,25 @@
 			"type": "script",
 			"path": "script/main.js",
 			"global": true
+		},
+		"parameterObject": {
+			"type": "script",
+			"path": "script/parameterObject.js",
+			"global": true
+		},
+		"_bootstrap": {
+			"type": "script",
+			"path": "script/_bootstrap.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},
 	"environment": {
-		"sandbox-runtime": "2"
+		"sandbox-runtime": "2",
+		"niconico": {
+			"supportedModes": [
+				"ranking"
+			]
+		}
 	}
 }
