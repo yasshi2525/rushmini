@@ -36,6 +36,16 @@
 			"type": "script",
 			"path": "script/_bootstrap.js",
 			"global": true
+		},
+		"title": {
+			"type": "script",
+			"path": "script/title.js",
+			"global": true
+		},
+		"game": {
+			"type": "script",
+			"path": "script/game.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},
