@@ -1,4 +1,4 @@
-export function getTitleScene(next: g.Scene): g.Scene {
+export const getTitleScene = (next: g.Scene) => {
     const scene = new g.Scene({ game: g.game });
     scene.loaded.add(() => {
         scene.append(new g.FilledRect({

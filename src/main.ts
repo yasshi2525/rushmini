@@ -4,7 +4,7 @@ import { getGameScene } from "./game";
 
 declare const window: RPGAtsumaruWindow;
 
-export function main(param: GameMainParameterObject): void {
+export const main = (param: GameMainParameterObject) => {
 	const game = getGameScene();
 	const title = getTitleScene(game);
 	g.game.pushScene(title);
