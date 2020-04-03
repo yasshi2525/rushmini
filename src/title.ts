@@ -33,5 +33,8 @@ export const getTitleScene = (next: g.Scene) => {
         });
         scene.append(button);
     });
+    scene.update.add(() => {
+        g.game.vars.updateFrame();
+    })
     return scene;
 }
