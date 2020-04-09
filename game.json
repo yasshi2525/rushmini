@@ -37,14 +37,124 @@
 			"path": "script/_bootstrap.js",
 			"global": true
 		},
-		"title": {
+		"instraction": {
 			"type": "script",
-			"path": "script/title.js",
+			"path": "script/entities/instraction.js",
+			"global": true
+		},
+		"railbuilder": {
+			"type": "script",
+			"path": "script/entities/railbuilder.js",
+			"global": true
+		},
+		"railbuild_guide": {
+			"type": "script",
+			"path": "script/entities/railbuild_guide.js",
+			"global": true
+		},
+		"railviewer": {
+			"type": "script",
+			"path": "script/entities/railviewer.js",
+			"global": true
+		},
+		"rail_edge_view": {
+			"type": "script",
+			"path": "script/entities/rail_edge_view.js",
+			"global": true
+		},
+		"replay": {
+			"type": "script",
+			"path": "script/entities/replay.js",
+			"global": true
+		},
+		"score": {
+			"type": "script",
+			"path": "script/entities/score.js",
+			"global": true
+		},
+		"station_view": {
+			"type": "script",
+			"path": "script/entities/station_view.js",
+			"global": true
+		},
+		"tick": {
+			"type": "script",
+			"path": "script/entities/tick.js",
+			"global": true
+		},
+		"gate": {
+			"type": "script",
+			"path": "script/models/gate.js",
+			"global": true
+		},
+		"index": {
+			"type": "script",
+			"path": "script/models/index.js",
+			"global": true
+		},
+		"line_tasks": {
+			"type": "script",
+			"path": "script/models/line_tasks.js",
+			"global": true
+		},
+		"listener": {
+			"type": "script",
+			"path": "script/models/listener.js",
+			"global": true
+		},
+		"platform": {
+			"type": "script",
+			"path": "script/models/platform.js",
+			"global": true
+		},
+		"rail_edge": {
+			"type": "script",
+			"path": "script/models/rail_edge.js",
+			"global": true
+		},
+		"rail_line": {
+			"type": "script",
+			"path": "script/models/rail_line.js",
+			"global": true
+		},
+		"rail_node": {
+			"type": "script",
+			"path": "script/models/rail_node.js",
+			"global": true
+		},
+		"station": {
+			"type": "script",
+			"path": "script/models/station.js",
+			"global": true
+		},
+		"ending": {
+			"type": "script",
+			"path": "script/scenes/ending.js",
 			"global": true
 		},
 		"game": {
 			"type": "script",
-			"path": "script/game.js",
+			"path": "script/scenes/game.js",
+			"global": true
+		},
+		"title": {
+			"type": "script",
+			"path": "script/scenes/title.js",
+			"global": true
+		},
+		"random": {
+			"type": "script",
+			"path": "script/utils/random.js",
+			"global": true
+		},
+		"scorer": {
+			"type": "script",
+			"path": "script/utils/scorer.js",
+			"global": true
+		},
+		"ticker": {
+			"type": "script",
+			"path": "script/utils/ticker.js",
 			"global": true
 		}
 	},
