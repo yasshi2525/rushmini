@@ -1,3 +1,5 @@
+const { defaults: tsPreset } = require("ts-jest/presets");
+
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
@@ -57,7 +59,12 @@ module.exports = {
 	// globalTeardown: null,
 
 	// A set of global variables that need to be available in all test environments
-	// globals: {},
+	globals: {
+		"ts-jest": {
+			tsConfig: "<rootDir>/spec/tsconfig.json"
+		},
+		g: require("@akashic/akashic-engine")
+	},
 
 	// An array of directory names to be searched recursively up from the requiring module's location
 	// moduleDirectories: [
@@ -79,6 +86,8 @@ module.exports = {
 
 	// An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
 	// modulePathIgnorePatterns: [],
+
+	modulePaths: ["<rootDir>/src"],
 
 	// Activates notifications for test results
 	// notify: false,
@@ -142,7 +151,7 @@ module.exports = {
 	//   "**/?(*.)+(spec|test).[tj]s?(x)"
 	// ],
 	// testMatch: ["./**/*[sS]pec.js"],
-	testMatch: ["./**/*[sS]pec.js"],
+	testMatch: ["./**/*[sS]pec.ts"],
 
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
 	// testPathIgnorePatterns: [
@@ -165,7 +174,9 @@ module.exports = {
 	// timers: "real",
 
 	// A map from regular expressions to paths to transformers
-	// transform: null,
+	transform: {
+		...tsPreset.transform
+	},
 
 	// An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
 	// transformIgnorePatterns: [

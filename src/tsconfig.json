@@ -1,0 +1,11 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "../script",
+    "rootDir": ".",
+    "tsBuildInfoFile": "../script/tsconfig.tsbuildinfo"
+  },
+  "extends": "../tsconfig-base",
+  "include": ["./**/*.ts"]
+}

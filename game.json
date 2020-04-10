@@ -22,21 +22,6 @@
 			"systemId": "sound",
 			"duration": 250
 		},
-		"main": {
-			"type": "script",
-			"path": "script/main.js",
-			"global": true
-		},
-		"parameterObject": {
-			"type": "script",
-			"path": "script/parameterObject.js",
-			"global": true
-		},
-		"_bootstrap": {
-			"type": "script",
-			"path": "script/_bootstrap.js",
-			"global": true
-		},
 		"instraction": {
 			"type": "script",
 			"path": "script/entities/instraction.js",
@@ -80,6 +65,11 @@
 		"tick": {
 			"type": "script",
 			"path": "script/entities/tick.js",
+			"global": true
+		},
+		"main": {
+			"type": "script",
+			"path": "script/main.js",
 			"global": true
 		},
 		"gate": {
@@ -127,6 +117,11 @@
 			"path": "script/models/station.js",
 			"global": true
 		},
+		"parameterObject": {
+			"type": "script",
+			"path": "script/parameterObject.js",
+			"global": true
+		},
 		"ending": {
 			"type": "script",
 			"path": "script/scenes/ending.js",
@@ -156,6 +151,11 @@
 			"type": "script",
 			"path": "script/utils/ticker.js",
 			"global": true
+		},
+		"_bootstrap": {
+			"type": "script",
+			"path": "script/_bootstrap.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},
@@ -169,5 +169,6 @@
 				"totalTimeLimit": 30
 			}
 		}
-	}
+	},
+	"globalScripts": []
 }

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../src",
+    "composite": true,
+    "esModuleInterop": true,
+    "outDir": "../script/tests",
+    "types": ["jest"]
+  },
+  "include": ["./**/*.ts"],
+  "extends": "../tsconfig-base",
+  "references": [
+    {
+      "path": "../src"
+    }
+  ]
+}
