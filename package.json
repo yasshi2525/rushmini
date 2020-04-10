@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "build": "rimraf ./script && tsc && akashic-cli-scan asset script",
-    "update": "akashic-cli-scan asset && akashic-cli-scan globalScripts",
+    "build": "rimraf ./script && tsc && akashic scan asset script",
+    "update": "akashic scan asset && akashic scan globalScripts",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "akashic-sandbox .",
     "export-zip": "rimraf game.zip && akashic-cli-export-zip -o game.zip -s",
@@ -15,9 +15,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "@akashic/akashic-cli-export-html": "^0.7.4",
-    "@akashic/akashic-cli-export-zip": "~0.6.3",
-    "@akashic/akashic-cli-scan": "~0.5.2",
+    "@akashic/akashic-cli": "1.13.3",
     "@akashic/akashic-engine": "~2.6.2",
     "@akashic/akashic-sandbox": "~0.16.3",
     "@types/jest": "^25.2.1",
