@@ -22,8 +22,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm run build
     - run: npm test
       env:
         CI: true
@@ -37,10 +38,30 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '13'
+    - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm run build
     - uses: paambaati/codeclimate-action@v2.5.6
       env:
         CC_TEST_REPORTER_ID: 7019f43d55fc198fd89c9583fa26f439afef0c6644ca623865df1087a5739a9c
       with:
         coverageCommand: npm test
+
+  archive:
+    needs: [ test ]
+    name: archive for niconico
+    runs-on: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '13'
+    - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
+    - run: npm ci
+    - run: npm run build
+    - run: akashic export html --output rushmini-latest.zip --atsumaru
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: rushmini-latest.zip
+        path: rushmini-latest.zip
