@@ -11,26 +11,6 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [13.x]
-    name: test/node ${{ matrix.node-version }}
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
-    - run: npm install
-    - run: npm run build
-    - run: npm test
-      env:
-        CI: true
-
-  coverage:
-    needs: [ test ]
     name: coverage
     runs-on: [ubuntu-latest]
     steps:
@@ -45,6 +25,7 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: 7019f43d55fc198fd89c9583fa26f439afef0c6644ca623865df1087a5739a9c
       with:
+        coverageLocations: coverage
         coverageCommand: npm test
 
   archive:
