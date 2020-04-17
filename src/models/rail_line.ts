@@ -51,22 +51,28 @@ class RailLine {
     }
 
     // 隣接するタスクを絞り込む
-    const result: LineTask[] = [];
+    var result: LineTask[] = [];
     var current = this.top;
     do {
       if (
         // 隣接していないタスクはスキップ
         !current._isNeighbor(edge) ||
         // 駅に到着するタスクはスキップ。発車タスクの後に挿入する
-        current.next._getDept() == current.next._getDest() ||
-        // 距離0の移動タスクは角度の計算ができないのでスキップ
-        (current._getDept() != current._getDest() && current._getLength() === 0)
+        current.next._getDept() == current.next._getDest()
       ) {
       } else {
         result.push(current);
       }
       current = current.next;
     } while (current != this.top);
+
+    // 候補が複数ある場合、距離0の移動タスクは角度の計算ができないのでスキップ
+    if (result.length > 0) {
+      result = result.filter(
+        (lt) =>
+          current._getDept() == current._getDest() || current._getLength() > 0
+      );
+    }
 
     const angle = (task: LineTask) => {
       var prevEdgeTask: LineTask;

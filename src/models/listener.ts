@@ -17,7 +17,7 @@ export type ModelChangeListener<T> = {
 /**
  * モデルの変化を検知する
  */
-class ListenerContainer<T> {
+export class ListenerContainer<T> {
   private readonly handlers: ModelChangeListener<T>[] = [];
 
   /**

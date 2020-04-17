@@ -314,6 +314,47 @@ describe("rail_line", () => {
       expect(l.top.next.next.next._getDest()).not.toEqual(rnX);
       expect(l.top.next.next.next.next._getDest()).not.toEqual(rnX);
     });
+
+    it("insert 0-length edge", () => {
+      const rnX = new RailNode(0, 0);
+      rnX._buildStation();
+      const eX = rnX._extend(0, 0);
+      l._start(rnX.platform);
+      l._insertEdge(eX);
+
+      expect(l.top.next).toBeInstanceOf(EdgeTask);
+      expect((l.top.next as EdgeTask).edge).toEqual(eX);
+    });
+
+    it("insert edge after 0-length edge", () => {
+      // rnX = [eXY] - rnY - [eYZ] - rnZ
+      const rnX = new RailNode(0, 0);
+      rnX._buildStation();
+      const eXY = rnX._extend(0, 0);
+      const rnY = eXY.to;
+      const eYZ = rnY._extend(1, 0);
+      const rnZ = eYZ.to;
+      l._start(rnX.platform);
+      l._insertEdge(eXY);
+      l._insertEdge(eYZ);
+
+      const ltXY = l.top.next;
+      expect(ltXY).toBeInstanceOf(EdgeTask);
+      expect((ltXY as EdgeTask).edge).toEqual(eXY);
+
+      const ltYZ = ltXY.next;
+      expect(ltYZ).toBeInstanceOf(EdgeTask);
+      expect((ltYZ as EdgeTask).edge).toEqual(eYZ);
+
+      const ltZY = ltYZ.next;
+      expect(ltZY).toBeInstanceOf(EdgeTask);
+      expect((ltZY as EdgeTask).edge).toEqual(eYZ.reverse);
+
+      const ltYX = ltZY.next;
+      expect(ltYX).toBeInstanceOf(EdgeTask);
+      expect((ltYX as EdgeTask).edge).toEqual(eXY.reverse);
+      expect(ltYX.next).toEqual(l.top);
+    });
   });
 
   describe("_insertPlatform", () => {

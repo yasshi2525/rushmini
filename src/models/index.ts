@@ -29,11 +29,8 @@ export class Model {
     this.stateListeners = [];
   }
 
-  private setState(state: ModelStateType) {
+  private setState(state: ModelStateType.STARTED | ModelStateType.FIXED) {
     switch (state) {
-      case ModelStateType.INITED:
-        console.warn("try to change init state");
-        break;
       case ModelStateType.STARTED:
         this.state = ModelStateType.STARTED;
         this.stateListeners.forEach((l) => l.onStarted(this));
@@ -43,6 +40,10 @@ export class Model {
         this.stateListeners.forEach((l) => l.onFixed(this));
         break;
     }
+  }
+
+  public getState() {
+    return this.state;
   }
 
   /**
