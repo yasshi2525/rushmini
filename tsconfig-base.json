@@ -6,7 +6,7 @@
     "lib": ["es5", "es6", "dom"],
     "noImplicitAny": true,
     "module": "commonjs",
-    "tsBuildInfoFile": "../script/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "./script/tsconfig.tsbuildinfo"
   },
   "files": ["node_modules/@akashic/akashic-engine/lib/main.d.ts"]
 }

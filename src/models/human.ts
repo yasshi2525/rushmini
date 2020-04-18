@@ -1,6 +1,7 @@
 import Residence from "./residence";
 import Company from "./company";
 import Vector from "./vector";
+import modelListener from "./listener";
 
 class Human {
   private loc: Vector;
@@ -16,6 +17,7 @@ class Human {
     this.loc = new Vector(departure);
     this.departure = departure;
     this.destination = destination;
+    modelListener.human.add(this);
   }
 
   public _getVector() {

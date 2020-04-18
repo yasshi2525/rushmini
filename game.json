@@ -72,14 +72,29 @@
 			"path": "script/main.js",
 			"global": true
 		},
+		"company": {
+			"type": "script",
+			"path": "script/models/company.js",
+			"global": true
+		},
 		"gate": {
 			"type": "script",
 			"path": "script/models/gate.js",
 			"global": true
 		},
+		"human": {
+			"type": "script",
+			"path": "script/models/human.js",
+			"global": true
+		},
 		"index": {
 			"type": "script",
 			"path": "script/models/index.js",
+			"global": true
+		},
+		"line_task": {
+			"type": "script",
+			"path": "script/models/line_task.js",
 			"global": true
 		},
 		"listener": {
@@ -107,9 +122,19 @@
 			"path": "script/models/rail_node.js",
 			"global": true
 		},
+		"residence": {
+			"type": "script",
+			"path": "script/models/residence.js",
+			"global": true
+		},
 		"station": {
 			"type": "script",
 			"path": "script/models/station.js",
+			"global": true
+		},
+		"vector": {
+			"type": "script",
+			"path": "script/models/vector.js",
 			"global": true
 		},
 		"parameterObject": {
@@ -150,31 +175,6 @@
 		"_bootstrap": {
 			"type": "script",
 			"path": "script/_bootstrap.js",
-			"global": true
-		},
-		"company": {
-			"type": "script",
-			"path": "script/models/company.js",
-			"global": true
-		},
-		"human": {
-			"type": "script",
-			"path": "script/models/human.js",
-			"global": true
-		},
-		"line_task": {
-			"type": "script",
-			"path": "script/models/line_task.js",
-			"global": true
-		},
-		"residence": {
-			"type": "script",
-			"path": "script/models/residence.js",
-			"global": true
-		},
-		"vector": {
-			"type": "script",
-			"path": "script/models/vector.js",
 			"global": true
 		}
 	},

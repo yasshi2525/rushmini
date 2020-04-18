@@ -5,6 +5,9 @@ import Gate from "./gate";
 import Platform from "./platform";
 import RailLine from "./rail_line";
 import LineTask from "./line_task";
+import Company from "./company";
+import Residence from "./residence";
+import Human from "./human";
 
 /**
  * モデルの変化を監視するリスナがもつべきメソッド
@@ -46,6 +49,8 @@ export class ListenerContainer<T> {
 }
 
 const modelListener = {
+  company: new ListenerContainer<Company>(),
+  residence: new ListenerContainer<Residence>(),
   railNode: new ListenerContainer<RailNode>(),
   railEdge: new ListenerContainer<RailEdge>(),
   station: new ListenerContainer<Station>(),
@@ -53,7 +58,10 @@ const modelListener = {
   platform: new ListenerContainer<Platform>(),
   railLine: new ListenerContainer<RailLine>(),
   lineTask: new ListenerContainer<LineTask>(),
+  human: new ListenerContainer<Human>(),
   done: () => {
+    modelListener.company.done();
+    modelListener.residence.done();
     modelListener.railNode.done();
     modelListener.railEdge.done();
     modelListener.station.done();
@@ -61,6 +69,7 @@ const modelListener = {
     modelListener.platform.done();
     modelListener.railLine.done();
     modelListener.lineTask.done();
+    modelListener.human.done();
   },
 };
 

@@ -1,4 +1,5 @@
 import Vector from "./vector";
+import modelListener from "./listener";
 
 class Company extends Vector {
   /**
@@ -12,6 +13,7 @@ class Company extends Vector {
       attractiveness = 1;
     }
     this.attractiveness = attractiveness;
+    modelListener.company.add(this);
   }
 }
 

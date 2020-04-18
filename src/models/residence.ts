@@ -1,6 +1,7 @@
 import Company from "./company";
 import Human from "./human";
 import Vector from "./vector";
+import modelListener from "./listener";
 
 class Residence extends Vector {
   /**
@@ -16,6 +17,7 @@ class Residence extends Vector {
         this.destinations.push(c);
       }
     });
+    modelListener.residence.add(this);
   }
 
   public _spawn() {
