@@ -82,11 +82,6 @@
 			"path": "script/models/index.js",
 			"global": true
 		},
-		"line_tasks": {
-			"type": "script",
-			"path": "script/models/line_tasks.js",
-			"global": true
-		},
 		"listener": {
 			"type": "script",
 			"path": "script/models/listener.js",
@@ -155,6 +150,31 @@
 		"_bootstrap": {
 			"type": "script",
 			"path": "script/_bootstrap.js",
+			"global": true
+		},
+		"company": {
+			"type": "script",
+			"path": "script/models/company.js",
+			"global": true
+		},
+		"human": {
+			"type": "script",
+			"path": "script/models/human.js",
+			"global": true
+		},
+		"line_task": {
+			"type": "script",
+			"path": "script/models/line_task.js",
+			"global": true
+		},
+		"residence": {
+			"type": "script",
+			"path": "script/models/residence.js",
+			"global": true
+		},
+		"vector": {
+			"type": "script",
+			"path": "script/models/vector.js",
 			"global": true
 		}
 	},

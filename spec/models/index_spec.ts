@@ -25,32 +25,44 @@ describe("model", () => {
       instance.start(X, Y);
       const dept = instance.primaryLine.top;
       expect(dept).toBeInstanceOf(DeptTask);
-      expect(dept._getDept().vector).toEqual({ x: X, y: Y });
-      expect(dept._getDest().vector).toEqual({ x: X, y: Y });
+      expect(dept._getDept().x).toEqual(X);
+      expect(dept._getDept().y).toEqual(Y);
+      expect(dept._getDest().x).toEqual(X);
+      expect(dept._getDest().y).toEqual(Y);
       expect(instance.getState()).toEqual(ModelStateType.STARTED);
     });
 
     it("forbit start when started state", () => {
-      instance.start(1, 2);
+      const X = 1;
+      const Y = 2;
+
+      instance.start(X, Y);
       instance.start(3, 4);
 
       const dept = instance.primaryLine.top;
       expect(dept).toBeInstanceOf(DeptTask);
-      expect(dept._getDept().vector).toEqual({ x: 1, y: 2 });
-      expect(dept._getDest().vector).toEqual({ x: 1, y: 2 });
+      expect(dept._getDept().x).toEqual(X);
+      expect(dept._getDept().y).toEqual(Y);
+      expect(dept._getDest().x).toEqual(X);
+      expect(dept._getDest().y).toEqual(Y);
       expect(dept.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelStateType.STARTED);
     });
 
     it("forbit start when fixed state", () => {
-      instance.start(1, 2);
+      const X = 1;
+      const Y = 2;
+
+      instance.start(X, Y);
       instance.end();
       instance.start(3, 4);
 
       const dept = instance.primaryLine.top;
       expect(dept).toBeInstanceOf(DeptTask);
-      expect(dept._getDept().vector).toEqual({ x: 1, y: 2 });
-      expect(dept._getDest().vector).toEqual({ x: 1, y: 2 });
+      expect(dept._getDept().x).toEqual(X);
+      expect(dept._getDept().y).toEqual(Y);
+      expect(dept._getDest().x).toEqual(X);
+      expect(dept._getDest().y).toEqual(Y);
       expect(dept.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelStateType.FIXED);
     });
@@ -64,20 +76,31 @@ describe("model", () => {
     });
 
     it("extend", () => {
-      instance.start(1, 2);
-      instance.extend(3, 4);
+      const X1 = 1;
+      const Y1 = 2;
+      const X2 = 3;
+      const Y2 = 4;
+
+      instance.start(X1, Y1);
+      instance.extend(X2, Y2);
 
       const dept = instance.primaryLine.top;
-      expect(dept._getDept().vector).toEqual({ x: 1, y: 2 });
-      expect(dept._getDest().vector).toEqual({ x: 1, y: 2 });
+      expect(dept._getDept().x).toEqual(X1);
+      expect(dept._getDept().y).toEqual(Y1);
+      expect(dept._getDest().x).toEqual(X1);
+      expect(dept._getDest().y).toEqual(Y1);
 
       const outbound = dept.next;
-      expect(outbound._getDept().vector).toEqual({ x: 1, y: 2 });
-      expect(outbound._getDest().vector).toEqual({ x: 3, y: 4 });
+      expect(outbound._getDept().x).toEqual(X1);
+      expect(outbound._getDept().y).toEqual(Y1);
+      expect(outbound._getDest().x).toEqual(X2);
+      expect(outbound._getDest().y).toEqual(Y2);
 
       const inbound = outbound.next;
-      expect(inbound._getDept().vector).toEqual({ x: 3, y: 4 });
-      expect(inbound._getDest().vector).toEqual({ x: 1, y: 2 });
+      expect(inbound._getDept().x).toEqual(X2);
+      expect(inbound._getDept().y).toEqual(Y2);
+      expect(inbound._getDest().x).toEqual(X1);
+      expect(inbound._getDest().y).toEqual(Y1);
 
       expect(inbound.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelStateType.STARTED);
@@ -133,7 +156,8 @@ describe("model", () => {
       instance.end();
       const dept = instance.primaryLine.top.next.next;
       expect(dept).toBeInstanceOf(DeptTask);
-      expect(dept._getDept().vector).toEqual({ x: 1, y: 1 });
+      expect(dept._getDept().x).toEqual(1);
+      expect(dept._getDept().y).toEqual(1);
       expect(instance.getState()).toEqual(ModelStateType.FIXED);
     });
 

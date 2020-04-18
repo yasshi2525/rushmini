@@ -74,35 +74,10 @@ class RailLine {
       );
     }
 
-    const angle = (task: LineTask) => {
-      var prevEdgeTask: LineTask;
-      if (task._getDept() != task._getDest()) {
-        prevEdgeTask = task;
-      } else {
-        // DeptTaskの場合、直前の EdgeTaskを参照
-        prevEdgeTask = task.prev;
-      }
-
-      // 180°以下の角度を求める
-      // cos θ = a * b / |a||b|
-      const a = {
-        x: -prevEdgeTask._getVector().x,
-        y: -prevEdgeTask._getVector().y,
-      };
-      const aLen = Math.sqrt(a.x * a.x + a.y * a.y);
-      const b = edge.vector;
-      const bLen = Math.sqrt(b.x * b.x + b.y * b.y);
-      var theta = Math.acos((a.x * b.x + a.y * b.y) / (aLen * bLen));
-
-      // 右側にある場合(外積の値が負)、角度を 360° - θ にする
-      if (a.x * b.y - a.y * b.x < 0) {
-        theta = Math.PI * 2 - theta;
-      }
-      return theta;
-    };
-
+    // 次のタスクへの回転角が最も大きいものを返す
     const sorted = result.sort(
-      (task1: LineTask, task2: LineTask) => angle(task1) - angle(task2)
+      (task1: LineTask, task2: LineTask) =>
+        task1._angle(edge) - task2._angle(edge)
     );
     return sorted.length === 0 ? undefined : sorted[0];
   }

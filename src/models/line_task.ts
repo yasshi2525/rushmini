@@ -3,6 +3,7 @@ import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailNode from "./rail_node";
 import modelListener from "./listener";
+import Vector from "./vector";
 
 abstract class LineTask {
   public readonly parent: RailLine;
@@ -23,7 +24,11 @@ abstract class LineTask {
 
   public abstract _getDept(): RailNode;
   public abstract _getDest(): RailNode;
-  public abstract _getVector(): { readonly x: number; readonly y: number };
+  /**
+   * 自タスクの終点から何ラジアン回転すれば引数の線路に一致するか返す。(左回り正)
+   * @param edge
+   */
+  public abstract _angle(edge: RailEdge): number;
   public abstract _getLength(): number;
 
   /**
@@ -45,7 +50,6 @@ abstract class LineTask {
 
 export class DeptTask extends LineTask {
   public readonly stay: Platform;
-  private readonly vector = { x: 0, y: 0 };
 
   constructor(parent: RailLine, stay: Platform, prev?: LineTask) {
     super(parent, prev);
@@ -60,8 +64,23 @@ export class DeptTask extends LineTask {
     return this.stay.on;
   }
 
-  public _getVector() {
-    return this.vector;
+  /**
+   * 直前の長さ0以上の移動タスクから、引数の線路への回転角を求める
+   * @param edge
+   */
+  public _angle(edge: RailEdge) {
+    if (!this._isNeighbor(edge)) {
+      console.warn("could not calculate angle to un-neighbored edge");
+      return NaN;
+    }
+    var prev = this.prev;
+    while (prev != this) {
+      if (prev._getLength() > 0) {
+        return prev._angle(edge);
+      }
+    }
+    console.warn("line has no edge task");
+    return NaN;
   }
 
   public _getLength() {
@@ -119,10 +138,12 @@ export class DeptTask extends LineTask {
 
 export class EdgeTask extends LineTask {
   public readonly edge: RailEdge;
+  private readonly reverse: Vector;
 
   constructor(parent: RailLine, edge: RailEdge, prev: LineTask) {
     super(parent, prev);
     this.edge = edge;
+    this.reverse = edge.vector._reverse();
   }
 
   public _getDept() {
@@ -133,12 +154,17 @@ export class EdgeTask extends LineTask {
     return this.edge.to;
   }
 
-  public _getVector() {
-    return this.edge.vector;
+  public _angle(edge: RailEdge) {
+    if (!this._isNeighbor(edge)) {
+      console.warn("could not calculate angle to un-neighbored edge");
+      return NaN;
+    }
+    // 終点から成す角を求めるため、自身の反転ベクトルを使って角度を求める
+    return this.reverse._angle(edge.vector);
   }
 
   public _getLength() {
-    return this.edge.length;
+    return this.edge.vector.length;
   }
 
   public _isNeighbor(edge: RailEdge) {

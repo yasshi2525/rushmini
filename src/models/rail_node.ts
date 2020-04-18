@@ -2,19 +2,15 @@ import RailEdge from "./rail_edge";
 import Station from "./station";
 import Platform from "./platform";
 import modelListener from "./listener";
+import Vector from "./vector";
 
-class RailNode {
-  public readonly x: number;
-  public readonly y: number;
-  public readonly vector: { readonly x: number; readonly y: number };
+class RailNode extends Vector {
   public readonly out: RailEdge[];
   public readonly in: RailEdge[];
   public platform?: Platform;
 
   constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-    this.vector = { x, y };
+    super(x, y);
     this.out = [];
     this.in = [];
     modelListener.railNode.add(this);

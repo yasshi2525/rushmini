@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": "../src",
-    "composite": true,
     "esModuleInterop": true,
     "outDir": "../script/tests",
     "types": ["jest"]
