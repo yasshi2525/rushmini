@@ -1,8 +1,5 @@
 import model, { ModelStateType } from "../models";
 
-const inactiveOpacity = 0.75;
-const activeOpacity = 1.0;
-
 const startHandler = (x: number, y: number) => {
   if (model.getState() === ModelStateType.INITED) {
     model.start(x, y);

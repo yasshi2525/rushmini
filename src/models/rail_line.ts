@@ -1,8 +1,9 @@
-import LineTask, { DeptTask, EdgeTask } from "./line_task";
+import LineTask from "./line_task";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailNode from "./rail_node";
 import modelListener from "./listener";
+import DeptTask from "./dept_task";
 
 class RailLine {
   public top?: LineTask;
@@ -21,13 +22,13 @@ class RailLine {
     }
 
     const result: LineTask[] = [];
-    var current = this.top;
+    let current = this.top;
     do {
-      if (current._getDest() == node) {
+      if (current._getDest() === node) {
         result.push(current);
       }
       current = current.next;
-    } while (current != this.top);
+    } while (current !== this.top);
     return result;
   }
 
@@ -42,7 +43,7 @@ class RailLine {
     }
 
     // セルフループの場合自身を返す
-    if (this.top.next == this.top) {
+    if (this.top.next === this.top) {
       if (!this.top._isNeighbor(edge)) {
         console.warn("top is not neighbored edge");
         return undefined;
@@ -51,26 +52,27 @@ class RailLine {
     }
 
     // 隣接するタスクを絞り込む
-    var result: LineTask[] = [];
-    var current = this.top;
+    let result: LineTask[] = [];
+    let current = this.top;
     do {
       if (
         // 隣接していないタスクはスキップ
         !current._isNeighbor(edge) ||
         // 駅に到着するタスクはスキップ。発車タスクの後に挿入する
-        current.next._getDept() == current.next._getDest()
+        current.next._getDept() === current.next._getDest()
       ) {
+        // do-nothing
       } else {
         result.push(current);
       }
       current = current.next;
-    } while (current != this.top);
+    } while (current !== this.top);
 
     // 候補が複数ある場合、距離0の移動タスクは角度の計算ができないのでスキップ
     if (result.length > 0) {
       result = result.filter(
         (lt) =>
-          current._getDept() == current._getDest() || current._getLength() > 0
+          current._getDept() === current._getDest() || current._getLength() > 0
       );
     }
 

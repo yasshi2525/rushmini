@@ -176,6 +176,16 @@
 			"type": "script",
 			"path": "script/_bootstrap.js",
 			"global": true
+		},
+		"dept_task": {
+			"type": "script",
+			"path": "script/models/dept_task.js",
+			"global": true
+		},
+		"edge_task": {
+			"type": "script",
+			"path": "script/models/edge_task.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

@@ -39,7 +39,7 @@ class Vector {
     }
     // 180°以下の角度を求める
     // cos θ = a * b / |a||b|
-    var theta = Math.acos(
+    let theta = Math.acos(
       (this.x * oth.x + this.y * oth.y) / (this.length * oth.length)
     );
 

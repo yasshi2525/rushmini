@@ -21,7 +21,7 @@ export class Model {
   /**
    * 駅を一定間隔で設置するため、最後に駅を持ってからextendした回数を保持するカウンター
    */
-  private railCounter = 0;
+  private railCounter: number = 0;
 
   constructor() {
     this.primaryLine = new RailLine();

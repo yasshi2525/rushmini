@@ -8,8 +8,8 @@ class Human {
   /**
    * 1秒間に何pixcel進むか
    */
-  public static SPEED = 10;
-  public static FPS = 30;
+  public static SPEED: number = 10;
+  public static FPS: number = 30;
   public readonly departure: Residence;
   public readonly destination: Company;
 

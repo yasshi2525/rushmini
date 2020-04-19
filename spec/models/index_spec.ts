@@ -1,6 +1,6 @@
 import model, { Model, ModelStateType, stationInterval } from "models";
 import RailLine from "models/rail_line";
-import { DeptTask } from "models/line_task";
+import DeptTask from "models/dept_task";
 
 describe("model", () => {
   describe("initialize", () => {

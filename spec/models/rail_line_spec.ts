@@ -1,7 +1,8 @@
 import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
-import { DeptTask, EdgeTask } from "models/line_task";
+import DeptTask from "models/dept_task";
 import RailEdge from "models/rail_edge";
+import EdgeTask from "models/edge_task";
 
 describe("rail_line", () => {
   it("creation", () => {

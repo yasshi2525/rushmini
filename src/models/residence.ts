@@ -13,7 +13,7 @@ class Residence extends Vector {
   constructor(destinations: Company[], x: number, y: number) {
     super(x, y);
     destinations.forEach((c) => {
-      for (var i = 0; i < c.attractiveness; i++) {
+      for (let i = 0; i < c.attractiveness; i++) {
         this.destinations.push(c);
       }
     });

@@ -38,7 +38,7 @@ class ViewerContainer<T> {
       },
       onDelete: (obj: T) => {
         this.caches = this.caches.filter((vo) => {
-          if (vo.subject == obj) {
+          if (vo.subject === obj) {
             parent.remove(vo.viewer);
             return false;
           }

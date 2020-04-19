@@ -13,7 +13,7 @@ const createRailEdgePanel = (loadedScene: g.Scene, re: RailEdge) => {
       y: (re.from.y + re.to.y - width) / 2,
       width: re.vector.length,
       height: width,
-      cssColor: "#000000",
+      cssColor,
       anchorX: 0.5,
       anchorY: 0.5,
       angle: re.vector.angleDegree,

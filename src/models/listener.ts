@@ -37,9 +37,10 @@ export class ListenerContainer<T> {
   }
 
   public done() {
-    var e: T;
-    while ((e = this.queue.shift())) {
+    let e = this.queue.shift();
+    while (e) {
       this.handlers.forEach((l) => l.onDone(e));
+      e = this.queue.shift();
     }
   }
 

@@ -1,8 +1,10 @@
 import RailLine from "models/rail_line";
-import LineTask, { DeptTask, EdgeTask } from "models/line_task";
+import LineTask from "models/line_task";
 import RailNode from "models/rail_node";
 import RailEdge from "models/rail_edge";
 import Platform from "models/platform";
+import DeptTask from "models/dept_task";
+import EdgeTask from "models/edge_task";
 
 describe("line_task", () => {
   it("first departure", () => {
