@@ -63,7 +63,6 @@ module.exports = {
     "ts-jest": {
       tsConfig: "<rootDir>/spec/tsconfig.json",
     },
-    g: require("@akashic/akashic-engine"),
   },
 
   // An array of directory names to be searched recursively up from the requiring module's location
@@ -137,7 +136,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "node",
+  testEnvironment: "./test-environment.js",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -190,7 +189,11 @@ module.exports = {
   // verbose: null,
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
-  // watchPathIgnorePatterns: [],
+  watchPathIgnorePatterns: [
+    "<rootDir>/node_modules/",
+    "<rootDir>/script",
+    "<rootDir>/tmp",
+  ],
 
   // Whether to use watchman for file crawling
   // watchman: true,

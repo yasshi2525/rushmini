@@ -37,7 +37,7 @@ export = (originalParam: g.GameMainParameterObject) => {
   });
   scene.loaded.add(() => {
     let currentTickCount = 0;
-    scene.update.add(function () {
+    scene.update.add(() => {
       currentTickCount++;
       // 待ち時間を超えた場合はゲームを開始します
       if (currentTickCount > limitTickToWait) {

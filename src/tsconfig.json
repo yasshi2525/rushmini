@@ -2,7 +2,8 @@
   "compileOnSave": true,
   "compilerOptions": {
     "outDir": "../script",
-    "rootDir": "."
+    "rootDir": ".",
+    "tsBuildInfoFile": "../tmp/src.tsBuildInfoFile"
   },
   "extends": "../tsconfig-base",
   "include": ["./**/*.ts"]

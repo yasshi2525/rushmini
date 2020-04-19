@@ -1,9 +1,11 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
+    "rootDir": ".",
     "baseUrl": "../src",
-    "esModuleInterop": true,
-    "outDir": "../script/tests",
-    "types": ["jest"]
+    "outDir": "../spec_script",
+    "types": ["jest"],
+    "tsBuildInfoFile": "../tmp/test.tsBuildInfoFile"
   },
   "include": ["./**/*.ts"],
   "extends": "../tsconfig-base",

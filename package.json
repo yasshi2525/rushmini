@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "build": "rimraf ./script && tsc && akashic scan asset script",
+    "build": "rimraf ./script ./tmp && tsc && akashic scan asset script",
     "update": "akashic scan asset && akashic scan globalScripts",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "akashic-sandbox .",
@@ -16,8 +16,11 @@
   "license": "",
   "devDependencies": {
     "@akashic/akashic-engine": "~2.6.2",
+    "@akashic/akashic-pdi": "^2.8.0",
     "@akashic/akashic-sandbox": "^0.16.7",
+    "@akashic/game-driver": "^1.8.0",
     "@types/jest": "^25.2.1",
+    "fs": "0.0.1-security",
     "jest": "25.3.0",
     "rimraf": "3.0.2",
     "ts-jest": "^25.4.0",
