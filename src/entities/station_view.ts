@@ -1,10 +1,14 @@
 import Station from "../models/station";
+import { ViewerCreator } from "./factory";
 
 const width = 30;
 const height = 30;
 const cssColor = "#112233";
 
-const createStationPanel = (loadedScene: g.Scene, st: Station) => {
+const createStationPanel: ViewerCreator<Station> = (
+  loadedScene: g.Scene,
+  st: Station
+) => {
   const panel = new g.E({ scene: loadedScene });
   const pos = st.getPos();
   panel.append(

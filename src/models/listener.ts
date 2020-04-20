@@ -32,6 +32,10 @@ export class ListenerContainer<T> {
     this.handlers.push(listener);
   }
 
+  /**
+   * オブジェクトを追加します
+   * @param obj
+   */
   public add(obj: T) {
     this.queue.push(obj);
   }

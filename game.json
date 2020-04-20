@@ -186,6 +186,16 @@
 			"type": "script",
 			"path": "script/_bootstrap.js",
 			"global": true
+		},
+		"connector": {
+			"type": "script",
+			"path": "script/entities/connector.js",
+			"global": true
+		},
+		"factory": {
+			"type": "script",
+			"path": "script/entities/factory.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

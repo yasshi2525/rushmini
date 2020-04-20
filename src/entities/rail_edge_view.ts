@@ -1,9 +1,13 @@
 import RailEdge from "../models/rail_edge";
+import { ViewerCreator } from "./factory";
 
 const width = 5;
 const cssColor = "#000000";
 
-const createRailEdgePanel = (loadedScene: g.Scene, re: RailEdge) => {
+const createRailEdgePanel: ViewerCreator<RailEdge> = (
+  loadedScene: g.Scene,
+  re: RailEdge
+) => {
   const panel = new g.E({ scene: loadedScene });
 
   panel.append(

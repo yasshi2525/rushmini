@@ -21,7 +21,7 @@ const preserveShift = (panel: g.E, next: g.Scene) => {
 };
 
 const createTitleScene = (): TitleScene => {
-  const scene = new g.Scene({ game: g.game });
+  const scene = new g.Scene({ name: "title", game: g.game });
   ticker.register(scene);
   return {
     scene,

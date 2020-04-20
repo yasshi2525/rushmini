@@ -4,7 +4,7 @@
     "rootDir": ".",
     "baseUrl": "../src",
     "outDir": "../spec_script",
-    "types": ["jest"],
+    "types": ["node", "jest"],
     "tsBuildInfoFile": "../tmp/test.tsBuildInfoFile"
   },
   "include": ["./**/*.ts"],
