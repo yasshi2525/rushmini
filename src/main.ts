@@ -46,7 +46,6 @@ const prepareScenes = (
 };
 
 export const main = (param: GameMainParameterObject) => {
-  console.log(g.game.constructor.toString());
   init(param);
   const scenes = createScenes();
   prepareScenes(scenes.title, scenes.game, scenes.ending);

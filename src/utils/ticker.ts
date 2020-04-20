@@ -1,4 +1,4 @@
-const defaultTotalSec = 120;
+const defaultTotalSec = 70;
 const endingSec = 10;
 
 let _fps = 30;
@@ -13,7 +13,6 @@ const ticker = {
    * ニコニコ新市場のゲーム時間を制限時間にする
    */
   init: (fps: number, val?: number) => {
-    console.log(`set fps=${fps} val=${val}`);
     _fps = fps;
     _remainFrame = (val ? val : defaultTotalSec) * _fps;
     _listeners = [];
@@ -45,9 +44,7 @@ const ticker = {
    */
   register: (scene: g.Scene) => {
     const fn = () => {
-      if (scene.isCurrentScene()) {
-        ticker.step();
-      }
+      ticker.step();
     };
     scene.update.add(fn);
     _scenes.push({ scene, fn });

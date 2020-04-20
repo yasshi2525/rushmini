@@ -23,6 +23,64 @@ describe("line_task", () => {
     expect(dept._getLength()).toEqual(0);
   });
 
+  describe("_angle", () => {
+    it("ok", () => {
+      const l = new RailLine();
+      const rn = new RailNode(-1, 0);
+      const p = rn._buildStation();
+      const e12 = rn._extend(0, 0);
+      const e23 = e12.to._extend(1, Math.sqrt(3));
+      const dept = new DeptTask(l, p);
+      const mv12 = new EdgeTask(l, e12, dept);
+
+      // mv12 (x軸) から e23 (1, √3) は 240° 回転した位置に見える (左向き正)
+      expect(mv12._angle(e23)).toEqual((240 / 180) * Math.PI);
+    });
+
+    it("forbit to calculate angle with zero-length edge", () => {
+      const l = new RailLine();
+      const rn = new RailNode(0, 0);
+      const p = rn._buildStation();
+      const e12 = rn._extend(0, 0);
+      const e23 = e12.to._extend(0, 0);
+      const dept = new DeptTask(l, p);
+      const mv12 = new EdgeTask(l, e12, dept);
+
+      expect(mv12._angle(e23)).toBeNaN();
+    });
+
+    it("non-neighbor edge from dept task returns NaN", () => {
+      const l = new RailLine();
+      const rn = new RailNode(0, 0);
+      const p = rn._buildStation();
+      const dept = new DeptTask(l, p);
+      const eX = new RailNode(0, 0)._extend(1, 1);
+      expect(dept._angle(eX)).toBeNaN();
+    });
+
+    it("dept only task returns NaN", () => {
+      const l = new RailLine();
+      const rn = new RailNode(0, 0);
+      const p = rn._buildStation();
+      const dept = new DeptTask(l, p);
+      const re = rn._extend(1, 1);
+      expect(dept._isNeighbor(re)).toBe(true);
+      expect(dept._angle(re)).toBeNaN();
+    });
+
+    it("non-neighbor edge from edge task returns NaN", () => {
+      const l = new RailLine();
+      const rn = new RailNode(0, 0);
+      const p = rn._buildStation();
+      const re = rn._extend(1, 1);
+      const dept = new DeptTask(l, p);
+      const move = new EdgeTask(l, re, dept);
+      expect(
+        move._angle(new RailEdge(new RailNode(0, 0), new RailNode(1, 1)))
+      ).toBeNaN();
+    });
+  });
+
   describe("_insertEdge", () => {
     // rail node に edge を挿入する
     describe("insert edge (not forward station) from dept task", () => {

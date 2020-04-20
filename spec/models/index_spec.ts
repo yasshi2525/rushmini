@@ -107,7 +107,6 @@ describe("model", () => {
     });
 
     it("build station at regular interval", () => {
-      console.log("start");
       instance.start(0, 0);
       var tail = instance.primaryLine.top;
       for (var i = 0; i < stationInterval - 1; i++) {
