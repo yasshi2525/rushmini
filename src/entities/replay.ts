@@ -18,6 +18,16 @@ const createReplay = (loadedScene: g.Scene) => {
     touchable: true,
   });
   panel.append(
+    new g.FilledRect({
+      scene: loadedScene,
+      x: 0,
+      y: 0,
+      width: panel.width,
+      height: panel.height,
+      cssColor: "#ffffff",
+    })
+  );
+  panel.append(
     new g.SystemLabel({
       scene: loadedScene,
       x: panel.width / 2,

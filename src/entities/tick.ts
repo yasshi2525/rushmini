@@ -14,7 +14,7 @@ const createTickLabel = (loadedScene: g.Scene) => {
   });
 
   // 残り時間が変化したならラベルテキストを更新する
-  ticker.observe((sec: number) => {
+  ticker.observeChange((sec: number) => {
     label.text = toText(ticker.getRemainGameTime());
     label.modified();
   });

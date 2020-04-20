@@ -5,7 +5,9 @@ let _fps = 30;
 let _remainFrame = defaultTotalSec * _fps;
 
 export type GameTimeListener = (sec: number) => void;
-let _listeners: GameTimeListener[];
+export type GameOverListener = () => void;
+let _changeListeners: GameTimeListener[];
+let _overListeners: GameOverListener[];
 let _scenes: { scene: g.Scene; fn: () => void }[];
 
 const ticker = {
@@ -15,7 +17,8 @@ const ticker = {
   init: (fps: number, val?: number) => {
     _fps = fps;
     _remainFrame = (val ? val : defaultTotalSec) * _fps;
-    _listeners = [];
+    _changeListeners = [];
+    _overListeners = [];
     if (_scenes) {
       _scenes.forEach((s) => s.scene.update.remove(s.fn));
     }
@@ -35,7 +38,11 @@ const ticker = {
       const currentGameTime = ticker.getRemainGameTime();
       // 残り秒数が変化した際、リスナに通知する
       if (oldGameTime !== currentGameTime) {
-        _listeners.forEach((ev) => ev(currentGameTime));
+        _changeListeners.forEach((ev) => ev(currentGameTime));
+      }
+      // ゲームオーバーになった場合、リスナに通知する
+      if (_remainFrame === endingSec * _fps) {
+        _overListeners.forEach((ev) => ev());
       }
     }
   },
@@ -52,13 +59,12 @@ const ticker = {
   /**
    * 残りゲーム時間が変化した際、通知するリスナを登録する
    */
-  observe: (listener: GameTimeListener) => {
-    _listeners.push(listener);
+  observeChange: (listener: GameTimeListener) => {
+    _changeListeners.push(listener);
   },
-  /**
-   * ゲーム操作終了かどうか判定する
-   */
-  isGameOver: () => _remainFrame <= endingSec * _fps,
+  observeOver: (listener: GameOverListener) => {
+    _overListeners.push(listener);
+  },
   /**
    * 制限時間を使い切ったか判定する
    */

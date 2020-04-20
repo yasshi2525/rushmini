@@ -11,10 +11,8 @@ export type GameScene = {
 };
 
 const preserveShift = (next: g.Scene) => {
-  ticker.observe(() => {
-    if (ticker.isGameOver()) {
-      g.game.replaceScene(next);
-    }
+  ticker.observeOver(() => {
+    g.game.replaceScene(next);
   });
 };
 

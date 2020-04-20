@@ -14,14 +14,12 @@ describe("ticker", () => {
     it("init without value", () => {
       ticker.init(60);
       expect(ticker.getRemainGameTime()).toEqual(DEFAULT_GAME);
-      expect(ticker.isGameOver()).toBe(false);
       expect(ticker.isExpired()).toBe(false);
     });
 
     it("init with undefined value", () => {
       ticker.init(60, undefined);
       expect(ticker.getRemainGameTime()).toEqual(DEFAULT_GAME);
-      expect(ticker.isGameOver()).toBe(false);
       expect(ticker.isExpired()).toBe(false);
     });
 
@@ -29,7 +27,6 @@ describe("ticker", () => {
       const _GAME = 90;
       ticker.init(60, _GAME + ENDING);
       expect(ticker.getRemainGameTime()).toEqual(_GAME);
-      expect(ticker.isGameOver()).toBe(false);
       expect(ticker.isExpired()).toBe(false);
     });
   });
@@ -87,7 +84,7 @@ describe("ticker", () => {
     it("notify changing second", () => {
       let sec = NaN;
       let counter = 0;
-      ticker.observe((v) => {
+      ticker.observeChange((v) => {
         counter++;
         sec = v;
       });
@@ -101,6 +98,19 @@ describe("ticker", () => {
       ticker.step();
       expect(sec).toBe(GAME - 2);
       expect(counter).toBe(2);
+    });
+
+    it("notify game over", () => {
+      let counter = 0;
+      ticker.observeOver(() => {
+        counter++;
+      });
+      for (let i = 0; i < FPS * GAME - 1; i++) {
+        ticker.step();
+        expect(counter).toBe(0);
+      }
+      ticker.step();
+      expect(counter).toBe(1);
     });
   });
 });
