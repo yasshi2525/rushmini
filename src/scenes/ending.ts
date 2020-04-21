@@ -10,7 +10,7 @@ const preserveShift = (panel: g.E, next: g.Scene) => {
 };
 
 const createEndingScene = (): EndingScene => {
-  const scene = new g.Scene({ game: g.game });
+  const scene = new g.Scene({ game: g.game, name: "ending" });
   return {
     scene,
     prepare: (next: g.Scene) => {

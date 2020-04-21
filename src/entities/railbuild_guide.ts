@@ -95,7 +95,10 @@ const createRailBuildGuide = (loadedScene: g.Scene) => {
     },
     onFixed: () => {
       // カーソルが離れ、路線が完成したなら、ガイドを消す
-      panel.destroy();
+      panel.hide();
+    },
+    onReset: () => {
+      panel.show();
     },
   });
   return panel;

@@ -17,6 +17,7 @@ export class Model {
   public readonly stateListeners: {
     onStarted: (ev: Model) => void;
     onFixed: (ev: Model) => void;
+    onReset: (ev: Model) => void;
   }[];
   /**
    * 駅を一定間隔で設置するため、最後に駅を持ってからextendした回数を保持するカウンター
@@ -29,8 +30,12 @@ export class Model {
     this.stateListeners = [];
   }
 
-  private setState(state: ModelStateType.STARTED | ModelStateType.FIXED) {
+  private setState(state: ModelStateType) {
     switch (state) {
+      case ModelStateType.INITED:
+        this.state = ModelStateType.INITED;
+        this.stateListeners.forEach((l) => l.onReset(this));
+        break;
       case ModelStateType.STARTED:
         this.state = ModelStateType.STARTED;
         this.stateListeners.forEach((l) => l.onStarted(this));
@@ -125,6 +130,11 @@ export class Model {
         console.warn("try to end already fixed model");
         break;
     }
+  }
+
+  public reset() {
+    this.primaryLine._reset();
+    this.setState(ModelStateType.INITED);
   }
 }
 

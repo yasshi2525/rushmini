@@ -17,7 +17,7 @@ const preserveShift = (next: g.Scene) => {
 };
 
 const createGameScene = (): GameScene => {
-  const scene = new g.Scene({ game: g.game });
+  const scene = new g.Scene({ game: g.game, name: "game" });
   ticker.register(scene);
   return {
     scene,

@@ -118,6 +118,10 @@ class RailLine {
       lt._insertPlatform(platform)
     );
   }
+
+  public _reset() {
+    this.top = undefined;
+  }
 }
 
 export default RailLine;

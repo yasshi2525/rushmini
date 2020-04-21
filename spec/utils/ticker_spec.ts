@@ -52,11 +52,11 @@ describe("ticker", () => {
       for (let i = 0; i < FPS * (GAME + ENDING) - 1; i++) {
         ticker.step();
       }
-      expect(ticker.isExpired()).toEqual(false);
+      expect(ticker.isExpired()).toBeFalsy();
       ticker.step();
-      expect(ticker.isExpired()).toEqual(true);
+      expect(ticker.isExpired()).toBeTruthy();
       ticker.step();
-      expect(ticker.isExpired()).toEqual(true);
+      expect(ticker.isExpired()).toBeTruthy();
     });
   });
 
