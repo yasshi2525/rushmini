@@ -13,7 +13,7 @@ class RailNode extends Vector {
     super(x, y);
     this.out = [];
     this.in = [];
-    modelListener.railNode.add(this);
+    modelListener.railNode._add(this);
   }
 
   /**

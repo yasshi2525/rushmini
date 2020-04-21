@@ -7,7 +7,7 @@ class Gate {
 
   constructor(st: Station) {
     this.st = st;
-    modelListener.gate.add(this);
+    modelListener.gate._add(this);
   }
 }
 

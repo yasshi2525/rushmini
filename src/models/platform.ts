@@ -11,7 +11,7 @@ class Platform {
     this.station = st;
     on.platform = this;
     st.platforms.push(this);
-    modelListener.platform.add(this);
+    modelListener.platform._add(this);
   }
 }
 

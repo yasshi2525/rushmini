@@ -1,4 +1,9 @@
 import RailNode from "models/rail_node";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("rail_node", () => {
   it("creation", () => {

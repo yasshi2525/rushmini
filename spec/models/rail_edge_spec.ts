@@ -1,5 +1,10 @@
 import RailNode from "models/rail_node";
 import RailEdge from "models/rail_edge";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("rail_edge", () => {
   it("connect rail_node on creation", () => {

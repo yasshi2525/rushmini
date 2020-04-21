@@ -9,7 +9,7 @@ class Station {
   constructor() {
     this.platforms = [];
     this.gate = new Gate(this);
-    modelListener.station.add(this);
+    modelListener.station._add(this);
   }
 
   public getPos(): { readonly x: number; readonly y: number } {

@@ -97,11 +97,6 @@
 			"path": "script/models/human.js",
 			"global": true
 		},
-		"index": {
-			"type": "script",
-			"path": "script/models/index.js",
-			"global": true
-		},
 		"line_task": {
 			"type": "script",
 			"path": "script/models/line_task.js",
@@ -195,6 +190,21 @@
 		"factory": {
 			"type": "script",
 			"path": "script/entities/factory.js",
+			"global": true
+		},
+		"human_view": {
+			"type": "script",
+			"path": "script/entities/human_view.js",
+			"global": true
+		},
+		"city_resource": {
+			"type": "script",
+			"path": "script/models/city_resource.js",
+			"global": true
+		},
+		"user_resource": {
+			"type": "script",
+			"path": "script/models/user_resource.js",
 			"global": true
 		}
 	},

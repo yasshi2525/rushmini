@@ -1,11 +1,20 @@
-import model, { Model, ModelStateType, stationInterval } from "models";
+import {
+  UserResource,
+  ModelStateType,
+  stationInterval,
+} from "models/user_resource";
 import RailLine from "models/rail_line";
 import DeptTask from "models/dept_task";
+import modelListener from "models/listener";
 
-describe("model", () => {
+afterAll(() => {
+  modelListener.flush();
+});
+
+describe("user_resource", () => {
   describe("initialize", () => {
     it("have empty primary line", () => {
-      const instance = new Model();
+      const instance = new UserResource();
       expect(instance.primaryLine).toBeInstanceOf(RailLine);
       expect(instance.primaryLine.top).toBeUndefined();
       expect(instance.getState()).toEqual(ModelStateType.INITED);
@@ -13,10 +22,10 @@ describe("model", () => {
   });
 
   describe("start", () => {
-    let instance: Model;
+    let instance: UserResource;
 
     beforeEach(() => {
-      instance = new Model();
+      instance = new UserResource();
     });
 
     it("start when initial state", () => {
@@ -69,10 +78,10 @@ describe("model", () => {
   });
 
   describe("extend", () => {
-    let instance: Model;
+    let instance: UserResource;
 
     beforeEach(() => {
-      instance = new Model();
+      instance = new UserResource();
     });
 
     it("extend", () => {
@@ -144,9 +153,9 @@ describe("model", () => {
   });
 
   describe("end", () => {
-    let instance: Model;
+    let instance: UserResource;
     beforeEach(() => {
-      instance = new Model();
+      instance = new UserResource();
     });
 
     it("end with building station", () => {
@@ -177,18 +186,18 @@ describe("model", () => {
   });
 
   describe("listener", () => {
-    let instance: Model;
+    let instance: UserResource;
     let startCounter: number;
     let endCounter: number;
     let resetCounter: number;
     let listener: {
-      onStarted: (ev: Model) => void;
-      onFixed: (ev: Model) => void;
-      onReset: (ev: Model) => void;
+      onStarted: (ev: UserResource) => void;
+      onFixed: (ev: UserResource) => void;
+      onReset: (ev: UserResource) => void;
     };
 
     beforeEach(() => {
-      instance = new Model();
+      instance = new UserResource();
       startCounter = 1;
       endCounter = 1;
       resetCounter = 1;

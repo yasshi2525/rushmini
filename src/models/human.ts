@@ -17,7 +17,7 @@ class Human {
     this.loc = new Vector(departure);
     this.departure = departure;
     this.destination = destination;
-    modelListener.human.add(this);
+    modelListener.human._add(this);
   }
 
   public _getVector() {

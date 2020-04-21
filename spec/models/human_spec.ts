@@ -1,6 +1,7 @@
 import Company from "models/company";
 import Residence from "models/residence";
 import Human from "models/human";
+import modelListener from "models/listener";
 
 const fps = 30;
 const defaultSpeed = 20;
@@ -12,6 +13,10 @@ const setEnv = () => {
 
 beforeAll(() => {
   setEnv();
+});
+
+afterAll(() => {
+  modelListener.flush();
 });
 
 describe("human", () => {

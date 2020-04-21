@@ -10,14 +10,14 @@ export enum ModelStateType {
   FIXED,
 }
 
-export class Model {
+export class UserResource {
   public readonly primaryLine: RailLine;
   private tailNode?: RailNode;
   private state: ModelStateType;
   public readonly stateListeners: {
-    onStarted: (ev: Model) => void;
-    onFixed: (ev: Model) => void;
-    onReset: (ev: Model) => void;
+    onStarted: (ev: UserResource) => void;
+    onFixed: (ev: UserResource) => void;
+    onReset: (ev: UserResource) => void;
   }[];
   /**
    * 駅を一定間隔で設置するため、最後に駅を持ってからextendした回数を保持するカウンター
@@ -138,6 +138,6 @@ export class Model {
   }
 }
 
-const model = new Model();
+const userResource = new UserResource();
 
-export default model;
+export default userResource;

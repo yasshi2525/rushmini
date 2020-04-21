@@ -36,11 +36,11 @@ export class ListenerContainer<T> {
    * オブジェクトを追加します
    * @param obj
    */
-  public add(obj: T) {
+  public _add(obj: T) {
     this.queue.push(obj);
   }
 
-  public done() {
+  public _done() {
     let e = this.queue.shift();
     while (e) {
       this.handlers.forEach((l) => l.onDone(e));
@@ -48,8 +48,15 @@ export class ListenerContainer<T> {
     }
   }
 
-  public delete(target: T) {
+  public _delete(target: T) {
     this.handlers.forEach((l) => l.onDelete(target));
+  }
+
+  /**
+   * add したオブジェクトをすべて削除する(通知なし)
+   */
+  public _flush() {
+    this.queue.length = 0;
   }
 }
 
@@ -65,16 +72,28 @@ const modelListener = {
   lineTask: new ListenerContainer<LineTask>(),
   human: new ListenerContainer<Human>(),
   done: () => {
-    modelListener.company.done();
-    modelListener.residence.done();
-    modelListener.railNode.done();
-    modelListener.railEdge.done();
-    modelListener.station.done();
-    modelListener.gate.done();
-    modelListener.platform.done();
-    modelListener.railLine.done();
-    modelListener.lineTask.done();
-    modelListener.human.done();
+    modelListener.company._done();
+    modelListener.residence._done();
+    modelListener.railNode._done();
+    modelListener.railEdge._done();
+    modelListener.station._done();
+    modelListener.gate._done();
+    modelListener.platform._done();
+    modelListener.railLine._done();
+    modelListener.lineTask._done();
+    modelListener.human._done();
+  },
+  flush: () => {
+    modelListener.company._flush();
+    modelListener.residence._flush();
+    modelListener.railNode._flush();
+    modelListener.railEdge._flush();
+    modelListener.station._flush();
+    modelListener.gate._flush();
+    modelListener.platform._flush();
+    modelListener.railLine._flush();
+    modelListener.lineTask._flush();
+    modelListener.human._flush();
   },
 };
 

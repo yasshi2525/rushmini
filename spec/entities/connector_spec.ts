@@ -30,19 +30,19 @@ describe("connetor", () => {
   it("viewer object is created after onDone event", () => {
     const subject = new Simple();
     connect(factory, listener);
-    listener.add(subject);
+    listener._add(subject);
     expect(panel.children).toBeUndefined();
-    listener.done();
+    listener._done();
     expect(panel.children.length).toEqual(1);
   });
 
   it("viewer object is removed after onDelete event", () => {
     const subject = new Simple();
     connect(factory, listener);
-    listener.add(subject);
-    listener.done();
+    listener._add(subject);
+    listener._done();
     expect(panel.children.length).toEqual(1);
-    listener.delete(subject);
+    listener._delete(subject);
     expect(panel.children.length).toEqual(0);
   });
 });

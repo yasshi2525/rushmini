@@ -1,5 +1,10 @@
 import Station from "models/station";
 import Gate from "models/gate";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("gate", () => {
   it("initial create", () => {

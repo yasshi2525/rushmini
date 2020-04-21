@@ -5,6 +5,11 @@ import RailEdge from "models/rail_edge";
 import Platform from "models/platform";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("line_task", () => {
   it("first departure", () => {

@@ -1,8 +1,9 @@
 import { createLoadedScene } from "../_helper/scene";
 import createRailBuilder from "entities/railbuilder";
-import model, { ModelStateType } from "models";
+import userResource, { ModelStateType } from "models/user_resource";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
+import modelListener from "models/listener";
 
 declare const recreateGame: () => void;
 
@@ -14,7 +15,8 @@ describe("railbuilder", () => {
   });
 
   afterEach(() => {
-    model.reset();
+    userResource.reset();
+    modelListener.flush();
     recreateGame();
   });
 
@@ -29,7 +31,7 @@ describe("railbuilder", () => {
       pointerId: 1,
       target: panel,
     });
-    const dept = model.primaryLine.top;
+    const dept = userResource.primaryLine.top;
     expect(dept).toBeInstanceOf(DeptTask);
     expect(dept._getDept().x).toEqual(10);
     expect(dept._getDept().y).toEqual(20);
@@ -59,7 +61,7 @@ describe("railbuilder", () => {
       prevDelta: { x: 1, y: 2 },
       target: panel,
     });
-    const dept = model.primaryLine.top;
+    const dept = userResource.primaryLine.top;
     expect(dept).toBeInstanceOf(DeptTask);
     expect(dept._getDept().x).toEqual(10);
     expect(dept._getDept().y).toEqual(20);
@@ -115,7 +117,7 @@ describe("railbuilder", () => {
       prevDelta: { x: 1, y: 2 },
       target: panel,
     });
-    const dept1 = model.primaryLine.top;
+    const dept1 = userResource.primaryLine.top;
     expect(dept1).toBeInstanceOf(DeptTask);
     expect(dept1._getDept().x).toEqual(10);
     expect(dept1._getDept().y).toEqual(20);
@@ -177,7 +179,7 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(model.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
 
     sensor.pointDown.fire({
       priority: 2,
@@ -189,7 +191,7 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(model.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
 
     sensor.pointMove.fire({
       priority: 2,
@@ -203,7 +205,7 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(model.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
 
     sensor.pointUp.fire({
       priority: 2,
@@ -217,6 +219,6 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(model.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
   });
 });

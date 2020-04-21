@@ -13,7 +13,7 @@ class Company extends Vector {
       attractiveness = 1;
     }
     this.attractiveness = attractiveness;
-    modelListener.company.add(this);
+    modelListener.company._add(this);
   }
 }
 

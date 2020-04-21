@@ -17,7 +17,7 @@ class Residence extends Vector {
         this.destinations.push(c);
       }
     });
-    modelListener.residence.add(this);
+    modelListener.residence._add(this);
   }
 
   public _spawn() {

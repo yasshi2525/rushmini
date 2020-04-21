@@ -1,6 +1,11 @@
 import RailNode from "models/rail_node";
 import Station from "models/station";
 import Platform from "models/platform";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("station", () => {
   describe("getPos", () => {

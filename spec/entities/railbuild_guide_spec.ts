@@ -1,6 +1,7 @@
-import model from "models";
+import userResource from "models/user_resource";
 import createRailBuildGuide from "entities/railbuild_guide";
 import { createLoadedScene } from "../_helper/scene";
+import modelListener from "models/listener";
 
 declare const recreateGame: () => void;
 const activeOpacity = 0.75;
@@ -14,20 +15,21 @@ describe("railbuild_guide", () => {
   });
 
   afterEach(() => {
-    model.reset();
+    userResource.reset();
+    modelListener.flush();
     recreateGame();
   });
 
   it("guide listen to model", () => {
     const panel = createRailBuildGuide(scene);
-    expect(model.stateListeners.length).toEqual(1);
+    expect(userResource.stateListeners.length).toEqual(1);
     expect(panel.opacity).toEqual(activeOpacity);
 
-    model.start(0, 0);
+    userResource.start(0, 0);
     expect(panel.opacity).toEqual(inactiveOpacity);
-    model.end();
+    userResource.end();
     expect(panel.visible()).toBeFalsy();
-    model.reset();
+    userResource.reset();
     expect(panel.visible()).toBeTruthy();
   });
 });

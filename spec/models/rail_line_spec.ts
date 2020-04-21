@@ -3,6 +3,11 @@ import RailNode from "models/rail_node";
 import DeptTask from "models/dept_task";
 import RailEdge from "models/rail_edge";
 import EdgeTask from "models/edge_task";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("rail_line", () => {
   it("creation", () => {

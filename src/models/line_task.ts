@@ -19,7 +19,7 @@ abstract class LineTask {
       this.prev = this;
       this.next = this;
     }
-    modelListener.lineTask.add(this);
+    modelListener.lineTask._add(this);
   }
 
   public abstract _getDept(): RailNode;

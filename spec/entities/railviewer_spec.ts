@@ -1,6 +1,7 @@
 import { createLoadedScene } from "../_helper/scene";
 import createRailViewer from "entities/railviewer";
-import model from "models";
+import userResource from "models/user_resource";
+import modelListener from "models/listener";
 
 declare const recreateGame: () => void;
 
@@ -11,14 +12,15 @@ describe("railviewer", () => {
   });
 
   afterEach(() => {
-    model.reset();
+    userResource.reset();
+    modelListener.flush();
     recreateGame();
   });
 
   it("building station creates panel", () => {
     const panel = createRailViewer(scene);
     expect(panel.children.length).toEqual(1);
-    model.start(0, 0);
+    userResource.start(0, 0);
     expect(panel.children.length).toEqual(2);
     const station = panel.children[1].children[0];
     expect(station).toBeInstanceOf(g.FilledRect);
@@ -28,8 +30,8 @@ describe("railviewer", () => {
   it("building edge creates panel", () => {
     const panel = createRailViewer(scene);
     expect(panel.children.length).toEqual(1);
-    model.start(0, 0);
-    model.extend(10, 10);
+    userResource.start(0, 0);
+    userResource.extend(10, 10);
     expect(panel.children.length).toEqual(4);
     const outbound = panel.children[2].children[0];
     expect(outbound).toBeInstanceOf(g.FilledRect);

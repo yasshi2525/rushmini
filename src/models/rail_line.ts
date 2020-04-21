@@ -9,7 +9,7 @@ class RailLine {
   public top?: LineTask;
 
   constructor() {
-    modelListener.railLine.add(this);
+    modelListener.railLine._add(this);
   }
 
   /**

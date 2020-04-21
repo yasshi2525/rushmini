@@ -27,31 +27,31 @@ describe("listener", () => {
 
     it("done", () => {
       instance.register(listener);
-      instance.add(obj);
-      instance.done();
+      instance._add(obj);
+      instance._done();
       expect(obj.doneCounter).toEqual(2);
       expect(obj.deleteCounter).toEqual(1);
     });
 
     it("add does not call callback method", () => {
       instance.register(listener);
-      instance.add(obj);
+      instance._add(obj);
       expect(obj.doneCounter).toEqual(1);
       expect(obj.deleteCounter).toEqual(1);
     });
 
     it("done does not effect un-related object", () => {
       instance.register(listener);
-      instance.done();
+      instance._done();
       expect(obj.doneCounter).toEqual(1);
       expect(obj.deleteCounter).toEqual(1);
     });
 
     it("delete", () => {
       instance.register(listener);
-      instance.add(obj);
-      instance.done();
-      instance.delete(obj);
+      instance._add(obj);
+      instance._done();
+      instance._delete(obj);
       expect(obj.doneCounter).toEqual(2);
       expect(obj.deleteCounter).toEqual(2);
     });

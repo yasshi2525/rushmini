@@ -17,7 +17,7 @@ class RailEdge {
     from.out.push(this);
     to.in.push(this);
     this.vector = new Vector(to.x - from.x, to.y - from.y);
-    modelListener.railEdge.add(this);
+    modelListener.railEdge._add(this);
   }
 }
 

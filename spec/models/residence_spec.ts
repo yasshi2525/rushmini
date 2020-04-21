@@ -1,5 +1,10 @@
 import Company from "models/company";
 import Residence from "models/residence";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("residence", () => {
   it("initialize", () => {

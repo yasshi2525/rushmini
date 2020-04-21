@@ -1,4 +1,9 @@
 import Company from "models/company";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("company", () => {
   it("initialize", () => {

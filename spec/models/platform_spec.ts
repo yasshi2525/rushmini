@@ -1,6 +1,11 @@
 import Station from "models/station";
 import RailNode from "models/rail_node";
 import Platform from "models/platform";
+import modelListener from "models/listener";
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("platform", () => {
   it("register reference on creation", () => {

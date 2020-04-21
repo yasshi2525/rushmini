@@ -1,4 +1,4 @@
-import model from "../models";
+import userResource from "../models/user_resource";
 
 /**
  * 画面に占める路線敷設ガイドの大きさ
@@ -87,7 +87,7 @@ const createRailBuildGuide = (loadedScene: g.Scene) => {
     })
   );
 
-  model.stateListeners.push({
+  userResource.stateListeners.push({
     onStarted: () => {
       // カーソルを押下したならガイドを薄くする
       panel.opacity = inactiveOpacity;
