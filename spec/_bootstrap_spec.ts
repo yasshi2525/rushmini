@@ -13,7 +13,7 @@ declare const window: RPGAtsumaruWindow;
  * カバレッジのため通している
  */
 describe("_bootstrap", () => {
-  beforeEach(() => {
+  afterEach(() => {
     recreateGame();
   });
 

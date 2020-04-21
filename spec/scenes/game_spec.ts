@@ -9,9 +9,12 @@ const ENDING = 10;
 
 describe("game", () => {
   beforeEach(() => {
-    recreateGame();
     ticker.init(FPS, GAME + ENDING);
     scorer.init({ score: 0 });
+  });
+
+  afterEach(() => {
+    recreateGame();
   });
 
   it("create scene", () => {

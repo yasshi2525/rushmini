@@ -1,6 +1,6 @@
 import { createLoadedScene } from "../_helper/scene";
 import createRailBuilder from "entities/railbuilder";
-import model from "models";
+import model, { ModelStateType } from "models";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
 
@@ -10,9 +10,12 @@ describe("railbuilder", () => {
   let scene: g.Scene;
 
   beforeEach(async () => {
-    recreateGame();
     scene = await createLoadedScene(g.game);
+  });
+
+  afterEach(() => {
     model.reset();
+    recreateGame();
   });
 
   it("dragging starts rail building", () => {
@@ -137,5 +140,83 @@ describe("railbuilder", () => {
     expect(inbound._getDest().y).toEqual(20);
 
     expect(inbound.next).toEqual(dept1);
+  });
+
+  it("re-dragging causes nothing", () => {
+    const panel = createRailBuilder(scene);
+    const sensor = panel.children[0];
+    sensor.pointDown.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      point: { x: 10, y: 20 },
+      type: g.EventType.PointDown,
+      pointerId: 1,
+      target: panel,
+    });
+    sensor.pointMove.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointMove,
+      pointerId: 2,
+      point: { x: 10, y: 20 },
+      startDelta: { x: 1, y: 2 },
+      prevDelta: { x: 1, y: 2 },
+      target: panel,
+    });
+    sensor.pointUp.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointUp,
+      pointerId: 3,
+      point: { x: 10, y: 20 },
+      startDelta: { x: 1, y: 2 },
+      prevDelta: { x: 1, y: 2 },
+      target: panel,
+    });
+
+    expect(model.getState()).toEqual(ModelStateType.FIXED);
+
+    sensor.pointDown.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      point: { x: 10, y: 20 },
+      type: g.EventType.PointDown,
+      pointerId: 4,
+      target: panel,
+    });
+
+    expect(model.getState()).toEqual(ModelStateType.FIXED);
+
+    sensor.pointMove.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointMove,
+      pointerId: 5,
+      point: { x: 10, y: 20 },
+      startDelta: { x: 1, y: 2 },
+      prevDelta: { x: 1, y: 2 },
+      target: panel,
+    });
+
+    expect(model.getState()).toEqual(ModelStateType.FIXED);
+
+    sensor.pointUp.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointUp,
+      pointerId: 6,
+      point: { x: 10, y: 20 },
+      startDelta: { x: 1, y: 2 },
+      prevDelta: { x: 1, y: 2 },
+      target: panel,
+    });
+
+    expect(model.getState()).toEqual(ModelStateType.FIXED);
   });
 });

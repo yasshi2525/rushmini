@@ -3,7 +3,7 @@ import createEndingScene from "scenes/ending";
 declare const recreateGame: () => void;
 
 describe("ending", () => {
-  beforeEach(() => {
+  afterEach(() => {
     recreateGame();
   });
 
@@ -29,6 +29,7 @@ describe("ending", () => {
     g.game.tick(false);
     expect(g.game.scene().name).toEqual("ending");
     g.game.scene().children[0].pointDown.fire();
+    g.game.scene().children[0].pointUp.fire();
     g.game.tick(false);
     expect(g.game.scene().name).toEqual("mock");
   });

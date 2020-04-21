@@ -1,6 +1,7 @@
 import { createLoadedScene } from "../_helper/scene";
 import ViewObjectFactory, { ViewerCreator } from "entities/factory";
 
+declare const recreateGame: () => void;
 class Simple {}
 
 describe("factory", () => {
@@ -14,6 +15,10 @@ describe("factory", () => {
     panel = new g.E({ scene: loadedScene });
     creator = (scene, _) => new g.E({ scene });
     factory = new ViewObjectFactory(loadedScene, panel, creator);
+  });
+
+  afterEach(() => {
+    recreateGame();
   });
 
   it("createInstance adds entity to panel", () => {

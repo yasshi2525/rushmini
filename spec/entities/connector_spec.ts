@@ -3,6 +3,7 @@ import { ListenerContainer } from "models/listener";
 import connect from "entities/connector";
 import { createLoadedScene } from "../_helper/scene";
 
+declare const recreateGame: () => void;
 class Simple {}
 
 describe("connetor", () => {
@@ -20,6 +21,10 @@ describe("connetor", () => {
       (_scene, _) => new g.E({ scene: _scene })
     );
     listener = new ListenerContainer<Simple>();
+  });
+
+  afterEach(() => {
+    recreateGame();
   });
 
   it("viewer object is created after onDone event", () => {

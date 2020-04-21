@@ -6,7 +6,7 @@ export type EndingScene = {
 };
 
 const preserveShift = (panel: g.E, next: g.Scene) => {
-  panel.pointDown.add(() => g.game.replaceScene(next));
+  panel.pointUp.add(() => g.game.replaceScene(next));
 };
 
 const createEndingScene = (): EndingScene => {

@@ -6,8 +6,11 @@ const FPS = 60;
 
 describe("title", () => {
   beforeEach(() => {
-    recreateGame();
     ticker.init(FPS);
+  });
+
+  afterEach(() => {
+    recreateGame();
   });
 
   it("create scene", () => {

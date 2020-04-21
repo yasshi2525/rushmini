@@ -11,6 +11,8 @@ const createGame = () =>
   });
 
 class AkashicEngineEnvironment extends NodeEnvironment {
+  oldWindow;
+
   async setup() {
     // g.game インスタンスを生成しておく
     await super.setup();
@@ -21,6 +23,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
     // game を繰り返し使うテストのために、作成関数を定義
     this.global.recreateGame = () => (g.game = createGame());
     // windoe を定義
+    this.oldWindow = this.global.window;
     this.global.window = new JSDOM().window;
   }
 
@@ -29,7 +32,9 @@ class AkashicEngineEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-    this.global.g = null;
+    delete this.global.g;
+    delete this.global.recreateGame;
+    this.global.window = this.oldWindow;
     await super.teardown();
   }
 }
