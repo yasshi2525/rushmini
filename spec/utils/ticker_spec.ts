@@ -1,5 +1,7 @@
 import ticker from "utils/ticker";
 
+declare const recreateGame: () => void;
+
 const FPS = 30;
 const DEFAULT_GAME = 60;
 const GAME = 120;
@@ -63,6 +65,10 @@ describe("ticker", () => {
   describe("register", () => {
     beforeEach(() => {
       ticker.init(FPS, GAME + ENDING);
+    });
+
+    afterEach(() => {
+      recreateGame();
     });
 
     it("step", () => {
