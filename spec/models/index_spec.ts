@@ -13,7 +13,7 @@ describe("model", () => {
   });
 
   describe("start", () => {
-    var instance: Model;
+    let instance: Model;
 
     beforeEach(() => {
       instance = new Model();
@@ -69,7 +69,7 @@ describe("model", () => {
   });
 
   describe("extend", () => {
-    var instance: Model;
+    let instance: Model;
 
     beforeEach(() => {
       instance = new Model();
@@ -108,8 +108,8 @@ describe("model", () => {
 
     it("build station at regular interval", () => {
       instance.start(0, 0);
-      var tail = instance.primaryLine.top;
-      for (var i = 0; i < stationInterval - 1; i++) {
+      let tail = instance.primaryLine.top;
+      for (let i = 0; i < stationInterval - 1; i++) {
         instance.extend(i, 0);
         tail = tail.next;
         expect(tail._getDest().platform).toBeUndefined();
@@ -144,7 +144,7 @@ describe("model", () => {
   });
 
   describe("end", () => {
-    var instance: Model;
+    let instance: Model;
     beforeEach(() => {
       instance = new Model();
     });
@@ -177,21 +177,25 @@ describe("model", () => {
   });
 
   describe("listener", () => {
-    var instance: Model;
-    var startCounter: number;
-    var endCounter: number;
-    var listener: {
+    let instance: Model;
+    let startCounter: number;
+    let endCounter: number;
+    let resetCounter: number;
+    let listener: {
       onStarted: (ev: Model) => void;
       onFixed: (ev: Model) => void;
+      onReset: (ev: Model) => void;
     };
 
     beforeEach(() => {
       instance = new Model();
       startCounter = 1;
       endCounter = 1;
+      resetCounter = 1;
       listener = {
         onStarted: () => startCounter++,
         onFixed: () => endCounter++,
+        onReset: () => resetCounter++,
       };
     });
 
@@ -228,6 +232,19 @@ describe("model", () => {
 
       expect(startCounter).toEqual(2);
       expect(endCounter).toEqual(2);
+    });
+
+    it("reset", () => {
+      expect(startCounter).toEqual(1);
+      expect(endCounter).toEqual(1);
+      expect(resetCounter).toEqual(1);
+
+      instance.stateListeners.push(listener);
+      instance.reset();
+
+      expect(startCounter).toEqual(1);
+      expect(endCounter).toEqual(1);
+      expect(resetCounter).toEqual(2);
     });
   });
 });
