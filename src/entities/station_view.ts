@@ -9,13 +9,15 @@ const createStationPanel: ViewerCreator<Station> = (
   loadedScene: g.Scene,
   st: Station
 ) => {
-  const panel = new g.E({ scene: loadedScene });
   const pos = st.getPos();
+  const panel = new g.E({
+    scene: loadedScene,
+    x: pos.x - width / 2,
+    y: pos.y - height / 2,
+  });
   panel.append(
     new g.FilledRect({
       scene: loadedScene,
-      x: pos.x - width / 2,
-      y: pos.y - height / 2,
       width,
       height,
       cssColor,

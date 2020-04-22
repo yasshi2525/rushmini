@@ -211,6 +211,21 @@
 			"type": "script",
 			"path": "script/models/steppable.js",
 			"global": true
+		},
+		"cityviewer": {
+			"type": "script",
+			"path": "script/entities/cityviewer.js",
+			"global": true
+		},
+		"company_view": {
+			"type": "script",
+			"path": "script/entities/company_view.js",
+			"global": true
+		},
+		"residence_view": {
+			"type": "script",
+			"path": "script/entities/residence_view.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

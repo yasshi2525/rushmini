@@ -1,4 +1,4 @@
-import modelListener, { ModelChangeListener } from "../models/listener";
+import modelListener from "../models/listener";
 import Station from "../models/station";
 import RailEdge from "../models/rail_edge";
 import createStationPanel from "./station_view";
@@ -13,19 +13,7 @@ const createRailViewer = (loadedScene: g.Scene) => {
     height: g.game.height,
   });
 
-  // 背景色白
-  panel.append(
-    new g.FilledRect({
-      scene: loadedScene,
-      x: 0,
-      y: 0,
-      width: panel.width,
-      height: panel.height,
-      cssColor: "#ffffff",
-    })
-  );
-
-  // 描画物構築関数を持ったオブジェクトを作成
+  // 描画物構築関数を持ったファクトリを作成
   const railEdge = new ViewObjectFactory<RailEdge>(
     loadedScene,
     panel,

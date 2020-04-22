@@ -1,6 +1,7 @@
 import Company from "./company";
 import random from "../utils/random";
 import Residence from "./residence";
+import modelListener from "./listener";
 
 export class CityResource {
   /**
@@ -26,6 +27,7 @@ export class CityResource {
       rnd.get(0, CityResource.AREA),
       rnd.get(0, CityResource.AREA)
     );
+    modelListener.done();
     return { company: c, residence: r };
   }
 }

@@ -4,6 +4,7 @@ import createTickLabel from "../entities/tick";
 import createRailBuildGuide from "../entities/railbuild_guide";
 import createRailViewer from "../entities/railviewer";
 import createRailBuilder from "../entities/railbuilder";
+import createCityViewer from "../entities/cityviewer";
 
 export type GameScene = {
   scene: g.Scene;
@@ -23,6 +24,7 @@ const createGameScene = (): GameScene => {
     scene,
     prepare: (next: g.Scene) => {
       scene.loaded.add(() => {
+        scene.append(createCityViewer(scene));
         scene.append(createRailViewer(scene));
         scene.append(createRailBuilder(scene));
         scene.append(createRailBuildGuide(scene));

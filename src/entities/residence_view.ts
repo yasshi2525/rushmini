@@ -1,18 +1,18 @@
 import { ViewerCreator } from "./factory";
-import Human from "../models/human";
+import Residence from "../models/residence";
 
-const width = 3;
-const height = 8;
-const cssColor = "#33ff66";
+const width = 10;
+const height = 10;
+const cssColor = "#ff6622";
 
-const createHumanPanel: ViewerCreator<Human> = (
+const createResidencePanel: ViewerCreator<Residence> = (
   loadedScene: g.Scene,
-  h: Human
+  r: Residence
 ) => {
   const panel = new g.E({
     scene: loadedScene,
-    x: h._getVector().x - width / 2,
-    y: h._getVector().y - height / 2,
+    x: r.x - width / 2,
+    y: r.y - height / 2,
   });
 
   panel.append(
@@ -27,4 +27,4 @@ const createHumanPanel: ViewerCreator<Human> = (
   return panel;
 };
 
-export default createHumanPanel;
+export default createResidencePanel;

@@ -44,7 +44,6 @@ describe("city_resource", () => {
   it("residence and company is built on initialize", () => {
     const model = new CityResource();
     model.init(WIDTH, HEIGHT);
-    modelListener.done();
     expect(cs.length).toEqual(1);
     const c = cs[0];
     expect(c.x).toEqual(randomChecker.get(WIDTH - AREA, WIDTH));
