@@ -2,8 +2,9 @@ import Residence from "./residence";
 import Company from "./company";
 import Vector from "./vector";
 import modelListener from "./listener";
+import { Steppable } from "./steppable";
 
-class Human {
+class Human implements Steppable {
   private loc: Vector;
   /**
    * 1秒間に何pixcel進むか

@@ -206,6 +206,11 @@
 			"type": "script",
 			"path": "script/models/user_resource.js",
 			"global": true
+		},
+		"steppable": {
+			"type": "script",
+			"path": "script/models/steppable.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

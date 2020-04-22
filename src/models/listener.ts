@@ -58,6 +58,13 @@ export class ListenerContainer<T> {
   public _flush() {
     this.queue.length = 0;
   }
+
+  /**
+   * register したリスナを削除する
+   */
+  public _unregisterAll() {
+    this.handlers.length = 0;
+  }
 }
 
 const modelListener = {
@@ -71,6 +78,9 @@ const modelListener = {
   railLine: new ListenerContainer<RailLine>(),
   lineTask: new ListenerContainer<LineTask>(),
   human: new ListenerContainer<Human>(),
+  /**
+   * キャッシュしているオブジェクトをリスナに通知する
+   */
   done: () => {
     modelListener.company._done();
     modelListener.residence._done();
@@ -83,6 +93,9 @@ const modelListener = {
     modelListener.lineTask._done();
     modelListener.human._done();
   },
+  /**
+   * キャッシュしているオブジェクトを破棄する
+   */
   flush: () => {
     modelListener.company._flush();
     modelListener.residence._flush();
