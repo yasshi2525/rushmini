@@ -1,9 +1,7 @@
-import RailLine from "./rail_line";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
+import RailLine from "./rail_line";
 import RailNode from "./rail_node";
-import modelListener from "./listener";
-import Vector from "./vector";
 
 abstract class LineTask {
   public readonly parent: RailLine;
@@ -19,7 +17,6 @@ abstract class LineTask {
       this.prev = this;
       this.next = this;
     }
-    modelListener.lineTask._add(this);
   }
 
   public abstract _getDept(): RailNode;

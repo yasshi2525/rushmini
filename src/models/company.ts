@@ -1,5 +1,5 @@
+import modelListener, { EventType } from "./listener";
 import Vector from "./vector";
-import modelListener from "./listener";
 
 class Company extends Vector {
   /**
@@ -13,7 +13,7 @@ class Company extends Vector {
       attractiveness = 1;
     }
     this.attractiveness = attractiveness;
-    modelListener.company._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 }
 

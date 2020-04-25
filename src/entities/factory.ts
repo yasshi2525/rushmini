@@ -1,7 +1,7 @@
 /**
  * Modelの描画情報を含んだオブジェクト
  */
-type ViewObject<T> = {
+export type ViewObject<T> = {
   readonly subject: T;
   readonly viewer: g.E;
 };
@@ -46,12 +46,14 @@ class ViewObjectFactory<T> {
    * 引数に指定したモデルに対応する描画物を削除します
    * @param subject
    */
-  public removeSubject(subject: T) {
+  public removeInstance(subject: T) {
     const index = this.children.findIndex((v) => v.subject === subject);
     if (index !== -1) {
       const object = this.children[index];
       this.panel.remove(object.viewer);
       this.children.splice(index, 1);
+    } else {
+      console.warn("subject was not found in array");
     }
   }
 }

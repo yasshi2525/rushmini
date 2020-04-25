@@ -1,10 +1,11 @@
+import Residence from "./models/residence";
 import { GameMainParameterObject } from "./parameterObject";
-import createTitleScene, { TitleScene } from "./scenes/title";
+import createEndingScene, { EndingScene } from "./scenes/ending";
 import createGameScene, { GameScene } from "./scenes/game";
-import ticker from "./utils/ticker";
+import createTitleScene, { TitleScene } from "./scenes/title";
 import random from "./utils/random";
 import scorer from "./utils/scorer";
-import createEndingScene, { EndingScene } from "./scenes/ending";
+import ticker from "./utils/ticker";
 
 const _gameState = {
   score: 0,
@@ -19,6 +20,7 @@ const _gameState = {
 const init = (param: GameMainParameterObject) => {
   // 制限時間の設定
   ticker.init(g.game.fps, param.sessionParameter.totalTimeLimit);
+  Residence.FPS = g.game.fps;
   // 共通seed値の設定
   random.init(param.random);
   // 変数の初期化

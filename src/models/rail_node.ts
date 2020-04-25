@@ -1,7 +1,7 @@
+import modelListener, { EventType } from "./listener";
+import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import Station from "./station";
-import Platform from "./platform";
-import modelListener from "./listener";
 import Vector from "./vector";
 
 class RailNode extends Vector {
@@ -13,7 +13,7 @@ class RailNode extends Vector {
     super(x, y);
     this.out = [];
     this.in = [];
-    modelListener.railNode._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 
   /**

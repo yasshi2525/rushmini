@@ -1,10 +1,11 @@
-import ticker from "../utils/ticker";
-import createScoreLabel from "../entities/score";
-import createTickLabel from "../entities/tick";
+import createCityBuilder from "../entities/citybuilder";
+import createCityViewer from "../entities/cityviewer";
+import createRailBuilder from "../entities/railbuilder";
 import createRailBuildGuide from "../entities/railbuild_guide";
 import createRailViewer from "../entities/railviewer";
-import createRailBuilder from "../entities/railbuilder";
-import createCityViewer from "../entities/cityviewer";
+import createScoreLabel from "../entities/score";
+import createTickLabel from "../entities/tick";
+import ticker, { EventType } from "../utils/ticker";
 
 export type GameScene = {
   scene: g.Scene;
@@ -12,7 +13,8 @@ export type GameScene = {
 };
 
 const preserveShift = (next: g.Scene) => {
-  ticker.observeOver(() => {
+  // ゲーム時間が終わったらエンディングシーンに遷移させる
+  ticker.triggers.find(EventType.OVER).register(() => {
     g.game.replaceScene(next);
   });
 };
@@ -24,7 +26,9 @@ const createGameScene = (): GameScene => {
     scene,
     prepare: (next: g.Scene) => {
       scene.loaded.add(() => {
-        scene.append(createCityViewer(scene));
+        const cityViewer = createCityViewer(scene);
+        scene.append(cityViewer);
+        createCityBuilder(cityViewer);
         scene.append(createRailViewer(scene));
         scene.append(createRailBuilder(scene));
         scene.append(createRailBuildGuide(scene));

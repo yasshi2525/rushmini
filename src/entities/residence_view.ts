@@ -1,5 +1,5 @@
-import { ViewerCreator } from "./factory";
 import Residence from "../models/residence";
+import { ViewerCreator } from "./factory";
 
 const width = 10;
 const height = 10;

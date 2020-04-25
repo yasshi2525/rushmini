@@ -1,13 +1,16 @@
-import ViewObjectFactory from "./factory";
-import Residence from "../models/residence";
-import createResidencePanel from "./residence_view";
-import createCompanyPanel from "./company_view";
-import createHumanPanel from "./human_view";
 import Company from "../models/company";
 import Human from "../models/human";
+import Residence from "../models/residence";
+import createCompanyPanel from "./company_view";
 import connect from "./connector";
-import modelListener from "../models/listener";
+import ViewObjectFactory, { ViewObject } from "./factory";
+import createHumanPanel from "./human_view";
+import createResidencePanel from "./residence_view";
 
+/**
+ * 家、会社、人が生成されたなら描画物を追加する
+ * @param loadedScene
+ */
 const createCityViewer = (loadedScene: g.Scene) => {
   const panel = new g.E({
     scene: loadedScene,
@@ -29,28 +32,32 @@ const createCityViewer = (loadedScene: g.Scene) => {
 
   // 描画物構成関数を持つファクトリを作成
 
-  const residence = new ViewObjectFactory<Residence>(
+  const residenceFactory = new ViewObjectFactory<Residence>(
     loadedScene,
     panel,
     createResidencePanel
   );
 
-  const company = new ViewObjectFactory<Company>(
+  const companyFactory = new ViewObjectFactory<Company>(
     loadedScene,
     panel,
     createCompanyPanel
   );
 
-  const human = new ViewObjectFactory<Human>(
+  const humanFactory = new ViewObjectFactory<Human>(
     loadedScene,
     panel,
     createHumanPanel
   );
 
   // モデル更新時に描画物を作成するハンドラを登録
-  connect(residence, modelListener.residence);
-  connect(company, modelListener.company);
-  connect(human, modelListener.human);
+  connect(residenceFactory, Residence);
+  connect(companyFactory, Company);
+  connect(humanFactory, Human, (vo: ViewObject<Human>) => {
+    vo.viewer.x = vo.subject._getVector().x - vo.viewer.width / 2;
+    vo.viewer.y = vo.subject._getVector().y - vo.viewer.height / 2;
+    vo.viewer.modified();
+  });
 
   return panel;
 };

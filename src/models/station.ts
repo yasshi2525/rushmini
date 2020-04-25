@@ -1,6 +1,6 @@
-import Platform from "./platform";
 import Gate from "./gate";
-import modelListener from "./listener";
+import modelListener, { EventType } from "./listener";
+import Platform from "./platform";
 
 class Station {
   public readonly platforms: Platform[];
@@ -9,7 +9,7 @@ class Station {
   constructor() {
     this.platforms = [];
     this.gate = new Gate(this);
-    modelListener.station._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 
   public getPos(): { readonly x: number; readonly y: number } {

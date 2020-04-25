@@ -1,8 +1,8 @@
 import Company from "./company";
 import Human from "./human";
-import Vector from "./vector";
-import modelListener from "./listener";
+import modelListener, { EventType } from "./listener";
 import { Steppable } from "./steppable";
+import Vector from "./vector";
 
 class Residence extends Vector implements Steppable {
   /**
@@ -12,9 +12,9 @@ class Residence extends Vector implements Steppable {
   private readonly destinations: Company[] = [];
 
   /**
-   * 人の生成速度。intervalSec 秒 経過すると1人生成する
+   * 人の生成速度。INTERVAL_SEC 秒 経過すると1人生成する
    */
-  private readonly intervalSec: number;
+  public static INTERVAL_SEC: number = 0.2;
 
   public static FPS: number = 30;
   /**
@@ -22,11 +22,13 @@ class Residence extends Vector implements Steppable {
    */
   private remainFrame: number;
 
+  private humanEventHandler: (h: Human) => void;
+
   constructor(
     destinations: Company[],
-    intervalSec: number,
     x: number,
-    y: number
+    y: number,
+    cb: (h: Human) => void
   ) {
     super(x, y);
     // 会社の魅力度に応じて行き先を比例配分する
@@ -35,13 +37,9 @@ class Residence extends Vector implements Steppable {
         this.destinations.push(c);
       }
     });
-    if (intervalSec < 1 / Residence.FPS) {
-      intervalSec = 1 / Residence.FPS;
-      console.warn(`forbit to set interval to less than ${1 / Residence.FPS}`);
-    }
-    this.intervalSec = intervalSec;
-    this.remainFrame = Math.floor(intervalSec * Residence.FPS);
-    modelListener.residence._add(this);
+    this.remainFrame = Math.floor(Residence.INTERVAL_SEC * Residence.FPS);
+    this.humanEventHandler = cb;
+    modelListener.add(EventType.CREATED, this);
   }
 
   private _spawn() {
@@ -57,8 +55,11 @@ class Residence extends Vector implements Steppable {
   public _step(frame: number) {
     this.remainFrame -= frame;
     if (this.remainFrame <= 0) {
-      this._spawn();
-      this.remainFrame += Math.floor(this.intervalSec * Residence.FPS);
+      const h = this._spawn();
+      if (h) {
+        this.humanEventHandler(h);
+      }
+      this.remainFrame += Math.floor(Residence.INTERVAL_SEC * Residence.FPS);
     }
   }
 }

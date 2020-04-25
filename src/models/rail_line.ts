@@ -1,15 +1,15 @@
+import DeptTask from "./dept_task";
 import LineTask from "./line_task";
+import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailNode from "./rail_node";
-import modelListener from "./listener";
-import DeptTask from "./dept_task";
 
 class RailLine {
   public top?: LineTask;
 
   constructor() {
-    modelListener.railLine._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 
   /**

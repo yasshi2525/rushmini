@@ -1,15 +1,15 @@
-import Residence from "./residence";
 import Company from "./company";
-import Vector from "./vector";
-import modelListener from "./listener";
+import modelListener, { EventType } from "./listener";
+import Residence from "./residence";
 import { Steppable } from "./steppable";
+import Vector from "./vector";
 
 class Human implements Steppable {
   private loc: Vector;
   /**
    * 1秒間に何pixcel進むか
    */
-  public static SPEED: number = 10;
+  public static SPEED: number = 50;
   public static FPS: number = 30;
   public readonly departure: Residence;
   public readonly destination: Company;
@@ -18,7 +18,7 @@ class Human implements Steppable {
     this.loc = new Vector(departure);
     this.departure = departure;
     this.destination = destination;
-    modelListener.human._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 
   public _getVector() {
@@ -29,10 +29,14 @@ class Human implements Steppable {
   private move(x: number, y: number): void;
 
   private move(arg1: Vector | number, arg2?: number) {
+    const prev = this.loc;
     if (arg1 instanceof Vector) {
       this.loc = new Vector(arg1.x, arg1.y);
     } else {
       this.loc = new Vector(arg1, arg2);
+    }
+    if (this.loc._sub(prev).length.toFixed(5) !== "0.00000") {
+      modelListener.add(EventType.MODIFIED, this);
     }
   }
 

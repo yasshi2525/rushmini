@@ -1,10 +1,9 @@
-import modelListener from "../models/listener";
-import Station from "../models/station";
 import RailEdge from "../models/rail_edge";
-import createStationPanel from "./station_view";
-import createRailEdgePanel from "./rail_edge_view";
+import Station from "../models/station";
 import connect from "./connector";
 import ViewObjectFactory from "./factory";
+import createRailEdgePanel from "./rail_edge_view";
+import createStationPanel from "./station_view";
 
 const createRailViewer = (loadedScene: g.Scene) => {
   const panel = new g.E({
@@ -14,20 +13,20 @@ const createRailViewer = (loadedScene: g.Scene) => {
   });
 
   // 描画物構築関数を持ったファクトリを作成
-  const railEdge = new ViewObjectFactory<RailEdge>(
+  const railEdgeFactory = new ViewObjectFactory<RailEdge>(
     loadedScene,
     panel,
     createRailEdgePanel
   );
-  const station = new ViewObjectFactory<Station>(
+  const stationFactory = new ViewObjectFactory<Station>(
     loadedScene,
     panel,
     createStationPanel
   );
 
   // モデル更新時に描画物を作成するハンドラを登録
-  connect(railEdge, modelListener.railEdge);
-  connect(station, modelListener.station);
+  connect(railEdgeFactory, RailEdge);
+  connect(stationFactory, Station);
   return panel;
 };
 

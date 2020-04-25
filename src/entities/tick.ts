@@ -1,4 +1,4 @@
-import ticker from "../utils/ticker";
+import ticker, { EventType } from "../utils/ticker";
 
 const toText = (sec: number) => `TIME: ${("00" + sec).slice(-2)}`;
 
@@ -14,7 +14,7 @@ const createTickLabel = (loadedScene: g.Scene) => {
   });
 
   // 残り時間が変化したならラベルテキストを更新する
-  ticker.observeChange((sec: number) => {
+  ticker.triggers.find(EventType.SECOND).register((sec: number) => {
     label.text = toText(ticker.getRemainGameTime());
     label.modified();
   });

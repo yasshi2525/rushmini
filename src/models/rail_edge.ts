@@ -1,5 +1,5 @@
+import modelListener, { EventType } from "./listener";
 import RailNode from "./rail_node";
-import modelListener from "./listener";
 import Vector from "./vector";
 
 class RailEdge {
@@ -17,7 +17,7 @@ class RailEdge {
     from.out.push(this);
     to.in.push(this);
     this.vector = new Vector(to.x - from.x, to.y - from.y);
-    modelListener.railEdge._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 }
 

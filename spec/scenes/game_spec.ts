@@ -1,6 +1,7 @@
 import createGameScene from "scenes/game";
 import ticker from "utils/ticker";
 import scorer from "utils/scorer";
+import random from "utils/random";
 
 declare const recreateGame: () => void;
 const FPS = 15;
@@ -9,6 +10,7 @@ const ENDING = 10;
 
 describe("game", () => {
   beforeEach(() => {
+    random.init(new g.XorshiftRandomGenerator(0));
     ticker.init(FPS, GAME + ENDING);
     scorer.init({ score: 0 });
   });

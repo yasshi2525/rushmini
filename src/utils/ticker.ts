@@ -1,13 +1,32 @@
+import { TriggerContainer } from "../models/listener";
+
 const defaultTotalSec = 70;
 const endingSec = 10;
 
 let _fps = 30;
 let _remainFrame = defaultTotalSec * _fps;
 
-export type GameTimeListener = (sec: number) => void;
-export type GameOverListener = () => void;
-let _changeListeners: GameTimeListener[];
-let _overListeners: GameOverListener[];
+export enum EventType {
+  /**
+   * 1 frame ゲームが進行した際、発火されるイベント
+   */
+  TICKED,
+  /**
+   * ゲーム中で、残り時間が変化した際、発火されるイベント
+   */
+  SECOND,
+  /**
+   * ゲーム時間を使い切った際、発火されるイベント
+   */
+  OVER,
+  /**
+   * エンディングの時間も使い切った際、発火されるイベント
+   */
+  EXIPRED,
+}
+
+const _triggers = new TriggerContainer<EventType, number>();
+
 let _scenes: { scene: g.Scene; fn: () => void }[];
 
 const ticker = {
@@ -17,8 +36,8 @@ const ticker = {
   init: (fps: number, val?: number) => {
     _fps = fps;
     _remainFrame = (val ? val : defaultTotalSec) * _fps;
-    _changeListeners = [];
-    _overListeners = [];
+    _triggers.flush();
+    _triggers.unregisterAll();
     if (_scenes) {
       _scenes.forEach((s) => s.scene.update.remove(s.fn));
     }
@@ -35,14 +54,22 @@ const ticker = {
     if (_remainFrame > 0) {
       const oldGameTime = ticker.getRemainGameTime();
       _remainFrame--;
+      _triggers.add(EventType.TICKED, _remainFrame);
+      _triggers.fire(EventType.TICKED);
       const currentGameTime = ticker.getRemainGameTime();
       // 残り秒数が変化した際、リスナに通知する
       if (oldGameTime !== currentGameTime) {
-        _changeListeners.forEach((ev) => ev(currentGameTime));
+        _triggers.add(EventType.SECOND, currentGameTime);
+        _triggers.fire(EventType.SECOND);
       }
       // ゲームオーバーになった場合、リスナに通知する
       if (_remainFrame === endingSec * _fps) {
-        _overListeners.forEach((ev) => ev());
+        _triggers.add(EventType.OVER, 0);
+        _triggers.fire(EventType.OVER);
+      }
+      if (_remainFrame === 0) {
+        _triggers.add(EventType.EXIPRED, 0);
+        _triggers.fire(EventType.EXIPRED);
       }
     }
   },
@@ -57,14 +84,9 @@ const ticker = {
     _scenes.push({ scene, fn });
   },
   /**
-   * 残りゲーム時間が変化した際、通知するリスナを登録する
+   * イベントハンドラの登録を受け付ける
    */
-  observeChange: (listener: GameTimeListener) => {
-    _changeListeners.push(listener);
-  },
-  observeOver: (listener: GameOverListener) => {
-    _overListeners.push(listener);
-  },
+  triggers: _triggers,
   /**
    * 制限時間を使い切ったか判定する
    */

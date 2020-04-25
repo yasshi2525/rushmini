@@ -1,4 +1,4 @@
-import ticker from "utils/ticker";
+import ticker, { EventType } from "utils/ticker";
 
 declare const recreateGame: () => void;
 
@@ -90,7 +90,7 @@ describe("ticker", () => {
     it("notify changing second", () => {
       let sec = NaN;
       let counter = 0;
-      ticker.observeChange((v) => {
+      ticker.triggers.find(EventType.SECOND).register((v) => {
         counter++;
         sec = v;
       });
@@ -108,9 +108,7 @@ describe("ticker", () => {
 
     it("notify game over", () => {
       let counter = 0;
-      ticker.observeOver(() => {
-        counter++;
-      });
+      ticker.triggers.find(EventType.OVER).register(() => counter++);
       for (let i = 0; i < FPS * GAME - 1; i++) {
         ticker.step();
         expect(counter).toBe(0);

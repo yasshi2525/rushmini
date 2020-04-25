@@ -1,9 +1,10 @@
-import RailEdge from "./rail_edge";
-import LineTask from "./line_task";
-import Vector from "./vector";
-import RailLine from "./rail_line";
 import DeptTask from "./dept_task";
+import LineTask from "./line_task";
+import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
+import RailEdge from "./rail_edge";
+import RailLine from "./rail_line";
+import Vector from "./vector";
 
 class EdgeTask extends LineTask {
   public readonly edge: RailEdge;
@@ -13,6 +14,7 @@ class EdgeTask extends LineTask {
     super(parent, prev);
     this.edge = edge;
     this.reverse = edge.vector._reverse();
+    modelListener.add(EventType.CREATED, this);
   }
 
   public _getDept() {

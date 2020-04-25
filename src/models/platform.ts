@@ -1,6 +1,6 @@
+import modelListener, { EventType } from "./listener";
 import RailNode from "./rail_node";
 import Station from "./station";
-import modelListener from "./listener";
 
 class Platform {
   public readonly on: RailNode;
@@ -11,7 +11,7 @@ class Platform {
     this.station = st;
     on.platform = this;
     st.platforms.push(this);
-    modelListener.platform._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 }
 

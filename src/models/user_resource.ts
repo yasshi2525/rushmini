@@ -1,6 +1,6 @@
+import modelListener, { EventType } from "./listener";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
-import modelListener from "./listener";
 
 export const stationInterval = 50;
 
@@ -64,7 +64,7 @@ export class UserResource {
         this.tailNode = rn;
 
         // 作成した結果を通知する
-        modelListener.done();
+        modelListener.fire(EventType.CREATED);
         this.setState(ModelStateType.STARTED);
         break;
       case ModelStateType.STARTED:
@@ -100,7 +100,7 @@ export class UserResource {
         this.tailNode = edge.to;
 
         // 作成した結果を通知する
-        modelListener.done();
+        modelListener.fire(EventType.CREATED);
         break;
       case ModelStateType.FIXED:
         console.warn("try to extend already fixed model");
@@ -123,7 +123,7 @@ export class UserResource {
         }
 
         // 作成した結果を通知する
-        modelListener.done();
+        modelListener.fire(EventType.CREATED);
         this.setState(ModelStateType.FIXED);
         break;
       case ModelStateType.FIXED:

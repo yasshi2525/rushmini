@@ -226,6 +226,11 @@
 			"type": "script",
 			"path": "script/entities/residence_view.js",
 			"global": true
+		},
+		"citybuilder": {
+			"type": "script",
+			"path": "script/entities/citybuilder.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

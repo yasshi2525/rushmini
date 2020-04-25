@@ -1,113 +1,281 @@
-import RailNode from "./rail_node";
-import RailEdge from "./rail_edge";
-import Station from "./station";
-import Gate from "./gate";
-import Platform from "./platform";
-import RailLine from "./rail_line";
-import LineTask from "./line_task";
-import Company from "./company";
-import Residence from "./residence";
-import Human from "./human";
+export enum EventType {
+  CREATED,
+  MODIFIED,
+  DELETED,
+}
 
 /**
- * モデルの変化を監視するリスナがもつべきメソッド
+ * オブジェクト単位でイベントハンドラを登録します
  */
-export type ModelChangeListener<T> = {
-  onDone: (ev: T) => void;
-  onDelete: (ev: T) => void;
-};
-
-/**
- * モデルの変化を検知する
- */
-export class ListenerContainer<T> {
-  private readonly handlers: ModelChangeListener<T>[] = [];
-
+export class Tracker<S> {
   /**
-   * Doneイベント発火待ちのリスト
+   * イベント発火時にコールするハンドラ群
    */
-  private readonly queue: T[] = [];
+  private readonly handlers: ((e: S) => void)[];
+  /**
+   * 追跡対象
+   */
+  public readonly target: S;
 
-  public register(listener: ModelChangeListener<T>) {
-    this.handlers.push(listener);
+  constructor(tracker: S) {
+    this.handlers = [];
+    this.target = tracker;
   }
 
   /**
-   * オブジェクトを追加します
-   * @param obj
+   * ハンドラを登録する
+   * @param handler
    */
-  public _add(obj: T) {
-    this.queue.push(obj);
-  }
-
-  public _done() {
-    let e = this.queue.shift();
-    while (e) {
-      this.handlers.forEach((l) => l.onDone(e));
-      e = this.queue.shift();
-    }
-  }
-
-  public _delete(target: T) {
-    this.handlers.forEach((l) => l.onDelete(target));
+  public register(handler: (e: S) => void) {
+    this.handlers.push(handler);
   }
 
   /**
-   * add したオブジェクトをすべて削除する(通知なし)
+   * イベントを発火し、ハンドラをコールします
    */
-  public _flush() {
-    this.queue.length = 0;
+  public fire() {
+    this.handlers.forEach((fn) => fn(this.target));
   }
 
   /**
-   * register したリスナを削除する
+   * 登録されたハンドラを削除します
    */
-  public _unregisterAll() {
+  public unregisterAll() {
     this.handlers.length = 0;
   }
 }
 
-const modelListener = {
-  company: new ListenerContainer<Company>(),
-  residence: new ListenerContainer<Residence>(),
-  railNode: new ListenerContainer<RailNode>(),
-  railEdge: new ListenerContainer<RailEdge>(),
-  station: new ListenerContainer<Station>(),
-  gate: new ListenerContainer<Gate>(),
-  platform: new ListenerContainer<Platform>(),
-  railLine: new ListenerContainer<RailLine>(),
-  lineTask: new ListenerContainer<LineTask>(),
-  human: new ListenerContainer<Human>(),
+/**
+ * <T>型のオブジェクトのイベント発火を管理する
+ */
+export class EventTrigger<S> {
   /**
-   * キャッシュしているオブジェクトをリスナに通知する
+   * イベント発火時にコールするハンドラ群
    */
-  done: () => {
-    modelListener.company._done();
-    modelListener.residence._done();
-    modelListener.railNode._done();
-    modelListener.railEdge._done();
-    modelListener.station._done();
-    modelListener.gate._done();
-    modelListener.platform._done();
-    modelListener.railLine._done();
-    modelListener.lineTask._done();
-    modelListener.human._done();
-  },
+  private readonly handlers: ((e: S) => void)[] = [];
+
   /**
-   * キャッシュしているオブジェクトを破棄する
+   * イベント発火待ちの監視対象リスト
    */
-  flush: () => {
-    modelListener.company._flush();
-    modelListener.residence._flush();
-    modelListener.railNode._flush();
-    modelListener.railEdge._flush();
-    modelListener.station._flush();
-    modelListener.gate._flush();
-    modelListener.platform._flush();
-    modelListener.railLine._flush();
-    modelListener.lineTask._flush();
-    modelListener.human._flush();
-  },
-};
+  private readonly queue: S[] = [];
+
+  /**
+   * 追跡対象
+   */
+  private readonly trackers: Tracker<S>[] = [];
+
+  /**
+   * 指定した関数をイベントリスナとして追加します
+   * @param fn
+   */
+  public register(fn: (e: S) => void) {
+    this.handlers.push(fn);
+  }
+
+  /**
+   * 指定されたオブジェクトを監視対象に追加します。
+   * ここで追加されたオブジェクトはイベント発火後に監視対象から外されます
+   * @param obj
+   */
+  public add(obj: S) {
+    this.queue.push(obj);
+  }
+
+  /**
+   * 追跡対象を追加します
+   * @param tracker
+   */
+  public track(tracker: Tracker<S>) {
+    this.trackers.push(tracker);
+  }
+
+  /**
+   * キューに溜まったオブジェクトに対してイベントを発火させ、ハンドラを実行します.
+   * 追跡対象のトラッカーハンドラも実行されます
+   */
+  public fire(): void;
+
+  /**
+   * 特定のオブジェクトに対してのみイベントを発火させます (オブジェクトはキューから取り除かれます)
+   * @param target
+   */
+  public fire(target: S): void;
+
+  public fire(target?: S) {
+    if (target) {
+      this.trackers.filter((t) => t.target === target).forEach((t) => t.fire());
+      const index = this.queue.indexOf(target);
+      if (index !== -1) {
+        this.handlers.forEach((fn) => fn(target));
+        this.queue.splice(index, 1);
+      }
+    } else {
+      let obj = this.queue.shift();
+      while (obj !== undefined) {
+        this.handlers.forEach((fn) => fn(obj));
+        this.trackers.filter((t) => t.target === obj).forEach((t) => t.fire());
+        obj = this.queue.shift();
+      }
+    }
+  }
+
+  /**
+   * add したオブジェクトを、イベントを発火させずにすべて削除します
+   */
+  public flush() {
+    this.queue.length = 0;
+  }
+
+  /**
+   * register したリスナを削除します
+   */
+  public unregisterAll() {
+    this.handlers.length = 0;
+    this.trackers.length = 0;
+  }
+}
+
+export class TriggerContainer<T extends number, S> {
+  private readonly mapper: { [index: number]: EventTrigger<S> } = {};
+
+  /**
+   * 指定されたイベントが発火されたとき動作するトリガを返します
+   * @param eventType
+   */
+  public find(eventType: T): EventTrigger<S> {
+    if (!(eventType in this.mapper)) {
+      this.mapper[eventType] = new EventTrigger<S>();
+    }
+    return this.mapper[eventType];
+  }
+
+  /**
+   * 指定されたオブジェクトを監視対象に追加します
+   * @param eventType
+   * @param subject
+   */
+  public add(eventType: T, subject: S) {
+    this.find(eventType).add(subject);
+  }
+
+  /**
+   * 指定されたオブジェクトで指定されたイベントが発生したとき、トラッカーのハンドラをコールするようにします
+   * @param eventType
+   * @param tracker
+   */
+  public track(eventType: T, tracker: Tracker<S>) {
+    this.find(eventType).track(tracker);
+  }
+
+  /**
+   * 指定されたイベントを発火させます
+   * @param eventType
+   */
+  public fire(eventType: T): void;
+  /**
+   * 指定されたイベントを指定されたのオブジェクトに対してのみ発火します
+   * @param eventType
+   * @param target
+   */
+  public fire(eventType: T, target: S): void;
+
+  public fire(eventType: T, target?: S) {
+    this.find(eventType).fire(target);
+  }
+
+  /**
+   * すべての監視対象を削除します
+   */
+  public flush() {
+    Object.keys(this.mapper).forEach((key) =>
+      this.mapper[parseInt(key, 10)].flush()
+    );
+  }
+
+  /**
+   * すべてのイベントに登録されたイベントハンドラを削除します
+   */
+  public unregisterAll() {
+    Object.keys(this.mapper).forEach((key) =>
+      this.mapper[parseInt(key, 10)].unregisterAll()
+    );
+  }
+}
+
+export class ModelListener<T extends number> {
+  /**
+   * クラス名をキーとするトリガ管理群
+   */
+  private readonly mapper: {
+    [index: string]: TriggerContainer<T, any>;
+  } = {};
+
+  private _find<S>(key: string) {
+    if (!(key in this.mapper)) {
+      this.mapper[key] = new TriggerContainer<T, S>();
+    }
+    return this.mapper[key];
+  }
+
+  /**
+   * 指定された cls インスタンスで EventType が発火した際コールされるイベントハンドラを返します
+   * @param eventType
+   * @param cls
+   */
+  public find<S extends new (...args: any[]) => any>(
+    eventType: T,
+    cls: S
+  ): EventTrigger<InstanceType<S>> {
+    return this._find<S>(cls.name).find(eventType);
+  }
+
+  /**
+   * 指定されたオブジェクトを指定されたイベントで発火待ちにする
+   * @param eventType
+   * @param subject
+   */
+  public add<S>(eventType: T, subject: S) {
+    this._find<S>(subject.constructor.name).add(eventType, subject);
+  }
+
+  /**
+   * 指定されたオブジェクトを追跡対象とします
+   * @param eventType
+   * @param tracker
+   */
+  public track<S>(eventType: T, tracker: Tracker<S>) {
+    this._find<S>(tracker.target.constructor.name).track(eventType, tracker);
+  }
+
+  /**
+   * 指定されたイベントを発火します。オブジェクトが指定された場合、そのオブジェクトに対してのみ発火します
+   * @param eventType
+   * @param subject
+   */
+  public fire<S>(eventType: T, subject?: S) {
+    if (subject) {
+      this._find(subject.constructor.name).fire(eventType, subject);
+    } else
+      Object.keys(this.mapper).forEach((key) =>
+        this.mapper[key].fire(eventType)
+      );
+  }
+
+  /**
+   * 登録されているイベントハンドラをすべて削除します
+   */
+  public unregisterAll() {
+    Object.keys(this.mapper).forEach((key) => this.mapper[key].unregisterAll());
+  }
+
+  /**
+   * 監視対象のオブジェクトをすべて監視対象外にします
+   */
+  public flush() {
+    Object.keys(this.mapper).forEach((key) => this.mapper[key].unregisterAll());
+  }
+}
+
+const modelListener = new ModelListener<EventType>();
 
 export default modelListener;

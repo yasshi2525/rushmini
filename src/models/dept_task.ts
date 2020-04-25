@@ -1,8 +1,9 @@
-import LineTask from "./line_task";
-import Platform from "./platform";
-import RailLine from "./rail_line";
-import RailEdge from "./rail_edge";
 import EdgeTask from "./edge_task";
+import LineTask from "./line_task";
+import modelListener, { EventType } from "./listener";
+import Platform from "./platform";
+import RailEdge from "./rail_edge";
+import RailLine from "./rail_line";
 
 export class DeptTask extends LineTask {
   public readonly stay: Platform;
@@ -10,6 +11,7 @@ export class DeptTask extends LineTask {
   constructor(parent: RailLine, stay: Platform, prev?: LineTask) {
     super(parent, prev);
     this.stay = stay;
+    modelListener.add(EventType.CREATED, this);
   }
 
   public _getDept() {

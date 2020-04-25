@@ -32,7 +32,7 @@ describe("factory", () => {
   it("removeSubject removes registered object", () => {
     const subject = new Simple();
     const object = factory.createInstance(subject);
-    factory.removeSubject(subject);
+    factory.removeInstance(subject);
     expect(panel.children.length).toEqual(0);
   });
 
@@ -40,7 +40,7 @@ describe("factory", () => {
     const s1 = new Simple();
     const s2 = new Simple();
     const o2 = factory.createInstance(s2);
-    factory.removeSubject(s1);
+    factory.removeInstance(s1);
     expect(panel.children.length).toEqual(1);
     expect(panel.children[0]).toEqual(o2.viewer);
   });

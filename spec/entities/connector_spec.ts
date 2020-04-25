@@ -1,16 +1,19 @@
 import ViewObjectFactory from "entities/factory";
-import { ListenerContainer } from "models/listener";
 import connect from "entities/connector";
 import { createLoadedScene } from "../_helper/scene";
+import modelListener, { EventType } from "models/listener";
 
 declare const recreateGame: () => void;
 class Simple {}
+
+afterAll(() => {
+  modelListener.flush();
+});
 
 describe("connetor", () => {
   let scene: g.Scene;
   let panel: g.E;
   let factory: ViewObjectFactory<Simple>;
-  let listener: ListenerContainer<Simple>;
 
   beforeEach(async () => {
     scene = await createLoadedScene(g.game);
@@ -20,7 +23,6 @@ describe("connetor", () => {
       panel,
       (_scene, _) => new g.E({ scene: _scene })
     );
-    listener = new ListenerContainer<Simple>();
   });
 
   afterEach(() => {
@@ -29,20 +31,21 @@ describe("connetor", () => {
 
   it("viewer object is created after onDone event", () => {
     const subject = new Simple();
-    connect(factory, listener);
-    listener._add(subject);
+    connect(factory, Simple);
+    modelListener.add(EventType.CREATED, subject);
     expect(panel.children).toBeUndefined();
-    listener._done();
+    modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
   });
 
   it("viewer object is removed after onDelete event", () => {
     const subject = new Simple();
-    connect(factory, listener);
-    listener._add(subject);
-    listener._done();
+    connect(factory, Simple);
+    modelListener.add(EventType.CREATED, subject);
+    modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
-    listener._delete(subject);
+    modelListener.add(EventType.DELETED, subject);
+    modelListener.fire(EventType.DELETED);
     expect(panel.children.length).toEqual(0);
   });
 });

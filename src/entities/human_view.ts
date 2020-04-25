@@ -1,5 +1,5 @@
-import { ViewerCreator } from "./factory";
 import Human from "../models/human";
+import { ViewerCreator } from "./factory";
 
 const width = 3;
 const height = 8;

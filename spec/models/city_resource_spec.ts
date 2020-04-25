@@ -1,5 +1,5 @@
 import random from "utils/random";
-import modelListener from "models/listener";
+import modelListener, { EventType } from "models/listener";
 import Residence from "models/residence";
 import Company from "models/company";
 import { CityResource } from "models/city_resource";
@@ -22,19 +22,15 @@ describe("city_resource", () => {
     CityResource.AREA = AREA;
     rs = [];
     cs = [];
-    modelListener.residence.register({
-      onDone: (r) => rs.push(r),
-      onDelete: () => {},
-    });
-    modelListener.company.register({
-      onDone: (c) => cs.push(c),
-      onDelete: () => {},
-    });
+    modelListener
+      .find(EventType.CREATED, Residence)
+      .register((r) => rs.push(r));
+    modelListener.find(EventType.CREATED, Company).register((c) => cs.push(c));
   });
+
   afterEach(() => {
     modelListener.flush();
-    modelListener.residence._unregisterAll();
-    modelListener.company._unregisterAll();
+    modelListener.unregisterAll();
   });
 
   afterAll(() => {
@@ -43,7 +39,7 @@ describe("city_resource", () => {
 
   it("residence and company is built on initialize", () => {
     const model = new CityResource();
-    model.init(WIDTH, HEIGHT);
+    model.init(WIDTH, HEIGHT, (min, max) => random.random().get(min, max));
     expect(cs.length).toEqual(1);
     const c = cs[0];
     expect(c.x).toEqual(randomChecker.get(WIDTH - AREA, WIDTH));

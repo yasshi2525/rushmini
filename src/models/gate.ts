@@ -1,4 +1,4 @@
-import modelListener from "./listener";
+import modelListener, { EventType } from "./listener";
 import Station from "./station";
 
 class Gate {
@@ -7,7 +7,7 @@ class Gate {
 
   constructor(st: Station) {
     this.st = st;
-    modelListener.gate._add(this);
+    modelListener.add(EventType.CREATED, this);
   }
 }
 
