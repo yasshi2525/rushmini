@@ -1,5 +1,6 @@
 import DeptTask from "./dept_task";
 import LineTask from "./line_task";
+import { _createTask } from "./line_task_utils";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
@@ -50,28 +51,12 @@ class EdgeTask extends LineTask {
    * @param edge
    */
   public _insertEdge(edge: RailEdge) {
-    if (!this._isNeighbor(edge)) {
-      console.warn("try to insert non-neighbored edge");
-      return;
+    const next = this.next; // (a) -> (b)
+    const inbound = _createTask(this, edge);
+    if (inbound) {
+      inbound.next = next; // (a) -> (b) -> (c)
+      next.prev = inbound;
     }
-
-    const next = this.next; // (b) -> (c)
-    const outbound = new EdgeTask(this.parent, edge, this); // (a) -> (X)
-
-    let inbound: EdgeTask;
-
-    if (!edge.to.platform) {
-      inbound = new EdgeTask(this.parent, edge.reverse, outbound); // (X) -> (a)
-    } else {
-      // (X) が駅の場合、発車タスクを挿入
-      inbound = new EdgeTask(
-        this.parent,
-        edge.reverse,
-        new DeptTask(this.parent, edge.to.platform, outbound)
-      );
-    }
-    inbound.next = next; // (a) -> (b) -> (c)
-    next.prev = inbound;
   }
 
   /**

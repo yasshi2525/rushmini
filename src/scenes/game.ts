@@ -1,3 +1,4 @@
+import createBackground from "../entities/background";
 import createCityBuilder from "../entities/citybuilder";
 import createCityViewer from "../entities/cityviewer";
 import createRailBuilder from "../entities/railbuilder";
@@ -26,6 +27,7 @@ const createGameScene = (): GameScene => {
     scene,
     prepare: (next: g.Scene) => {
       scene.loaded.add(() => {
+        scene.append(createBackground(scene));
         const cityViewer = createCityViewer(scene);
         scene.append(cityViewer);
         createCityBuilder(cityViewer);

@@ -24,12 +24,11 @@ const arrowWidth = 450;
 const arrowAngle = 20;
 
 /**
- * 路線建設ガイドを表示。タッチイベントをキャプチャすると路線建設できないので、
- * モデルリスナー経由で表示を変化させる
+ * 全体を乗せるコンテナを作成
  * @param loadedScene
  */
-const createRailBuildGuide = (loadedScene: g.Scene) => {
-  const panel = new g.E({
+const _createPanel = (loadedScene: g.Scene) =>
+  new g.E({
     scene: loadedScene,
     x: (g.game.width * (1 - scale)) / 2,
     y: (g.game.height * (1 - scale)) / 2,
@@ -38,48 +37,46 @@ const createRailBuildGuide = (loadedScene: g.Scene) => {
     opacity: activeOpacity,
   });
 
-  // ガイド文
-  panel.append(
+/**
+ * ガイド文を作成し、追加します
+ * @param parent
+ */
+const _appendInstraction = (parent: g.E) =>
+  parent.append(
     new g.SystemLabel({
-      scene: loadedScene,
+      scene: parent.scene,
       text: "路線をマウスorタッチで敷こう",
       fontSize,
-      x: panel.width / 2,
+      x: parent.width / 2,
       y: padding,
       textAlign: g.TextAlign.Center,
     })
   );
 
-  // 敷設開始点
-  panel.append(
+/**
+ * 敷設開始・終了の地点を指すブロックを作成します
+ * @param parent
+ * @param x
+ * @param y
+ */
+const _appendBlock = (parent: g.E, x: number, y: number) =>
+  parent.append(
     new g.FilledRect({
-      scene: loadedScene,
-      x: padding,
-      y: padding,
+      scene: parent.scene,
+      x,
+      y,
       width: cursorSize,
       height: cursorSize,
       cssColor: "#aa5533",
     })
   );
 
-  // 敷設終了点
-  panel.append(
+const _appendArrow = (parent: g.E) =>
+  parent.append(
     new g.FilledRect({
-      scene: loadedScene,
-      x: panel.width - padding - cursorSize,
-      y: panel.height - padding - cursorSize,
-      width: cursorSize,
-      height: cursorSize,
-      cssColor: "#aa5533",
-    })
-  );
-
-  // 矢印
-  panel.append(
-    new g.FilledRect({
-      scene: loadedScene,
+      scene: parent.scene,
       x: padding + cursorSize + padding,
-      y: panel.height / 2,
+      y: parent.height / 2,
       width: arrowWidth,
       height: arrowHeight,
       cssColor: "#aa5533",
@@ -87,20 +84,45 @@ const createRailBuildGuide = (loadedScene: g.Scene) => {
     })
   );
 
-  userResource.stateListeners.push({
-    onStarted: () => {
-      // カーソルを押下したならガイドを薄くする
-      panel.opacity = inactiveOpacity;
-      panel.modified();
-    },
-    onFixed: () => {
-      // カーソルが離れ、路線が完成したなら、ガイドを消す
-      panel.hide();
-    },
-    onReset: () => {
-      panel.show();
-    },
-  });
+/**
+ * モデル操作によって、ガイドの表示有無を変化させる
+ * @param panel
+ */
+const _createHandler = (panel: g.E) => ({
+  onStarted: () => {
+    // カーソルを押下したならガイドを薄くする
+    panel.opacity = inactiveOpacity;
+    panel.modified();
+  },
+  onFixed: () => {
+    // カーソルが離れ、路線が完成したなら、ガイドを消す
+    panel.hide();
+  },
+  onReset: () => {
+    panel.show();
+  },
+});
+
+/**
+ * 路線建設ガイドを表示。タッチイベントをキャプチャすると路線建設できないので、
+ * モデルリスナー経由で表示を変化させる
+ * @param loadedScene
+ */
+const createRailBuildGuide = (loadedScene: g.Scene) => {
+  const panel = _createPanel(loadedScene);
+
+  // ガイド文
+  _appendInstraction(panel);
+
+  // 敷設開始点・終了点
+  _appendBlock(panel, padding, padding);
+  const offset = padding - cursorSize;
+  _appendBlock(panel, panel.width - offset, panel.height - offset);
+
+  // 矢印
+  _appendArrow(panel);
+
+  userResource.stateListeners.push(_createHandler(panel));
   return panel;
 };
 

@@ -231,6 +231,11 @@
 			"type": "script",
 			"path": "script/entities/citybuilder.js",
 			"global": true
+		},
+		"point_view": {
+			"type": "script",
+			"path": "script/entities/point_view.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

@@ -14,7 +14,7 @@ describe("factory", () => {
     loadedScene = await createLoadedScene(g.game);
     panel = new g.E({ scene: loadedScene });
     creator = (scene, _) => new g.E({ scene });
-    factory = new ViewObjectFactory(loadedScene, panel, creator);
+    factory = new ViewObjectFactory(panel, creator);
   });
 
   afterEach(() => {

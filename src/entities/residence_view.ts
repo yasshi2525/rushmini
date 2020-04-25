@@ -1,5 +1,6 @@
 import Residence from "../models/residence";
 import { ViewerCreator } from "./factory";
+import createPointableView from "./point_view";
 
 const width = 10;
 const height = 10;
@@ -9,11 +10,7 @@ const createResidencePanel: ViewerCreator<Residence> = (
   loadedScene: g.Scene,
   r: Residence
 ) => {
-  const panel = new g.E({
-    scene: loadedScene,
-    x: r.x - width / 2,
-    y: r.y - height / 2,
-  });
+  const panel = createPointableView(loadedScene, r, width, height);
 
   panel.append(
     new g.FilledRect({

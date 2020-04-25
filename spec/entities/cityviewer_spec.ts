@@ -43,14 +43,14 @@ describe("cityviewer", () => {
 
   it("initializing city creates panel", () => {
     const panel = createCityViewer(scene);
-    expect(panel.children.length).toEqual(1);
+    expect(panel.children).toBeUndefined();
     cityResource.init(WIDTH, HEIGHT, rand);
-    expect(panel.children.length).toEqual(3);
-    const residence = panel.children[1];
+    expect(panel.children.length).toEqual(2);
+    const residence = panel.children[0];
     const rPanel = residence.children[0];
     expect(residence.x + rPanel.width / 2).toEqual(rs[0].x);
     expect(residence.y + rPanel.height / 2).toEqual(rs[0].y);
-    const company = panel.children[2];
+    const company = panel.children[1];
     const cPanel = company.children[0];
     expect(company.x + cPanel.width / 2).toEqual(cs[0].x);
     expect(company.y + cPanel.height / 2).toEqual(cs[0].y);
@@ -61,8 +61,8 @@ describe("cityviewer", () => {
     cityResource.init(WIDTH, HEIGHT, rand);
     rs[0]._step(6);
     modelListener.fire(EventType.CREATED);
-    expect(panel.children.length).toEqual(4);
-    const human = panel.children[3];
+    expect(panel.children.length).toEqual(3);
+    const human = panel.children[2];
     const hPanel = human.children[0];
     expect(human.x + hPanel.width / 2).toEqual(hs[0]._getVector().x);
     expect(human.y + hPanel.height / 2).toEqual(hs[0]._getVector().y);

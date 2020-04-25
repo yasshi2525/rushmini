@@ -19,7 +19,6 @@ describe("connetor", () => {
     scene = await createLoadedScene(g.game);
     panel = new g.E({ scene });
     factory = new ViewObjectFactory(
-      scene,
       panel,
       (_scene, _) => new g.E({ scene: _scene })
     );

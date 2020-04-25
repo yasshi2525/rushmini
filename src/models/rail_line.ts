@@ -5,6 +5,82 @@ import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailNode from "./rail_node";
 
+/**
+ * 指定された線路の始点を終点とする隣接タスクを返します
+ * @param edge
+ */
+const _filterNeighbors = (top: LineTask, edge: RailEdge) => {
+  const result: LineTask[] = [];
+  let current = top;
+  do {
+    if (
+      // 隣接していないタスクはスキップ
+      !current._isNeighbor(edge) ||
+      // 駅に到着するタスクはスキップ。発車タスクの後に挿入する
+      current.next._getDept() === current.next._getDest()
+    ) {
+      // do-nothing
+    } else {
+      result.push(current);
+    }
+    current = current.next;
+  } while (current !== top);
+  return result;
+};
+
+/**
+ * 候補が複数ある場合、距離0の移動タスクは角度の計算ができないのでスキップ
+ * @param neighbors
+ */
+const _filterOutUnangled = (neighbors: LineTask[]) => {
+  if (neighbors.length === 1) {
+    return neighbors;
+  }
+  return neighbors.filter(
+    (lt) => !(lt._getDept() !== lt._getDest() && lt._getLength() === 0)
+  );
+};
+
+/**
+ * 次のタスクへの回転角が最も大きいものを返す
+ * @param list
+ * @param edge
+ */
+const _findLargestAngle = (list: LineTask[], edge: RailEdge) =>
+  list
+    .sort(
+      (task1: LineTask, task2: LineTask) =>
+        task1._angle(edge) - task2._angle(edge)
+    )
+    .shift();
+
+/**
+ * 指定された線路と隣接するタスクの内、右向き正とした角度がもっとも大きいタスクを返します
+ * これは線路を分岐させたとき、どの分岐先を選べばよいか判定するためのものです
+ * @param edge
+ */
+const _findFarLeft = (top: LineTask, edge: RailEdge) => {
+  if (!top) {
+    return undefined;
+  }
+
+  // セルフループの場合自身を返す
+  if (top.next === top) {
+    if (!top._isNeighbor(edge)) {
+      console.warn("top is not neighbored edge");
+      return undefined;
+    }
+    return top;
+  }
+
+  // 隣接するタスクを絞り込む
+  const neighbors = _filterNeighbors(top, edge);
+  // 候補が複数ある場合、距離0の移動タスクは角度の計算ができないのでスキップ
+  const candinates = _filterOutUnangled(neighbors);
+  // 次のタスクへの回転角が最も大きいものを返す
+  return _findLargestAngle(candinates, edge);
+};
+
 class RailLine {
   public top?: LineTask;
 
@@ -33,58 +109,6 @@ class RailLine {
   }
 
   /**
-   * 指定された線路と隣接するタスクの内、右向き正とした角度がもっとも大きいタスクを返します
-   * これは線路を分岐させたとき、どの分岐先を選べばよいか判定するためのものです
-   * @param edge
-   */
-  private findFarLeft(edge: RailEdge) {
-    if (!this.top) {
-      return undefined;
-    }
-
-    // セルフループの場合自身を返す
-    if (this.top.next === this.top) {
-      if (!this.top._isNeighbor(edge)) {
-        console.warn("top is not neighbored edge");
-        return undefined;
-      }
-      return this.top;
-    }
-
-    // 隣接するタスクを絞り込む
-    let result: LineTask[] = [];
-    let current = this.top;
-    do {
-      if (
-        // 隣接していないタスクはスキップ
-        !current._isNeighbor(edge) ||
-        // 駅に到着するタスクはスキップ。発車タスクの後に挿入する
-        current.next._getDept() === current.next._getDest()
-      ) {
-        // do-nothing
-      } else {
-        result.push(current);
-      }
-      current = current.next;
-    } while (current !== this.top);
-
-    // 候補が複数ある場合、距離0の移動タスクは角度の計算ができないのでスキップ
-    if (result.length > 0) {
-      result = result.filter(
-        (lt) =>
-          current._getDept() === current._getDest() || current._getLength() > 0
-      );
-    }
-
-    // 次のタスクへの回転角が最も大きいものを返す
-    const sorted = result.sort(
-      (task1: LineTask, task2: LineTask) =>
-        task1._angle(edge) - task2._angle(edge)
-    );
-    return sorted.length === 0 ? undefined : sorted[0];
-  }
-
-  /**
    * 路線設定を開始する。発車タスクを設定する
    * @param platform
    */
@@ -101,7 +125,7 @@ class RailLine {
    * @param edge
    */
   public _insertEdge(edge: RailEdge) {
-    const result = this.findFarLeft(edge);
+    const result = _findFarLeft(this.top, edge);
     if (!result) {
       console.warn("no insert candinate");
       return;

@@ -15,10 +15,8 @@ describe("station", () => {
       const st = new Station();
       new Platform(rn1, st);
       new Platform(rn2, st);
-      expect(st.getPos()).toEqual({
-        x: 1,
-        y: 2,
-      });
+      expect(st.getPos().x).toEqual(1);
+      expect(st.getPos().y).toEqual(2);
     });
   });
 });

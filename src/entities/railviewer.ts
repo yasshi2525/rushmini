@@ -14,12 +14,10 @@ const createRailViewer = (loadedScene: g.Scene) => {
 
   // 描画物構築関数を持ったファクトリを作成
   const railEdgeFactory = new ViewObjectFactory<RailEdge>(
-    loadedScene,
     panel,
     createRailEdgePanel
   );
   const stationFactory = new ViewObjectFactory<Station>(
-    loadedScene,
     panel,
     createStationPanel
   );

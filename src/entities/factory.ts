@@ -12,19 +12,16 @@ export type ViewerCreator<T> = (loadedScene: g.Scene, subject: T) => g.E;
  * モデルとビューアが紐付いたViewObjectを作成します
  */
 class ViewObjectFactory<T> {
-  private readonly loadedScene: g.Scene;
   private readonly panel: g.E;
   private readonly creator: ViewerCreator<T>;
   private readonly children: ViewObject<T>[];
 
   /**
    * ファクトリーを作ります
-   * @param loadedScene シーン
    * @param panel 描画物を配置するエンティティ
    * @param creator モデルから描画物を作成する関数
    */
-  constructor(loadedScene: g.Scene, panel: g.E, creator: ViewerCreator<T>) {
-    this.loadedScene = loadedScene;
+  constructor(panel: g.E, creator: ViewerCreator<T>) {
     this.panel = panel;
     this.creator = creator;
     this.children = [];
@@ -35,7 +32,7 @@ class ViewObjectFactory<T> {
    * @param subject
    */
   public createInstance(subject: T) {
-    const viewer = this.creator(this.loadedScene, subject);
+    const viewer = this.creator(this.panel.scene, subject);
     const obj: ViewObject<T> = { subject, viewer };
     this.panel.append(viewer);
     this.children.push(obj);

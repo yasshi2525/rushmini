@@ -7,47 +7,52 @@ const fontSize = 50;
 const activeOpacity = 1.0;
 const inactiveOpacity = 0.5;
 
-const createReplay = (loadedScene: g.Scene) => {
-  const panel = new g.E({
+const _createPanel = (loadedScene: g.Scene) =>
+  new g.E({
     scene: loadedScene,
     x: (g.game.width * (1 - scale)) / 2,
     y: (g.game.height * (1 - scale)) / 2,
     width: g.game.width * scale,
     height: g.game.height * scale,
     opacity: activeOpacity,
-    touchable: true,
   });
-  panel.append(
+
+const _appendBackground = (parent: g.E) =>
+  parent.append(
     new g.FilledRect({
-      scene: loadedScene,
+      scene: parent.scene,
       x: 0,
       y: 0,
-      width: panel.width,
-      height: panel.height,
+      width: parent.width,
+      height: parent.height,
       cssColor: "#ffffff",
     })
   );
-  panel.append(
-    new g.SystemLabel({
-      scene: loadedScene,
-      x: panel.width / 2,
-      y: panel.height / 2,
-      fontSize,
-      textAlign: g.TextAlign.Center,
-      text: "Replay",
-    })
-  );
 
+const _appendButton = (parent: g.E) => {
+  const btn = new g.SystemLabel({
+    scene: parent.scene,
+    x: parent.width / 2,
+    y: parent.height / 2,
+    fontSize,
+    textAlign: g.TextAlign.Center,
+    text: "Replay",
+  });
   // パネルを押下したとき半透明にする
-  panel.pointDown.add(() => {
-    panel.opacity = inactiveOpacity;
-    panel.modified();
+  parent.pointDown.add(() => {
+    parent.opacity = inactiveOpacity;
+    parent.modified();
   });
-  panel.pointUp.add(() => {
-    panel.opacity = activeOpacity;
-    panel.modified();
+  parent.pointUp.add(() => {
+    parent.opacity = activeOpacity;
+    parent.modified();
   });
+};
 
+const createReplay = (loadedScene: g.Scene) => {
+  const panel = _createPanel(loadedScene);
+  _appendBackground(panel);
+  _appendButton(panel);
   return panel;
 };
 
