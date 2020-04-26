@@ -8,15 +8,15 @@ afterAll(() => {
 });
 
 describe("station", () => {
-  describe("getPos", () => {
+  describe("loc", () => {
     it("ok", () => {
       const rn1 = new RailNode(0, 0);
       const rn2 = new RailNode(2, 4);
       const st = new Station();
       new Platform(rn1, st);
       new Platform(rn2, st);
-      expect(st.getPos().x).toEqual(1);
-      expect(st.getPos().y).toEqual(2);
+      expect(st.loc().x).toEqual(1);
+      expect(st.loc().y).toEqual(2);
     });
   });
 });

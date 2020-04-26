@@ -11,8 +11,8 @@ const createHumanPanel: ViewerCreator<Human> = (
 ) => {
   const panel = new g.E({
     scene: loadedScene,
-    x: h._getVector().x - width / 2,
-    y: h._getVector().y - height / 2,
+    x: h.loc().x - width / 2,
+    y: h.loc().y - height / 2,
   });
 
   panel.append(

@@ -1,4 +1,5 @@
 import modelListener, { EventType, Tracker } from "../models/listener";
+import { Pointable } from "../models/pointable";
 import ViewObjectFactory, { ViewObject } from "./factory";
 
 /**
@@ -6,7 +7,7 @@ import ViewObjectFactory, { ViewObject } from "./factory";
  * @param factory
  * @param listener
  */
-const connect = <T>(
+const connect = <T extends Pointable>(
   factory: ViewObjectFactory<T>,
   cls: new (...args: any[]) => T,
   modifier?: (vo: ViewObject<T>) => void

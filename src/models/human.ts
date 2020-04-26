@@ -1,11 +1,13 @@
 import Company from "./company";
 import modelListener, { EventType } from "./listener";
+import Point, { distance } from "./point";
+import { Pointable, substract } from "./pointable";
 import Residence from "./residence";
+import RoutableObject from "./routable";
 import { Steppable } from "./steppable";
-import Vector from "./vector";
 
-class Human implements Steppable {
-  private loc: Vector;
+class Human extends RoutableObject implements Steppable {
+  private pos: Point;
   /**
    * 1秒間に何pixcel進むか
    */
@@ -15,41 +17,42 @@ class Human implements Steppable {
   public readonly destination: Company;
 
   constructor(departure: Residence, destination: Company) {
-    this.loc = new Vector(departure);
+    super();
+    this.pos = new Point(departure.loc());
     this.departure = departure;
     this.destination = destination;
     modelListener.add(EventType.CREATED, this);
   }
 
-  public _getVector() {
-    return this.loc;
+  public loc() {
+    return this.pos;
   }
 
-  private move(p: Vector): void;
+  private move(p: Pointable): void;
   private move(x: number, y: number): void;
 
-  private move(arg1: Vector | number, arg2?: number) {
-    const prev = this.loc;
-    if (arg1 instanceof Vector) {
-      this.loc = new Vector(arg1.x, arg1.y);
+  private move(arg1: Pointable | number, arg2?: number) {
+    const prev = this.pos;
+    if (typeof arg1 === "number") {
+      this.pos = new Point(arg1, arg2);
     } else {
-      this.loc = new Vector(arg1, arg2);
+      this.pos = new Point(arg1.loc());
     }
-    if (this.loc._sub(prev).length.toFixed(5) !== "0.00000") {
+    if (distance(this.pos, prev) > 0) {
       modelListener.add(EventType.MODIFIED, this);
     }
   }
 
   public _step(frame: number) {
-    const remain = this.loc._sub(this.destination);
+    const remain = substract(this.destination, this);
     const step = (frame * Human.SPEED) / Human.FPS;
     // オーバーランを防ぐ
-    if (step >= remain.length) {
+    if (step >= remain.length()) {
       this.move(this.destination);
     } else {
       this.move(
-        this.loc.x + step * Math.cos(remain.angleRadian),
-        this.loc.y + step * Math.sin(remain.angleRadian)
+        this.pos.x + step * Math.cos(remain.angle()),
+        this.pos.y + step * Math.sin(remain.angle())
       );
     }
   }

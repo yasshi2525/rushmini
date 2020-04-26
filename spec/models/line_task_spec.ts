@@ -120,7 +120,7 @@ describe("line_task", () => {
         expect(outbound.edge).toEqual(e1);
         expect(outbound._getDept()).toEqual(from);
         expect(outbound._getDest()).toEqual(to);
-        expect(outbound._getLength()).toEqual(e1.vector.length);
+        expect(outbound._getLength()).toEqual(e1.arrow.length());
       });
 
       it("'outbound' task is setted between 'dept' and 'inbound' task", () => {

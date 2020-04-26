@@ -8,8 +8,8 @@ afterAll(() => {
 describe("company", () => {
   it("initialize", () => {
     const c = new Company(1, 1, 2);
-    expect(c.x).toEqual(1);
-    expect(c.y).toEqual(2);
+    expect(c.loc().x).toEqual(1);
+    expect(c.loc().y).toEqual(2);
   });
 
   it("forbit non-nature value attractiveness", () => {

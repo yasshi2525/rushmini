@@ -10,19 +10,19 @@ const createRailEdgePanel: ViewerCreator<RailEdge> = (
 ) => {
   const panel = new g.E({
     scene: loadedScene,
-    x: (re.from.x + re.to.x - width) / 2,
-    y: (re.from.y + re.to.y - width) / 2,
+    x: re.loc().x - width / 2,
+    y: re.loc().y - width / 2,
   });
 
   panel.append(
     new g.FilledRect({
       scene: loadedScene,
-      width: re.vector.length,
+      width: re.arrow.length(),
       height: width,
       cssColor,
       anchorX: 0.5,
       anchorY: 0.5,
-      angle: re.vector.angleDegree,
+      angle: re.arrow.angleDegree(),
     })
   );
 

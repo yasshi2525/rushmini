@@ -267,7 +267,7 @@ describe("rail_line", () => {
 
     it("skip length=0 move task to insert", () => {
       // rn1 -> rn2 = rnX -> rn3
-      const e2X = rn2._extend(rn2.x, rn2.y);
+      const e2X = rn2._extend(rn2.loc().x, rn2.loc().y);
       const rnX = e2X.to;
       l._start(rn1.platform);
       l._insertEdge(e12);

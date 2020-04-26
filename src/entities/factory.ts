@@ -1,3 +1,5 @@
+import { Pointable } from "../models/pointable";
+
 /**
  * Modelの描画情報を含んだオブジェクト
  */
@@ -6,12 +8,15 @@ export type ViewObject<T> = {
   readonly viewer: g.E;
 };
 
-export type ViewerCreator<T> = (loadedScene: g.Scene, subject: T) => g.E;
+export type ViewerCreator<T extends Pointable> = (
+  loadedScene: g.Scene,
+  subject: T
+) => g.E;
 
 /**
  * モデルとビューアが紐付いたViewObjectを作成します
  */
-class ViewObjectFactory<T> {
+class ViewObjectFactory<T extends Pointable> {
   private readonly panel: g.E;
   private readonly creator: ViewerCreator<T>;
   private readonly children: ViewObject<T>[];

@@ -1,0 +1,46 @@
+import Company from "models/company";
+import Residence from "models/residence";
+import Station from "models/station";
+import Platform from "models/platform";
+import RailNode from "models/rail_node";
+import Gate from "models/gate";
+import PathFinder from "models/path_finder";
+import { distance } from "models/pointable";
+
+describe("path_finding", () => {
+  it("ok", () => {
+    const c = new Company(1, 9, 12);
+    const r = new Residence([c], 0, 0, () => {});
+    const rn1 = new RailNode(3, 4);
+    const st1 = new Station();
+    const p1 = new Platform(rn1, st1);
+    const g1 = new Gate(st1);
+    const rn2 = new RailNode(6, 8);
+    const st2 = new Station();
+    const p2 = new Platform(rn2, st2);
+    const g2 = new Gate(st2);
+    const instance = new PathFinder(c);
+    instance.node(r);
+    instance.node(g1);
+    instance.node(p1);
+    instance.node(g2);
+    instance.node(p2);
+    instance.edge(r, g1, distance(g1, r));
+    instance.edge(r, g2, distance(g2, r));
+    instance.edge(r, c, distance(c, r));
+    instance.edge(g1, p1, distance(p1, g1));
+    instance.edge(g1, c, distance(g1, c));
+    instance.edge(p1, g1, distance(g1, p1));
+    instance.edge(p1, p2, distance(p2, p1) / 10);
+    instance.edge(g2, p2, distance(p2, g2));
+    instance.edge(g2, c, distance(c, g2));
+    instance.edge(p2, g2, distance(g2, p2));
+    instance.edge(p2, p1, distance(p1, p2) / 10);
+    instance.execute();
+    expect(r.nextFor(c)).toEqual(g1);
+    expect(g1.nextFor(c)).toEqual(p1);
+    expect(p1.nextFor(c)).toEqual(p2);
+    expect(p2.nextFor(c)).toEqual(g2);
+    expect(g2.nextFor(c)).toEqual(c);
+  });
+});

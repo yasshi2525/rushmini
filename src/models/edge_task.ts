@@ -3,18 +3,16 @@ import LineTask from "./line_task";
 import { _createTask } from "./line_task_utils";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
+import { angle } from "./point";
 import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
-import Vector from "./vector";
 
 class EdgeTask extends LineTask {
   public readonly edge: RailEdge;
-  private readonly reverse: Vector;
 
   constructor(parent: RailLine, edge: RailEdge, prev: LineTask) {
     super(parent, prev);
     this.edge = edge;
-    this.reverse = edge.vector._reverse();
     modelListener.add(EventType.CREATED, this);
   }
 
@@ -32,11 +30,11 @@ class EdgeTask extends LineTask {
       return NaN;
     }
     // 終点から成す角を求めるため、自身の反転ベクトルを使って角度を求める
-    return this.reverse._angle(edge.vector);
+    return angle(edge.arrow, this.edge.arrow.reverse());
   }
 
   public _getLength() {
-    return this.edge.vector.length;
+    return this.edge.arrow.length();
   }
 
   public _isNeighbor(edge: RailEdge) {

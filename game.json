@@ -137,11 +137,6 @@
 			"path": "script/models/station.js",
 			"global": true
 		},
-		"vector": {
-			"type": "script",
-			"path": "script/models/vector.js",
-			"global": true
-		},
 		"parameterObject": {
 			"type": "script",
 			"path": "script/parameterObject.js",
@@ -235,6 +230,41 @@
 		"point_view": {
 			"type": "script",
 			"path": "script/entities/point_view.js",
+			"global": true
+		},
+		"background": {
+			"type": "script",
+			"path": "script/entities/background.js",
+			"global": true
+		},
+		"line_task_utils": {
+			"type": "script",
+			"path": "script/models/line_task_utils.js",
+			"global": true
+		},
+		"pathfinder_view": {
+			"type": "script",
+			"path": "script/entities/pathfinder_view.js",
+			"global": true
+		},
+		"path_finder": {
+			"type": "script",
+			"path": "script/models/path_finder.js",
+			"global": true
+		},
+		"point": {
+			"type": "script",
+			"path": "script/models/point.js",
+			"global": true
+		},
+		"pointable": {
+			"type": "script",
+			"path": "script/models/pointable.js",
+			"global": true
+		},
+		"routable": {
+			"type": "script",
+			"path": "script/models/routable.js",
 			"global": true
 		}
 	},

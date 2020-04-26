@@ -42,11 +42,11 @@ describe("city_resource", () => {
     model.init(WIDTH, HEIGHT, (min, max) => random.random().get(min, max));
     expect(cs.length).toEqual(1);
     const c = cs[0];
-    expect(c.x).toEqual(randomChecker.get(WIDTH - AREA, WIDTH));
-    expect(c.y).toEqual(randomChecker.get(HEIGHT - AREA, HEIGHT));
+    expect(c.loc().x).toEqual(randomChecker.get(WIDTH - AREA, WIDTH));
+    expect(c.loc().y).toEqual(randomChecker.get(HEIGHT - AREA, HEIGHT));
     expect(rs.length).toEqual(1);
     const r = rs[0];
-    expect(r.x).toEqual(randomChecker.get(0, AREA));
-    expect(r.y).toEqual(randomChecker.get(0, AREA));
+    expect(r.loc().x).toEqual(randomChecker.get(0, AREA));
+    expect(r.loc().y).toEqual(randomChecker.get(0, AREA));
   });
 });

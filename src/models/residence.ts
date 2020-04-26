@@ -1,10 +1,10 @@
 import Company from "./company";
 import Human from "./human";
 import modelListener, { EventType } from "./listener";
+import PointableObject from "./pointable";
 import { Steppable } from "./steppable";
-import Vector from "./vector";
 
-class Residence extends Vector implements Steppable {
+class Residence extends PointableObject implements Steppable {
   /**
    * 会社の魅力度に応じて住民をスポーンするため、
    * 魅力度の数だけ同じ会社を行き先に設定する

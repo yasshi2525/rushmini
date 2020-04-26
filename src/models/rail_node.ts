@@ -1,10 +1,10 @@
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
+import PointableObject from "./pointable";
 import RailEdge from "./rail_edge";
 import Station from "./station";
-import Vector from "./vector";
 
-class RailNode extends Vector {
+class RailNode extends PointableObject {
   public readonly out: RailEdge[];
   public readonly in: RailEdge[];
   public platform?: Platform;

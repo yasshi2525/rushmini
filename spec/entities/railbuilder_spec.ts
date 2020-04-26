@@ -33,8 +33,7 @@ describe("railbuilder", () => {
     });
     const dept = userResource.primaryLine.top;
     expect(dept).toBeInstanceOf(DeptTask);
-    expect(dept._getDept().x).toEqual(10);
-    expect(dept._getDept().y).toEqual(20);
+    expect(dept._getDept().loc()).toEqual({ x: 10, y: 20 });
     expect(dept.next).toEqual(dept);
   });
 
@@ -63,22 +62,17 @@ describe("railbuilder", () => {
     });
     const dept = userResource.primaryLine.top;
     expect(dept).toBeInstanceOf(DeptTask);
-    expect(dept._getDept().x).toEqual(10);
-    expect(dept._getDept().y).toEqual(20);
+    expect(dept._getDept().loc()).toEqual({ x: 10, y: 20 });
 
     const outbound = dept.next;
     expect(outbound).toBeInstanceOf(EdgeTask);
-    expect(outbound._getDept().x).toEqual(10);
-    expect(outbound._getDept().y).toEqual(20);
-    expect(outbound._getDest().x).toEqual(11);
-    expect(outbound._getDest().y).toEqual(22);
+    expect(outbound._getDept().loc()).toEqual({ x: 10, y: 20 });
+    expect(outbound._getDest().loc()).toEqual({ x: 11, y: 22 });
 
     const inbound = outbound.next;
     expect(inbound).toBeInstanceOf(EdgeTask);
-    expect(inbound._getDept().x).toEqual(11);
-    expect(inbound._getDept().y).toEqual(22);
-    expect(inbound._getDest().x).toEqual(10);
-    expect(inbound._getDest().y).toEqual(20);
+    expect(inbound._getDept().loc()).toEqual({ x: 11, y: 22 });
+    expect(inbound._getDest().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept);
   });
@@ -119,27 +113,21 @@ describe("railbuilder", () => {
     });
     const dept1 = userResource.primaryLine.top;
     expect(dept1).toBeInstanceOf(DeptTask);
-    expect(dept1._getDept().x).toEqual(10);
-    expect(dept1._getDept().y).toEqual(20);
+    expect(dept1._getDept().loc()).toEqual({ x: 10, y: 20 });
 
     const outbound = dept1.next;
     expect(outbound).toBeInstanceOf(EdgeTask);
-    expect(outbound._getDept().x).toEqual(10);
-    expect(outbound._getDept().y).toEqual(20);
-    expect(outbound._getDest().x).toEqual(11);
-    expect(outbound._getDest().y).toEqual(22);
+    expect(outbound._getDept().loc()).toEqual({ x: 10, y: 20 });
+    expect(outbound._getDest().loc()).toEqual({ x: 11, y: 22 });
 
     const dept2 = outbound.next;
     expect(dept2).toBeInstanceOf(DeptTask);
-    expect(dept2._getDept().x).toEqual(11);
-    expect(dept2._getDept().y).toEqual(22);
+    expect(dept2._getDept().loc()).toEqual({ x: 11, y: 22 });
 
     const inbound = dept2.next;
     expect(inbound).toBeInstanceOf(EdgeTask);
-    expect(inbound._getDept().x).toEqual(11);
-    expect(inbound._getDept().y).toEqual(22);
-    expect(inbound._getDest().x).toEqual(10);
-    expect(inbound._getDest().y).toEqual(20);
+    expect(inbound._getDept().loc()).toEqual({ x: 11, y: 22 });
+    expect(inbound._getDest().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept1);
   });

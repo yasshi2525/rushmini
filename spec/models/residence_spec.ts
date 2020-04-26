@@ -24,8 +24,8 @@ describe("residence", () => {
 
   it("initialize", () => {
     const r = new Residence([], 1, 2, cb);
-    expect(r.x).toEqual(1);
-    expect(r.y).toEqual(2);
+    expect(r.loc().x).toEqual(1);
+    expect(r.loc().y).toEqual(2);
   });
 
   describe("_spawn", () => {

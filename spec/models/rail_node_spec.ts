@@ -10,8 +10,8 @@ describe("rail_node", () => {
     const X = 1;
     const Y = 2;
     const rn = new RailNode(X, Y);
-    expect(rn.x).toEqual(X);
-    expect(rn.y).toEqual(Y);
+    expect(rn.loc().x).toEqual(X);
+    expect(rn.loc().y).toEqual(Y);
   });
 
   describe("_extend", () => {
@@ -24,8 +24,8 @@ describe("rail_node", () => {
 
     it("create 'to'", () => {
       // (3, 4) に線が作られている
-      expect(to.x).toEqual(X);
-      expect(to.y).toEqual(Y);
+      expect(to.loc().x).toEqual(X);
+      expect(to.loc().y).toEqual(Y);
     });
 
     it("'outE' connects 'from' and 'to'", () => {

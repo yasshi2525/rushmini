@@ -10,7 +10,7 @@ const createStationPanel: ViewerCreator<Station> = (
   loadedScene: g.Scene,
   st: Station
 ) => {
-  const panel = createPointableView(loadedScene, st.getPos(), width, height);
+  const panel = createPointableView(loadedScene, st, width, height);
   panel.append(
     new g.FilledRect({
       scene: loadedScene,

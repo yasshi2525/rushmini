@@ -1,7 +1,7 @@
 import modelListener, { EventType } from "./listener";
-import Vector from "./vector";
+import PointableObject from "./pointable";
 
-class Company extends Vector {
+class Company extends PointableObject {
   /**
    * 住民がこの会社を行き先として選ぶ度合い 自身/全会社の合計 の割合で行き先が選ばれる
    */

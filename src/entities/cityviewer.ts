@@ -1,5 +1,6 @@
 import Company from "../models/company";
 import Human from "../models/human";
+import { Pointable } from "../models/pointable";
 import Residence from "../models/residence";
 import createCompanyPanel from "./company_view";
 import connect from "./connector";
@@ -7,7 +8,7 @@ import ViewObjectFactory, { ViewObject } from "./factory";
 import createHumanPanel from "./human_view";
 import createResidencePanel from "./residence_view";
 
-type FactoryMapper<T> = {
+type FactoryMapper<T extends Pointable> = {
   key: new (...args: any[]) => T;
   factory: ViewObjectFactory<T>;
   modifier?: (vo: ViewObject<T>) => void;
@@ -28,8 +29,8 @@ const _createFactory = (
     key: Human,
     factory: new ViewObjectFactory<Human>(parent, createHumanPanel),
     modifier: (vo: ViewObject<Human>) => {
-      vo.viewer.x = vo.subject._getVector().x - vo.viewer.width / 2;
-      vo.viewer.y = vo.subject._getVector().y - vo.viewer.height / 2;
+      vo.viewer.x = vo.subject.loc().x - vo.viewer.width / 2;
+      vo.viewer.y = vo.subject.loc().y - vo.viewer.height / 2;
       vo.viewer.modified();
     },
   },

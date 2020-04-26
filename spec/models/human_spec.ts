@@ -29,8 +29,8 @@ describe("human", () => {
     const c = new Company(1, 1, 2);
     const r = new Residence([c], 3, 4, () => {});
     const h = new Human(r, c);
-    expect(h._getVector().x).toEqual(3);
-    expect(h._getVector().y).toEqual(4);
+    expect(h.loc().x).toEqual(3);
+    expect(h.loc().y).toEqual(4);
   });
 
   describe("_step", () => {
@@ -43,8 +43,8 @@ describe("human", () => {
       const r = new Residence([c], 0, 0, () => {});
       const h = new Human(r, c);
       h._step(1);
-      expect(h._getVector().x).toEqual(Human.SPEED / Human.FPS);
-      expect(h._getVector().y).toEqual(0);
+      expect(h.loc().x).toEqual(Human.SPEED / Human.FPS);
+      expect(h.loc().y).toEqual(0);
     });
 
     it("human walk Human.SPEED in FPS frames", () => {
@@ -52,8 +52,8 @@ describe("human", () => {
       const r = new Residence([c], 0, 0, () => {});
       const h = new Human(r, c);
       h._step(Human.FPS);
-      expect(h._getVector().x).toEqual(Human.SPEED);
-      expect(h._getVector().y).toEqual(0);
+      expect(h.loc().x).toEqual(Human.SPEED);
+      expect(h.loc().y).toEqual(0);
     });
     it("human walk after turning theta radian", () => {
       Human.SPEED = 5;
@@ -61,8 +61,8 @@ describe("human", () => {
       const r = new Residence([c], 0, 0, () => {});
       const h = new Human(r, c);
       h._step(Human.FPS);
-      expect(h._getVector().x.toFixed(2)).toEqual("3.00");
-      expect(h._getVector().y.toFixed(2)).toEqual("4.00");
+      expect(h.loc().x).toBeCloseTo(3);
+      expect(h.loc().y).toBeCloseTo(4);
     });
 
     it("stop destination, avoiding over step", () => {
@@ -71,8 +71,8 @@ describe("human", () => {
       const r = new Residence([c], 0, 0, () => {});
       const h = new Human(r, c);
       h._step(Human.FPS);
-      expect(h._getVector().x).toEqual(3);
-      expect(h._getVector().y).toEqual(4);
+      expect(h.loc().x).toEqual(3);
+      expect(h.loc().y).toEqual(4);
     });
   });
 });
