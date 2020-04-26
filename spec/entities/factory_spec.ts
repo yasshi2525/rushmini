@@ -1,8 +1,14 @@
 import { createLoadedScene } from "../_helper/scene";
 import ViewObjectFactory, { ViewerCreator } from "entities/factory";
+import { ZeroPoint } from "models/point";
+import { Pointable } from "models/pointable";
 
 declare const recreateGame: () => void;
-class Simple {}
+class Simple implements Pointable {
+  loc() {
+    return ZeroPoint;
+  }
+}
 
 describe("factory", () => {
   let loadedScene: g.Scene;

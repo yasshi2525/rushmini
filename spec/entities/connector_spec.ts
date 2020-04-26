@@ -2,9 +2,15 @@ import ViewObjectFactory from "entities/factory";
 import connect from "entities/connector";
 import { createLoadedScene } from "../_helper/scene";
 import modelListener, { EventType } from "models/listener";
+import { Pointable } from "models/pointable";
+import { ZeroPoint } from "models/point";
 
 declare const recreateGame: () => void;
-class Simple {}
+class Simple implements Pointable {
+  loc() {
+    return ZeroPoint;
+  }
+}
 
 afterAll(() => {
   modelListener.flush();
