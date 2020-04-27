@@ -1,4 +1,4 @@
-import scorer, { ScoreStorage, ScoreListener } from "utils/scorer";
+import scorer, { ScoreListener, ScoreStorage } from "utils/scorer";
 
 describe("scorer", () => {
   let state: ScoreStorage;

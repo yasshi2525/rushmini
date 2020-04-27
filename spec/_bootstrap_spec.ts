@@ -1,7 +1,7 @@
 import { RPGAtsumaruWindow } from "parameterObject";
-import bootstrap = require("_bootstrap");
-import ticker from "utils/ticker";
 import random from "utils/random";
+import ticker from "utils/ticker";
+import bootstrap = require("_bootstrap");
 
 const ENDING = 10;
 
@@ -30,7 +30,7 @@ describe("_bootstrap", () => {
   });
 
   it("with atsumaru", () => {
-    (<any>window).RPGAtsumaru = true;
+    window.RPGAtsumaru = true;
     bootstrap({});
     const scene = g.game.scene();
     expect(scene).toBeUndefined();

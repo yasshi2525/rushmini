@@ -1,7 +1,7 @@
 import createGameScene from "scenes/game";
-import ticker from "utils/ticker";
-import scorer from "utils/scorer";
 import random from "utils/random";
+import scorer from "utils/scorer";
+import ticker from "utils/ticker";
 
 declare const recreateGame: () => void;
 const FPS = 15;

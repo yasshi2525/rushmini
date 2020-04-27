@@ -1,7 +1,7 @@
-import Station from "models/station";
-import RailNode from "models/rail_node";
-import Platform from "models/platform";
 import modelListener from "models/listener";
+import Platform from "models/platform";
+import RailNode from "models/rail_node";
+import Station from "models/station";
 
 afterAll(() => {
   modelListener.flush();

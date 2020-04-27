@@ -1,9 +1,9 @@
-import ViewObjectFactory from "entities/factory";
 import connect from "entities/connector";
-import { createLoadedScene } from "../_helper/scene";
+import ViewObjectFactory from "entities/factory";
 import modelListener, { EventType } from "models/listener";
-import { Pointable } from "models/pointable";
 import { ZeroPoint } from "models/point";
+import { Pointable } from "models/pointable";
+import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
 class Simple implements Pointable {

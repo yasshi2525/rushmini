@@ -1,7 +1,7 @@
-import RailNode from "../models/rail_node";
-import RailEdge from "../models/rail_edge";
-import PathFinder from "../models/path_finder";
 import listener, { EventType as Ev } from "../models/listener";
+import PathFinder from "../models/path_finder";
+import RailEdge from "../models/rail_edge";
+import RailNode from "../models/rail_node";
 import userResource from "../models/user_resource";
 
 // 路線の自動延伸時には使う。
@@ -19,7 +19,7 @@ const ratio = 0.1;
 const handler = {
   onCreated: {
     railNode: (rn: RailNode) => {
-      finders.forEach((f) => f.node(rn));
+      finders.forEach((_f) => _f.node(rn));
 
       // all re => rn for the goal
       const f = new PathFinder(rn);

@@ -1,10 +1,6 @@
+import modelListener from "models/listener";
+import userResource from "models/user_resource";
 import trackFinder from "utils/track_finder";
-import modelListener, { EventType } from "models/listener";
-import Company from "models/company";
-import Residence from "models/residence";
-import RailLine from "models/rail_line";
-import userResource, { UserResource } from "models/user_resource";
-import RailNode from "models/rail_node";
 
 describe("track_finder", () => {
   afterEach(() => {

@@ -1,11 +1,11 @@
-import RailLine from "models/rail_line";
-import LineTask from "models/line_task";
-import RailNode from "models/rail_node";
-import RailEdge from "models/rail_edge";
-import Platform from "models/platform";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
+import LineTask from "models/line_task";
 import modelListener from "models/listener";
+import Platform from "models/platform";
+import RailEdge from "models/rail_edge";
+import RailLine from "models/rail_line";
+import RailNode from "models/rail_node";
 
 afterAll(() => {
   modelListener.flush();
@@ -105,12 +105,12 @@ describe("line_task", () => {
     // rail node に edge を挿入する
     describe("insert edge (not forward station) from dept task", () => {
       // from -> e1 -> to
-      var from: RailNode;
-      var to: RailNode;
-      var e1: RailEdge;
-      var e2: RailEdge;
-      var l: RailLine;
-      var dept: LineTask;
+      let from: RailNode;
+      let to: RailNode;
+      let e1: RailEdge;
+      let e2: RailEdge;
+      let l: RailLine;
+      let dept: LineTask;
 
       beforeEach(() => {
         from = new RailNode(0, 0);
@@ -167,10 +167,10 @@ describe("line_task", () => {
     });
 
     describe("insert edge (forward station) from dept task", () => {
-      var from: RailNode;
-      var to: RailNode;
-      var p2: Platform;
-      var l: RailLine;
+      let from: RailNode;
+      let to: RailNode;
+      let p2: Platform;
+      let l: RailLine;
       beforeEach(() => {
         from = new RailNode(0, 0);
         const p1 = from._buildStation();
@@ -219,8 +219,8 @@ describe("line_task", () => {
     describe("insert edge (not forward station) from edge task", () => {
       // 1. rn1 -> [e12] -> rn2
       // 2. rn1 -> [e12] -> rn2 -> [e23] -> rn3
-      var e23: RailEdge;
-      var l: RailLine;
+      let e23: RailEdge;
+      let l: RailLine;
       beforeEach(() => {
         // 1.
         const rn1 = new RailNode(0, 0);
@@ -266,8 +266,8 @@ describe("line_task", () => {
     describe("insert edge (forward station) from edge task", () => {
       // 1. rn1 -> [e12] -> rn2
       // 2. rn1 -> [e12] -> rn2 -> [e23] -> rn3
-      var e23: RailEdge;
-      var l: RailLine;
+      let e23: RailEdge;
+      let l: RailLine;
       beforeEach(() => {
         // 1.
         const rn1 = new RailNode(0, 0);
@@ -324,9 +324,9 @@ describe("line_task", () => {
 
     describe("insert dept task on the station task", () => {
       // rn1 -> [e12] -> rn2 -> [e23] -> rn3
-      var e12: RailEdge;
-      var e23: RailEdge;
-      var l: RailLine;
+      let e12: RailEdge;
+      let e23: RailEdge;
+      let l: RailLine;
 
       beforeEach(() => {
         const rn1 = new RailNode(0, 0);
@@ -410,10 +410,10 @@ describe("line_task", () => {
   });
 
   describe("_insertPlatform", () => {
-    var l: RailLine;
-    var dept: LineTask;
-    var outbound: LineTask;
-    var inbound: LineTask;
+    let l: RailLine;
+    let dept: LineTask;
+    let outbound: LineTask;
+    let inbound: LineTask;
 
     beforeEach(() => {
       const rn1 = new RailNode(0, 0);

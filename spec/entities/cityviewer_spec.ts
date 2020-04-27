@@ -1,11 +1,11 @@
-import { createLoadedScene } from "../_helper/scene";
 import createCityViewer from "entities/cityviewer";
-import modelListener, { EventType } from "models/listener";
 import cityResource from "models/city_resource";
-import random from "utils/random";
-import Human from "models/human";
-import Residence from "models/residence";
 import Company from "models/company";
+import Human from "models/human";
+import modelListener, { EventType } from "models/listener";
+import Residence from "models/residence";
+import random from "utils/random";
+import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
 

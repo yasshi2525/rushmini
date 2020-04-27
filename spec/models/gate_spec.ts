@@ -1,6 +1,6 @@
-import Station from "models/station";
 import Gate from "models/gate";
 import modelListener from "models/listener";
+import Station from "models/station";
 
 afterAll(() => {
   modelListener.flush();

@@ -1,7 +1,7 @@
-import { createLoadedScene } from "../_helper/scene";
 import createRailViewer from "entities/railviewer";
-import userResource from "models/user_resource";
 import modelListener from "models/listener";
+import userResource from "models/user_resource";
+import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
 

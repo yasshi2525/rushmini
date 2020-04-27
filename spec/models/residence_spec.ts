@@ -1,7 +1,7 @@
 import Company from "models/company";
-import Residence from "models/residence";
-import modelListener, { EventType } from "models/listener";
 import Human from "models/human";
+import modelListener from "models/listener";
+import Residence from "models/residence";
 
 const oldFPS = Residence.FPS;
 const oldINTERVAL_SEC = Residence.INTERVAL_SEC;
@@ -54,7 +54,7 @@ describe("residence", () => {
     it("spawn human iteratably", () => {
       const c = new Company(1, 0, 0);
       const r = new Residence([c], 0, 0, cbNew);
-      for (var i = 0; i < 5; i++) {
+      for (let i = 0; i < 5; i++) {
         r._step(Residence.FPS);
         const h = newHumans[0];
         expect(h.departure).toEqual(r);

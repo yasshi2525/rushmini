@@ -1,8 +1,8 @@
-import random from "utils/random";
+import { CityResource } from "models/city_resource";
+import Company from "models/company";
 import modelListener, { EventType } from "models/listener";
 import Residence from "models/residence";
-import Company from "models/company";
-import { CityResource } from "models/city_resource";
+import random from "utils/random";
 
 const oldAREA = CityResource.AREA;
 

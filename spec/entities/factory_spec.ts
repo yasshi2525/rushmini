@@ -1,7 +1,7 @@
-import { createLoadedScene } from "../_helper/scene";
 import ViewObjectFactory, { ViewerCreator } from "entities/factory";
 import { ZeroPoint } from "models/point";
 import { Pointable } from "models/pointable";
+import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
 class Simple implements Pointable {

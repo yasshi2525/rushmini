@@ -1,7 +1,7 @@
-import userResource from "models/user_resource";
 import createRailBuildGuide from "entities/railbuild_guide";
-import { createLoadedScene } from "../_helper/scene";
 import modelListener from "models/listener";
+import userResource from "models/user_resource";
+import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
 const activeOpacity = 0.75;

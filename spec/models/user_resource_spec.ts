@@ -1,11 +1,11 @@
-import {
-  UserResource,
-  ModelStateType,
-  stationInterval,
-} from "models/user_resource";
-import RailLine from "models/rail_line";
 import DeptTask from "models/dept_task";
 import modelListener from "models/listener";
+import RailLine from "models/rail_line";
+import {
+  ModelStateType,
+  stationInterval,
+  UserResource,
+} from "models/user_resource";
 
 afterAll(() => {
   modelListener.flush();

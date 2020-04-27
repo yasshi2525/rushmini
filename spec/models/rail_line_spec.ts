@@ -1,9 +1,9 @@
-import RailLine from "models/rail_line";
-import RailNode from "models/rail_node";
 import DeptTask from "models/dept_task";
-import RailEdge from "models/rail_edge";
 import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
+import RailEdge from "models/rail_edge";
+import RailLine from "models/rail_line";
+import RailNode from "models/rail_node";
 
 afterAll(() => {
   modelListener.flush();
@@ -46,20 +46,20 @@ describe("rail_line", () => {
     //      rn1 -> rn2 -> rnL -> rn3 -> rn1 となることを確認 (rnLが左側にある)
     //      rn1 -> rn2 -> rn3 -> rnR -> rn1 となることを確認 (rnRが右側にある)
 
-    var rn1: RailNode;
-    var e12: RailEdge;
-    var rn2: RailNode;
-    var rn3: RailNode;
-    var e23: RailEdge;
-    var rnL: RailNode;
-    var e2L: RailEdge;
-    var rnR: RailNode;
-    var e2R: RailEdge;
+    let rn1: RailNode;
+    let e12: RailEdge;
+    let rn2: RailNode;
+    let rn3: RailNode;
+    let e23: RailEdge;
+    let rnL: RailNode;
+    let e2L: RailEdge;
+    let rnR: RailNode;
+    let e2R: RailEdge;
 
-    var rnLN: RailNode;
-    var e2LN: RailEdge;
+    let rnLN: RailNode;
+    let e2LN: RailEdge;
 
-    var l: RailLine;
+    let l: RailLine;
 
     //     rnL rnLN
     // rn1 rn2 rn3
@@ -365,12 +365,12 @@ describe("rail_line", () => {
 
   describe("_insertPlatform", () => {
     // rn1 -> rn2 -> rn3
-    var rn1: RailNode;
-    var rn2: RailNode;
-    var rn3: RailNode;
-    var e12: RailEdge;
-    var e23: RailEdge;
-    var l: RailLine;
+    let rn1: RailNode;
+    let rn2: RailNode;
+    let rn3: RailNode;
+    let e12: RailEdge;
+    let e23: RailEdge;
+    let l: RailLine;
 
     beforeEach(() => {
       rn1 = new RailNode(0, 0);

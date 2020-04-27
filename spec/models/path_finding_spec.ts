@@ -1,16 +1,16 @@
 import Company from "models/company";
-import Residence from "models/residence";
-import Station from "models/station";
-import Platform from "models/platform";
-import RailNode from "models/rail_node";
 import Gate from "models/gate";
 import PathFinder from "models/path_finder";
+import Platform from "models/platform";
 import { distance } from "models/pointable";
+import RailNode from "models/rail_node";
+import Residence from "models/residence";
+import Station from "models/station";
 
 describe("path_finding", () => {
   it("without train", () => {
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => {});
+    const r = new Residence([c], 0, 0, () => undefined);
     const instance = new PathFinder(c);
     instance.node(r);
     instance.edge(r, c, distance(c, r));
@@ -21,7 +21,7 @@ describe("path_finding", () => {
 
   it("with train", () => {
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => {});
+    const r = new Residence([c], 0, 0, () => undefined);
     const rn1 = new RailNode(3, 4);
     const st1 = new Station();
     const p1 = new Platform(rn1, st1);
@@ -64,7 +64,7 @@ describe("path_finding", () => {
 
   it("update cost", () => {
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => {});
+    const r = new Residence([c], 0, 0, () => undefined);
     const instance = new PathFinder(c);
     instance.node(r);
     instance.node(c);
@@ -76,7 +76,7 @@ describe("path_finding", () => {
 
   it("update next", () => {
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => {});
+    const r = new Residence([c], 0, 0, () => undefined);
     const rn1 = new RailNode(3, 4);
     const st1 = new Station();
     const p1 = new Platform(rn1, st1);
@@ -110,7 +110,7 @@ describe("path_finding", () => {
 
   it("unroute nextFor returns undefined", () => {
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => {});
+    const r = new Residence([c], 0, 0, () => undefined);
     expect(r.nextFor(c)).toBeUndefined();
     expect(r.costFor(c)).toBeNaN();
   });

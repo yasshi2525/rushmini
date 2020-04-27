@@ -1,10 +1,9 @@
+import Company from "models/company";
+import modelListener, { EventType } from "models/listener";
+import Residence from "models/residence";
+import userResource from "models/user_resource";
 import routeFinder from "utils/route_finder";
 import transportFinder from "utils/transport_finder";
-import modelListener, { EventType } from "models/listener";
-import Company from "models/company";
-import Residence from "models/residence";
-import RailLine from "models/rail_line";
-import userResource, { UserResource } from "models/user_resource";
 
 describe("route_finder", () => {
   afterEach(() => {
@@ -18,7 +17,7 @@ describe("route_finder", () => {
     routeFinder.init();
 
     const c = new Company(1, 0, 0);
-    const r = new Residence([c], 12, 15, () => {});
+    const r = new Residence([c], 12, 15, () => undefined);
     modelListener.fire(EventType.CREATED);
 
     expect(r.nextFor(c)).toEqual(c);
@@ -29,7 +28,7 @@ describe("route_finder", () => {
     routeFinder.init();
 
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => {});
+    const r = new Residence([c], 0, 0, () => undefined);
     modelListener.fire(EventType.CREATED);
 
     userResource.start(3, 4);
@@ -59,7 +58,7 @@ describe("route_finder", () => {
     userResource.end();
 
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => {});
+    const r = new Residence([c], 0, 0, () => undefined);
     modelListener.fire(EventType.CREATED);
 
     const dept1 = userResource.getPrimaryLine().top;
@@ -81,14 +80,14 @@ describe("route_finder", () => {
     routeFinder.init();
 
     const c = new Company(1, 9, 12);
-    const r1 = new Residence([c], 0, 0, () => {});
+    const r1 = new Residence([c], 0, 0, () => undefined);
     modelListener.fire(EventType.CREATED);
 
     userResource.start(3, 4);
     userResource.extend(6, 8);
     userResource.end();
 
-    const r2 = new Residence([c], 0, 0, () => {});
+    const r2 = new Residence([c], 0, 0, () => undefined);
     modelListener.fire(EventType.CREATED);
 
     const dept1 = userResource.getPrimaryLine().top;

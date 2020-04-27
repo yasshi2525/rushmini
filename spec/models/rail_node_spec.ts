@@ -1,5 +1,5 @@
-import RailNode from "models/rail_node";
 import modelListener from "models/listener";
+import RailNode from "models/rail_node";
 
 afterAll(() => {
   modelListener.flush();

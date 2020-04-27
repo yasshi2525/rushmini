@@ -1,8 +1,8 @@
 import {
-  TriggerContainer,
   EventTrigger,
   ModelListener,
   Tracker,
+  TriggerContainer,
 } from "models/listener";
 
 enum EventType {
@@ -12,15 +12,15 @@ enum EventType {
 }
 
 class Simple1 {
-  createdCounter = 0;
-  modifiedCounter = 0;
-  deletedCounter = 0;
+  createdCounter: number = 0;
+  modifiedCounter: number = 0;
+  deletedCounter: number = 0;
 }
 
 class Simple2 {
-  createdCounter = 0;
-  modifiedCounter = 0;
-  deletedCounter = 0;
+  createdCounter: number = 0;
+  modifiedCounter: number = 0;
+  deletedCounter: number = 0;
 }
 
 describe("listener", () => {

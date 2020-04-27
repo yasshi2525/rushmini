@@ -1,9 +1,9 @@
-import { createLoadedScene } from "../_helper/scene";
 import createRailBuilder from "entities/railbuilder";
-import userResource, { ModelStateType } from "models/user_resource";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
+import userResource, { ModelStateType } from "models/user_resource";
+import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
 

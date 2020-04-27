@@ -1,13 +1,13 @@
-import { createLoadedScene } from "../_helper/scene";
-import ticker from "utils/ticker";
-import scorer from "utils/scorer";
-import Residence from "models/residence";
-import Human from "models/human";
-import Company from "models/company";
-import modelListener, { EventType } from "models/listener";
 import createCityBuilder from "entities/citybuilder";
-import random from "utils/random";
 import cityResource from "models/city_resource";
+import Company from "models/company";
+import Human from "models/human";
+import modelListener, { EventType } from "models/listener";
+import Residence from "models/residence";
+import random from "utils/random";
+import scorer from "utils/scorer";
+import ticker from "utils/ticker";
+import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
 const WIDTH = 100;

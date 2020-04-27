@@ -1,14 +1,8 @@
+import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
+import Platform from "../models/platform";
 import RailLine from "../models/rail_line";
 import userResource from "../models/user_resource";
-import Company from "../models/company";
-import listener, { EventType as Ev } from "../models/listener";
-import Platform from "../models/platform";
-import EdgeTask from "../models/edge_task";
-import DeptTask from "../models/dept_task";
-import RailNode from "../models/rail_node";
-import { distance } from "../models/pointable";
-import LineTask from "../models/line_task";
 
 /**
  * 徒歩に比べて鉄道の移動がどれほど優位か
@@ -47,7 +41,7 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
 const handler = {
   onCreated: {
     platform: (p: Platform) => {
-      finders.forEach((f) => f.node(p));
+      finders.forEach((_f) => _f.node(p));
       const f = new PathFinder(p);
       finders.push(f);
       ps.push(p);

@@ -1,5 +1,4 @@
 import { Routable } from "./routable";
-import { Pointable } from "./pointable";
 
 class PathNode {
   public readonly origin: Routable;

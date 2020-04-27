@@ -1,6 +1,6 @@
-import RailNode from "models/rail_node";
-import RailEdge from "models/rail_edge";
 import modelListener from "models/listener";
+import RailEdge from "models/rail_edge";
+import RailNode from "models/rail_node";
 
 afterAll(() => {
   modelListener.flush();

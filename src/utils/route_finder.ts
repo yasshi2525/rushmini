@@ -32,7 +32,7 @@ const handler = {
         f.node(r);
 
         // R => one C for each goal
-        const c = cs.find((c) => c === f.goal.origin);
+        const c = cs.find((_c) => _c === f.goal.origin);
         f.edge(r, c, distance(c, r));
 
         // R => all G for each goal
@@ -84,7 +84,7 @@ const handler = {
         rs.forEach((r) => f.edge(r, g, distance(g, r)));
 
         // G => one C for each goal
-        const c = cs.find((c) => c === f.goal.origin);
+        const c = cs.find((_c) => _c === f.goal.origin);
         f.edge(g, c, distance(g, c));
 
         // G <=> P for each goal
