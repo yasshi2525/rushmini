@@ -8,7 +8,7 @@ class Company extends PointableObject {
   public readonly attractiveness: number;
 
   constructor(attractiveness: number, x: number, y: number) {
-    super(x, y);
+    super(x, y) /* istanbul ignore next */;
     if (attractiveness <= 1) {
       attractiveness = 1;
     }

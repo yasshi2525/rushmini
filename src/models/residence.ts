@@ -30,7 +30,7 @@ class Residence extends PointableObject implements Steppable {
     y: number,
     cb: (h: Human) => void
   ) {
-    super(x, y);
+    super(x, y) /* istanbul ignore next */;
     // 会社の魅力度に応じて行き先を比例配分する
     destinations.forEach((c) => {
       for (let i = 0; i < c.attractiveness; i++) {

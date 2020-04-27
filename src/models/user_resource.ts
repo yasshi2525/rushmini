@@ -11,14 +11,16 @@ export enum ModelStateType {
 }
 
 export class UserResource {
-  public readonly primaryLine: RailLine;
+  private primaryLine: RailLine;
   private tailNode?: RailNode;
   private state: ModelStateType;
+
   public readonly stateListeners: {
-    onStarted: (ev: UserResource) => void;
-    onFixed: (ev: UserResource) => void;
-    onReset: (ev: UserResource) => void;
+    onStarted?: (ev: UserResource) => void;
+    onFixed?: (ev: UserResource) => void;
+    onReset?: (ev: UserResource) => void;
   }[];
+
   /**
    * 駅を一定間隔で設置するため、最後に駅を持ってからextendした回数を保持するカウンター
    */
@@ -34,17 +36,27 @@ export class UserResource {
     switch (state) {
       case ModelStateType.INITED:
         this.state = ModelStateType.INITED;
-        this.stateListeners.forEach((l) => l.onReset(this));
+        this.stateListeners
+          .filter((l) => l.onReset)
+          .forEach((l) => l.onReset(this));
         break;
       case ModelStateType.STARTED:
         this.state = ModelStateType.STARTED;
-        this.stateListeners.forEach((l) => l.onStarted(this));
+        this.stateListeners
+          .filter((l) => l.onStarted)
+          .forEach((l) => l.onStarted(this));
         break;
       case ModelStateType.FIXED:
         this.state = ModelStateType.FIXED;
-        this.stateListeners.forEach((l) => l.onFixed(this));
+        this.stateListeners
+          .filter((l) => l.onFixed)
+          .forEach((l) => l.onFixed(this));
         break;
     }
+  }
+
+  public getPrimaryLine() {
+    return this.primaryLine;
   }
 
   public getState() {
@@ -133,7 +145,7 @@ export class UserResource {
   }
 
   public reset() {
-    this.primaryLine._reset();
+    this.primaryLine = new RailLine();
     this.setState(ModelStateType.INITED);
   }
 }

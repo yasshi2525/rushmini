@@ -23,8 +23,8 @@ describe("rail_line", () => {
       l._start(p);
 
       expect(l.top).toBeInstanceOf(DeptTask);
-      expect(l.top._getDept()).toEqual(rn);
-      expect(l.top._getDest()).toEqual(rn);
+      expect(l.top.departure()).toEqual(rn);
+      expect(l.top.desttination()).toEqual(rn);
     });
 
     it("forbit duplicated starting", () => {
@@ -36,7 +36,7 @@ describe("rail_line", () => {
       l._start(p1);
       l._start(p2);
 
-      expect(l.top._getDept().platform).toEqual(p1);
+      expect(l.top.departure().platform).toEqual(p1);
     });
   });
 
@@ -93,8 +93,8 @@ describe("rail_line", () => {
       l._insertEdge(e12);
       expect(l.top.next).toBeInstanceOf(EdgeTask);
       expect((l.top.next as EdgeTask).edge).toEqual(e12);
-      expect(l.top.next._getDept()).toEqual(rn1);
-      expect(l.top.next._getDest()).toEqual(rn2);
+      expect(l.top.next.departure()).toEqual(rn1);
+      expect(l.top.next.desttination()).toEqual(rn2);
       expect(l.top.next.next).toBeInstanceOf(EdgeTask);
       expect((l.top.next.next as EdgeTask).edge).toEqual(e12.reverse);
       expect(l.top.next.next.next).toEqual(l.top);
@@ -106,17 +106,17 @@ describe("rail_line", () => {
       l._insertEdge(e23);
 
       const lt12 = l.top.next;
-      expect(lt12._getDept()).toEqual(rn1);
-      expect(lt12._getDest()).toEqual(rn2);
+      expect(lt12.departure()).toEqual(rn1);
+      expect(lt12.desttination()).toEqual(rn2);
       const lt23 = lt12.next;
-      expect(lt23._getDept()).toEqual(rn2);
-      expect(lt23._getDest()).toEqual(rn3);
+      expect(lt23.departure()).toEqual(rn2);
+      expect(lt23.desttination()).toEqual(rn3);
       const lt32 = lt23.next;
-      expect(lt32._getDept()).toEqual(rn3);
-      expect(lt32._getDest()).toEqual(rn2);
+      expect(lt32.departure()).toEqual(rn3);
+      expect(lt32.desttination()).toEqual(rn2);
       const lt21 = lt32.next;
-      expect(lt21._getDept()).toEqual(rn2);
-      expect(lt21._getDest()).toEqual(rn1);
+      expect(lt21.departure()).toEqual(rn2);
+      expect(lt21.desttination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
     });
 
@@ -128,26 +128,26 @@ describe("rail_line", () => {
       l._insertEdge(e2L);
 
       const lt12 = l.top.next;
-      expect(lt12._getDept()).toEqual(rn1);
-      expect(lt12._getDest()).toEqual(rn2);
+      expect(lt12.departure()).toEqual(rn1);
+      expect(lt12.desttination()).toEqual(rn2);
 
       const lt2L = lt12.next;
-      expect(lt2L._getDept()).toEqual(rn2);
-      expect(lt2L._getDest()).toEqual(rnL);
+      expect(lt2L.departure()).toEqual(rn2);
+      expect(lt2L.desttination()).toEqual(rnL);
       const ltL2 = lt2L.next;
-      expect(ltL2._getDept()).toEqual(rnL);
-      expect(ltL2._getDest()).toEqual(rn2);
+      expect(ltL2.departure()).toEqual(rnL);
+      expect(ltL2.desttination()).toEqual(rn2);
 
       const lt23 = ltL2.next;
-      expect(lt23._getDept()).toEqual(rn2);
-      expect(lt23._getDest()).toEqual(rn3);
+      expect(lt23.departure()).toEqual(rn2);
+      expect(lt23.desttination()).toEqual(rn3);
       const lt32 = lt23.next;
-      expect(lt32._getDept()).toEqual(rn3);
-      expect(lt32._getDest()).toEqual(rn2);
+      expect(lt32.departure()).toEqual(rn3);
+      expect(lt32.desttination()).toEqual(rn2);
 
       const lt21 = lt32.next;
-      expect(lt21._getDept()).toEqual(rn2);
-      expect(lt21._getDest()).toEqual(rn1);
+      expect(lt21.departure()).toEqual(rn2);
+      expect(lt21.desttination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
     });
 
@@ -158,26 +158,26 @@ describe("rail_line", () => {
       l._insertEdge(e23);
       l._insertEdge(e2R);
       const lt12 = l.top.next;
-      expect(lt12._getDept()).toEqual(rn1);
-      expect(lt12._getDest()).toEqual(rn2);
+      expect(lt12.departure()).toEqual(rn1);
+      expect(lt12.desttination()).toEqual(rn2);
 
       const lt23 = lt12.next;
-      expect(lt23._getDept()).toEqual(rn2);
-      expect(lt23._getDest()).toEqual(rn3);
+      expect(lt23.departure()).toEqual(rn2);
+      expect(lt23.desttination()).toEqual(rn3);
       const lt32 = lt23.next;
-      expect(lt32._getDept()).toEqual(rn3);
-      expect(lt32._getDest()).toEqual(rn2);
+      expect(lt32.departure()).toEqual(rn3);
+      expect(lt32.desttination()).toEqual(rn2);
 
       const lt2R = lt32.next;
-      expect(lt2R._getDept()).toEqual(rn2);
-      expect(lt2R._getDest()).toEqual(rnR);
+      expect(lt2R.departure()).toEqual(rn2);
+      expect(lt2R.desttination()).toEqual(rnR);
       const ltR2 = lt2R.next;
-      expect(ltR2._getDept()).toEqual(rnR);
-      expect(ltR2._getDest()).toEqual(rn2);
+      expect(ltR2.departure()).toEqual(rnR);
+      expect(ltR2.desttination()).toEqual(rn2);
 
       const lt21 = ltR2.next;
-      expect(lt21._getDept()).toEqual(rn2);
-      expect(lt21._getDest()).toEqual(rn1);
+      expect(lt21.departure()).toEqual(rn2);
+      expect(lt21.desttination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
     });
 
@@ -190,33 +190,33 @@ describe("rail_line", () => {
       l._insertEdge(e2LN);
 
       const lt12 = l.top.next;
-      expect(lt12._getDept()).toEqual(rn1);
-      expect(lt12._getDest()).toEqual(rn2);
+      expect(lt12.departure()).toEqual(rn1);
+      expect(lt12.desttination()).toEqual(rn2);
 
       const lt2L = lt12.next;
-      expect(lt2L._getDept()).toEqual(rn2);
-      expect(lt2L._getDest()).toEqual(rnL);
+      expect(lt2L.departure()).toEqual(rn2);
+      expect(lt2L.desttination()).toEqual(rnL);
       const ltL2 = lt2L.next;
-      expect(ltL2._getDept()).toEqual(rnL);
-      expect(ltL2._getDest()).toEqual(rn2);
+      expect(ltL2.departure()).toEqual(rnL);
+      expect(ltL2.desttination()).toEqual(rn2);
 
       const lt2LN = ltL2.next;
-      expect(lt2LN._getDept()).toEqual(rn2);
-      expect(lt2LN._getDest()).toEqual(rnLN);
+      expect(lt2LN.departure()).toEqual(rn2);
+      expect(lt2LN.desttination()).toEqual(rnLN);
       const ltLN2 = lt2LN.next;
-      expect(ltLN2._getDept()).toEqual(rnLN);
-      expect(ltLN2._getDest()).toEqual(rn2);
+      expect(ltLN2.departure()).toEqual(rnLN);
+      expect(ltLN2.desttination()).toEqual(rn2);
 
       const lt23 = ltLN2.next;
-      expect(lt23._getDept()).toEqual(rn2);
-      expect(lt23._getDest()).toEqual(rn3);
+      expect(lt23.departure()).toEqual(rn2);
+      expect(lt23.desttination()).toEqual(rn3);
       const lt32 = lt23.next;
-      expect(lt32._getDept()).toEqual(rn3);
-      expect(lt32._getDest()).toEqual(rn2);
+      expect(lt32.departure()).toEqual(rn3);
+      expect(lt32.desttination()).toEqual(rn2);
 
       const lt21 = lt32.next;
-      expect(lt21._getDept()).toEqual(rn2);
-      expect(lt21._getDest()).toEqual(rn1);
+      expect(lt21.departure()).toEqual(rn2);
+      expect(lt21.desttination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
     });
 
@@ -229,39 +229,39 @@ describe("rail_line", () => {
       l._insertEdge(e2R);
 
       const lt12 = l.top.next;
-      expect(lt12._getDept()).toEqual(rn1);
-      expect(lt12._getDest()).toEqual(rn2);
+      expect(lt12.departure()).toEqual(rn1);
+      expect(lt12.desttination()).toEqual(rn2);
 
       const dept23 = lt12.next;
-      expect(dept23._getDept()).toEqual(rn2);
-      expect(dept23._getDest()).toEqual(rn2);
+      expect(dept23.departure()).toEqual(rn2);
+      expect(dept23.desttination()).toEqual(rn2);
 
       const lt23 = dept23.next;
-      expect(lt23._getDept()).toEqual(rn2);
-      expect(lt23._getDest()).toEqual(rn3);
+      expect(lt23.departure()).toEqual(rn2);
+      expect(lt23.desttination()).toEqual(rn3);
       const lt32 = lt23.next;
-      expect(lt32._getDept()).toEqual(rn3);
-      expect(lt32._getDest()).toEqual(rn2);
+      expect(lt32.departure()).toEqual(rn3);
+      expect(lt32.desttination()).toEqual(rn2);
 
       const dept2R = lt32.next;
-      expect(dept2R._getDept()).toEqual(rn2);
-      expect(dept2R._getDest()).toEqual(rn2);
+      expect(dept2R.departure()).toEqual(rn2);
+      expect(dept2R.desttination()).toEqual(rn2);
 
       const lt2R = dept2R.next;
-      expect(lt2R._getDept()).toEqual(rn2);
-      expect(lt2R._getDest()).toEqual(rnR);
+      expect(lt2R.departure()).toEqual(rn2);
+      expect(lt2R.desttination()).toEqual(rnR);
 
       const ltR2 = lt2R.next;
-      expect(ltR2._getDept()).toEqual(rnR);
-      expect(ltR2._getDest()).toEqual(rn2);
+      expect(ltR2.departure()).toEqual(rnR);
+      expect(ltR2.desttination()).toEqual(rn2);
 
       const dept21 = ltR2.next;
-      expect(dept21._getDept()).toEqual(rn2);
-      expect(dept21._getDest()).toEqual(rn2);
+      expect(dept21.departure()).toEqual(rn2);
+      expect(dept21.desttination()).toEqual(rn2);
 
       const lt21 = dept21.next;
-      expect(lt21._getDept()).toEqual(rn2);
-      expect(lt21._getDest()).toEqual(rn1);
+      expect(lt21.departure()).toEqual(rn2);
+      expect(lt21.desttination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
     });
 
@@ -275,26 +275,26 @@ describe("rail_line", () => {
       l._insertEdge(e23);
 
       const lt12 = l.top.next;
-      expect(lt12._getDept()).toEqual(rn1);
-      expect(lt12._getDest()).toEqual(rn2);
+      expect(lt12.departure()).toEqual(rn1);
+      expect(lt12.desttination()).toEqual(rn2);
 
       const lt23 = lt12.next;
-      expect(lt23._getDept()).toEqual(rn2);
-      expect(lt23._getDest()).toEqual(rn3);
+      expect(lt23.departure()).toEqual(rn2);
+      expect(lt23.desttination()).toEqual(rn3);
       const lt32 = lt23.next;
-      expect(lt32._getDept()).toEqual(rn3);
-      expect(lt32._getDest()).toEqual(rn2);
+      expect(lt32.departure()).toEqual(rn3);
+      expect(lt32.desttination()).toEqual(rn2);
 
       const lt2X = lt32.next;
-      expect(lt2X._getDept()).toEqual(rn2);
-      expect(lt2X._getDest()).toEqual(rnX);
+      expect(lt2X.departure()).toEqual(rn2);
+      expect(lt2X.desttination()).toEqual(rnX);
       const ltX2 = lt2X.next;
-      expect(ltX2._getDept()).toEqual(rnX);
-      expect(ltX2._getDest()).toEqual(rn2);
+      expect(ltX2.departure()).toEqual(rnX);
+      expect(ltX2.desttination()).toEqual(rn2);
 
       const lt21 = ltX2.next;
-      expect(lt21._getDept()).toEqual(rn2);
-      expect(lt21._getDest()).toEqual(rn1);
+      expect(lt21.departure()).toEqual(rn2);
+      expect(lt21.desttination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
     });
 
@@ -314,11 +314,11 @@ describe("rail_line", () => {
       const eX = rnX._extend(0, 0);
       l._insertEdge(eX);
 
-      expect(l.top._getDest()).not.toEqual(rnX);
-      expect(l.top.next._getDest()).not.toEqual(rnX);
-      expect(l.top.next.next._getDest()).not.toEqual(rnX);
-      expect(l.top.next.next.next._getDest()).not.toEqual(rnX);
-      expect(l.top.next.next.next.next._getDest()).not.toEqual(rnX);
+      expect(l.top.desttination()).not.toEqual(rnX);
+      expect(l.top.next.desttination()).not.toEqual(rnX);
+      expect(l.top.next.next.desttination()).not.toEqual(rnX);
+      expect(l.top.next.next.next.desttination()).not.toEqual(rnX);
+      expect(l.top.next.next.next.next.desttination()).not.toEqual(rnX);
     });
 
     it("insert 0-length edge", () => {
@@ -391,27 +391,27 @@ describe("rail_line", () => {
       l._insertPlatform(rn2.platform);
 
       const lt12 = l.top.next;
-      expect(lt12._getDept()).toEqual(rn1);
-      expect(lt12._getDest()).toEqual(rn2);
+      expect(lt12.departure()).toEqual(rn1);
+      expect(lt12.desttination()).toEqual(rn2);
 
       const dept23 = lt12.next;
-      expect(dept23._getDept()).toEqual(rn2);
-      expect(dept23._getDest()).toEqual(rn2);
+      expect(dept23.departure()).toEqual(rn2);
+      expect(dept23.desttination()).toEqual(rn2);
 
       const lt23 = dept23.next;
-      expect(lt23._getDept()).toEqual(rn2);
-      expect(lt23._getDest()).toEqual(rn3);
+      expect(lt23.departure()).toEqual(rn2);
+      expect(lt23.desttination()).toEqual(rn3);
       const lt32 = lt23.next;
-      expect(lt32._getDept()).toEqual(rn3);
-      expect(lt32._getDest()).toEqual(rn2);
+      expect(lt32.departure()).toEqual(rn3);
+      expect(lt32.desttination()).toEqual(rn2);
 
       const dept21 = lt32.next;
-      expect(dept21._getDept()).toEqual(rn2);
-      expect(dept21._getDest()).toEqual(rn2);
+      expect(dept21.departure()).toEqual(rn2);
+      expect(dept21.desttination()).toEqual(rn2);
 
       const lt21 = dept21.next;
-      expect(lt21._getDept()).toEqual(rn2);
-      expect(lt21._getDest()).toEqual(rn1);
+      expect(lt21.departure()).toEqual(rn2);
+      expect(lt21.desttination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
     });
 

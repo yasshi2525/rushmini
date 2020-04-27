@@ -10,7 +10,7 @@ class RailNode extends PointableObject {
   public platform?: Platform;
 
   constructor(x: number, y: number) {
-    super(x, y);
+    super(x, y) /* istanbul ignore next */;
     this.out = [];
     this.in = [];
     modelListener.add(EventType.CREATED, this);

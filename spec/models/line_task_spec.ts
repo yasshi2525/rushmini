@@ -23,9 +23,9 @@ describe("line_task", () => {
     expect(dept.parent).toEqual(l);
     expect(dept.prev).toEqual(dept);
     expect(dept.next).toEqual(dept);
-    expect(dept._getDept()).toEqual(rn);
-    expect(dept._getDest()).toEqual(rn);
-    expect(dept._getLength()).toEqual(0);
+    expect(dept.departure()).toEqual(rn);
+    expect(dept.desttination()).toEqual(rn);
+    expect(dept.length()).toEqual(0);
   });
 
   describe("_angle", () => {
@@ -52,6 +52,21 @@ describe("line_task", () => {
       const mv12 = new EdgeTask(l, e12, dept);
 
       expect(mv12._angle(e23)).toBeNaN();
+    });
+
+    it("forbit to calculate angle with all zero-length edge tasks", () => {
+      const l = new RailLine();
+      const rn1 = new RailNode(0, 0);
+      const p1 = rn1._buildStation();
+      const e12 = rn1._extend(0, 0);
+      const rn2 = e12.to;
+      const p2 = rn2._buildStation();
+      const e23 = rn2._extend(0, 0);
+
+      const dept1 = new DeptTask(l, p1);
+      dept1._insertEdge(e12);
+
+      expect(dept1.next.next._angle(e23)).toBeNaN();
     });
 
     it("non-neighbor edge from dept task returns NaN", () => {
@@ -118,9 +133,9 @@ describe("line_task", () => {
 
         expect(outbound.parent).toEqual(l);
         expect(outbound.edge).toEqual(e1);
-        expect(outbound._getDept()).toEqual(from);
-        expect(outbound._getDest()).toEqual(to);
-        expect(outbound._getLength()).toEqual(e1.arrow.length());
+        expect(outbound.departure()).toEqual(from);
+        expect(outbound.desttination()).toEqual(to);
+        expect(outbound.length()).toEqual(e1.arrow.length());
       });
 
       it("'outbound' task is setted between 'dept' and 'inbound' task", () => {
@@ -139,8 +154,8 @@ describe("line_task", () => {
 
         expect(inbound.parent).toEqual(l);
         expect(inbound.edge).toEqual(e2);
-        expect(inbound._getDept()).toEqual(to);
-        expect(inbound._getDest()).toEqual(from);
+        expect(inbound.departure()).toEqual(to);
+        expect(inbound.desttination()).toEqual(from);
       });
 
       it("'inbound' task is setted between 'outbound' and 'dept' task", () => {
@@ -171,31 +186,31 @@ describe("line_task", () => {
       it("1. depart from 'from'", () => {
         const dept = l.top;
         expect(dept).toBeInstanceOf(DeptTask);
-        expect(dept._getDept()).toEqual(from);
-        expect(dept._getDest()).toEqual(from);
+        expect(dept.departure()).toEqual(from);
+        expect(dept.desttination()).toEqual(from);
       });
 
       it("2. move from 'from' to 'to'", () => {
         const outbound = l.top.next;
         expect(outbound).toBeInstanceOf(EdgeTask);
-        expect(outbound._getDept()).toEqual(from);
-        expect(outbound._getDest()).toEqual(to);
+        expect(outbound.departure()).toEqual(from);
+        expect(outbound.desttination()).toEqual(to);
         expect(outbound.prev).toEqual(l.top);
       });
 
       it("3. depart from 'to'", () => {
         const dept = l.top.next.next;
         expect(dept).toBeInstanceOf(DeptTask);
-        expect(dept._getDept()).toEqual(to);
-        expect(dept._getDest()).toEqual(to);
+        expect(dept.departure()).toEqual(to);
+        expect(dept.desttination()).toEqual(to);
         expect(dept.prev).toEqual(l.top.next);
       });
 
       it("4. move from 'to' to 'from'", () => {
         const inbound = l.top.next.next.next;
         expect(inbound).toBeInstanceOf(EdgeTask);
-        expect(inbound._getDept()).toEqual(to);
-        expect(inbound._getDest()).toEqual(from);
+        expect(inbound.departure()).toEqual(to);
+        expect(inbound.desttination()).toEqual(from);
         expect(inbound.prev).toEqual(l.top.next.next);
         expect(inbound.next).toEqual(l.top);
       });
@@ -231,8 +246,8 @@ describe("line_task", () => {
         const e23task = l.top.next.next;
         expect(e23task).toBeInstanceOf(EdgeTask);
         expect((e23task as EdgeTask).edge).toEqual(e23);
-        expect(e23task._getDept()).toEqual(e23.from);
-        expect(e23task._getDest()).toEqual(e23.to);
+        expect(e23task.departure()).toEqual(e23.from);
+        expect(e23task.desttination()).toEqual(e23.to);
         expect(e23task.prev).toEqual(l.top.next);
       });
 
@@ -241,8 +256,8 @@ describe("line_task", () => {
         const e32 = e23.reverse;
         expect(e32task).toBeInstanceOf(EdgeTask);
         expect((e32task as EdgeTask).edge).toEqual(e32);
-        expect(e32task._getDept()).toEqual(e32.from);
-        expect(e32task._getDest()).toEqual(e32.to);
+        expect(e32task.departure()).toEqual(e32.from);
+        expect(e32task.desttination()).toEqual(e32.to);
         expect(e32task.prev).toEqual(l.top.next.next);
         expect(e32task.next).toEqual(l.top.prev);
       });
@@ -279,8 +294,8 @@ describe("line_task", () => {
         const e23task = l.top.next.next;
         expect(e23task).toBeInstanceOf(EdgeTask);
         expect((e23task as EdgeTask).edge).toEqual(e23);
-        expect(e23task._getDept()).toEqual(e23.from);
-        expect(e23task._getDest()).toEqual(e23.to);
+        expect(e23task.departure()).toEqual(e23.from);
+        expect(e23task.desttination()).toEqual(e23.to);
         expect(e23task.prev).toEqual(l.top.next);
       });
 
@@ -290,8 +305,8 @@ describe("line_task", () => {
         const p3 = rn3.platform;
         expect(dept).toBeInstanceOf(DeptTask);
         expect((dept as DeptTask).stay).toEqual(p3);
-        expect(dept._getDept()).toEqual(rn3);
-        expect(dept._getDest()).toEqual(rn3);
+        expect(dept.departure()).toEqual(rn3);
+        expect(dept.desttination()).toEqual(rn3);
         expect(dept.prev).toEqual(l.top.next.next);
       });
 
@@ -300,8 +315,8 @@ describe("line_task", () => {
         const e32 = e23.reverse;
         expect(e32task).toBeInstanceOf(EdgeTask);
         expect((e32task as EdgeTask).edge).toEqual(e32);
-        expect(e32task._getDept()).toEqual(e32.from);
-        expect(e32task._getDest()).toEqual(e32.to);
+        expect(e32task.departure()).toEqual(e32.from);
+        expect(e32task.desttination()).toEqual(e32.to);
         expect(e32task.prev).toEqual(l.top.next.next.next);
         expect(e32task.next).toEqual(l.top.prev);
       });
@@ -334,16 +349,16 @@ describe("line_task", () => {
         const dept1 = l.top;
         expect(dept1).toBeInstanceOf(DeptTask);
         expect((dept1 as DeptTask).stay).toEqual(e12.from.platform);
-        expect(dept1._getDept()).toEqual(e12.from);
-        expect(dept1._getDest()).toEqual(e12.from);
+        expect(dept1.departure()).toEqual(e12.from);
+        expect(dept1.desttination()).toEqual(e12.from);
       });
 
       it("move from 'rn1' to 'rn2", () => {
         const move12 = l.top.next;
         expect(move12).toBeInstanceOf(EdgeTask);
         expect((move12 as EdgeTask).edge).toEqual(e12);
-        expect(move12._getDept()).toEqual(e12.from);
-        expect(move12._getDest()).toEqual(e12.to);
+        expect(move12.departure()).toEqual(e12.from);
+        expect(move12.desttination()).toEqual(e12.to);
         expect(move12.prev).toEqual(l.top);
       });
 
@@ -351,8 +366,8 @@ describe("line_task", () => {
         const dept2 = l.top.next.next;
         expect(dept2).toBeInstanceOf(DeptTask);
         expect((dept2 as DeptTask).stay).toEqual(e12.to.platform);
-        expect(dept2._getDept()).toEqual(e12.to);
-        expect(dept2._getDest()).toEqual(e12.to);
+        expect(dept2.departure()).toEqual(e12.to);
+        expect(dept2.desttination()).toEqual(e12.to);
         expect(dept2.prev).toEqual(l.top.next);
       });
 
@@ -360,8 +375,8 @@ describe("line_task", () => {
         const move23 = l.top.next.next.next;
         expect(move23).toBeInstanceOf(EdgeTask);
         expect((move23 as EdgeTask).edge).toEqual(e23);
-        expect(move23._getDept()).toEqual(e23.from);
-        expect(move23._getDest()).toEqual(e23.to);
+        expect(move23.departure()).toEqual(e23.from);
+        expect(move23.desttination()).toEqual(e23.to);
         expect(move23.prev).toEqual(l.top.next.next);
       });
     });
@@ -410,12 +425,12 @@ describe("line_task", () => {
       l._start(p1);
       l.top._insertEdge(e12);
       outbound = l.top.next;
-      expect(outbound._getDept()).toEqual(rn1);
-      expect(outbound._getDest()).toEqual(rn2);
+      expect(outbound.departure()).toEqual(rn1);
+      expect(outbound.desttination()).toEqual(rn2);
 
       inbound = l.top.prev;
-      expect(inbound._getDept()).toEqual(rn2);
-      expect(inbound._getDest()).toEqual(rn1);
+      expect(inbound.departure()).toEqual(rn2);
+      expect(inbound.desttination()).toEqual(rn1);
 
       const p2 = e12.to._buildStation();
       outbound._insertPlatform(p2);

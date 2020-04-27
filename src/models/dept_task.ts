@@ -9,16 +9,20 @@ export class DeptTask extends LineTask {
   public readonly stay: Platform;
 
   constructor(parent: RailLine, stay: Platform, prev?: LineTask) {
-    super(parent, prev);
+    super(parent, prev) /* istanbul ignore next */;
     this.stay = stay;
     modelListener.add(EventType.CREATED, this);
   }
 
-  public _getDept() {
+  public isDeptTask() {
+    return true;
+  }
+
+  public departure() {
     return this.stay.on;
   }
 
-  public _getDest() {
+  public desttination() {
     return this.stay.on;
   }
 
@@ -31,17 +35,18 @@ export class DeptTask extends LineTask {
       console.warn("could not calculate angle to un-neighbored edge");
       return NaN;
     }
-    const prev = this.prev;
+    let prev = this.prev;
     while (prev !== this) {
-      if (prev._getLength() > 0) {
+      if (prev.length() > 0) {
         return prev._angle(edge);
       }
+      prev = prev.prev;
     }
     console.warn("line has no edge task");
     return NaN;
   }
 
-  public _getLength() {
+  public length() {
     return 0;
   }
 

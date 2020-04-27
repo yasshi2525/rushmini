@@ -18,15 +18,15 @@ abstract class LineTask {
       this.next = this;
     }
   }
-
-  public abstract _getDept(): RailNode;
-  public abstract _getDest(): RailNode;
+  public abstract isDeptTask(): boolean;
+  public abstract departure(): RailNode;
+  public abstract desttination(): RailNode;
   /**
    * 自タスクの終点から何ラジアン回転すれば引数の線路に一致するか返す。(左回り正)
    * @param edge
    */
   public abstract _angle(edge: RailEdge): number;
-  public abstract _getLength(): number;
+  public abstract length(): number;
 
   /**
    * 指定された線路と隣接しているか判定します

@@ -242,11 +242,6 @@
 			"path": "script/models/line_task_utils.js",
 			"global": true
 		},
-		"pathfinder_view": {
-			"type": "script",
-			"path": "script/entities/pathfinder_view.js",
-			"global": true
-		},
 		"path_finder": {
 			"type": "script",
 			"path": "script/models/path_finder.js",
@@ -265,6 +260,21 @@
 		"routable": {
 			"type": "script",
 			"path": "script/models/routable.js",
+			"global": true
+		},
+		"route_finder": {
+			"type": "script",
+			"path": "script/utils/route_finder.js",
+			"global": true
+		},
+		"track_finder": {
+			"type": "script",
+			"path": "script/utils/track_finder.js",
+			"global": true
+		},
+		"transport_finder": {
+			"type": "script",
+			"path": "script/utils/transport_finder.js",
 			"global": true
 		}
 	},

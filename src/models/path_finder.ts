@@ -1,4 +1,5 @@
 import { Routable } from "./routable";
+import { Pointable } from "./pointable";
 
 class PathNode {
   public readonly origin: Routable;
@@ -54,6 +55,11 @@ class PathNode {
       });
     }
   }
+
+  public _reset() {
+    this.cost = Number.MAX_VALUE;
+    this.via = undefined;
+  }
 }
 
 class PathEdge {
@@ -74,7 +80,7 @@ class PathEdge {
 }
 
 class PathFinder {
-  private readonly goal: PathNode;
+  readonly goal: PathNode;
   private readonly nodes: PathNode[] = [];
   private readonly edges: PathEdge[] = [];
 
@@ -116,10 +122,13 @@ class PathFinder {
   }
 
   public execute() {
+    this.nodes.forEach((n) => n._reset());
     this.goal._walkThrough();
     this.nodes
       .filter((n) => n.via)
-      .forEach((n) => n.origin.setNext(n.via.origin, this.goal.origin));
+      .forEach((n) =>
+        n.origin._setNext(n.via.origin, this.goal.origin, n.cost)
+      );
   }
 }
 

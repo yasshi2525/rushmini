@@ -17,7 +17,7 @@ const _filterNeighbors = (top: LineTask, edge: RailEdge) => {
       // 隣接していないタスクはスキップ
       !current._isNeighbor(edge) ||
       // 駅に到着するタスクはスキップ。発車タスクの後に挿入する
-      current.next._getDept() === current.next._getDest()
+      current.next.isDeptTask()
     ) {
       // do-nothing
     } else {
@@ -36,9 +36,7 @@ const _filterOutUnangled = (neighbors: LineTask[]) => {
   if (neighbors.length === 1) {
     return neighbors;
   }
-  return neighbors.filter(
-    (lt) => !(lt._getDept() !== lt._getDest() && lt._getLength() === 0)
-  );
+  return neighbors.filter((lt) => lt.isDeptTask() || lt.length() > 0);
 };
 
 /**
@@ -100,7 +98,7 @@ class RailLine {
     const result: LineTask[] = [];
     let current = this.top;
     do {
-      if (current._getDest() === node) {
+      if (current.desttination() === node) {
         result.push(current);
       }
       current = current.next;
@@ -141,10 +139,6 @@ class RailLine {
     this.filterDestIs(platform.on).forEach((lt) =>
       lt._insertPlatform(platform)
     );
-  }
-
-  public _reset() {
-    this.top = undefined;
   }
 }
 

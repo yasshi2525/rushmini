@@ -11,16 +11,20 @@ class EdgeTask extends LineTask {
   public readonly edge: RailEdge;
 
   constructor(parent: RailLine, edge: RailEdge, prev: LineTask) {
-    super(parent, prev);
+    super(parent, prev) /* istanbul ignore next */;
     this.edge = edge;
     modelListener.add(EventType.CREATED, this);
   }
 
-  public _getDept() {
+  public isDeptTask() {
+    return false;
+  }
+
+  public departure() {
     return this.edge.from;
   }
 
-  public _getDest() {
+  public desttination() {
     return this.edge.to;
   }
 
@@ -33,7 +37,7 @@ class EdgeTask extends LineTask {
     return angle(edge.arrow, this.edge.arrow.reverse());
   }
 
-  public _getLength() {
+  public length() {
     return this.edge.arrow.length();
   }
 
@@ -62,7 +66,7 @@ class EdgeTask extends LineTask {
    * @param platform
    */
   public _insertPlatform(platform: Platform) {
-    if (this._getDest() !== platform.on) {
+    if (this.desttination() !== platform.on) {
       console.warn("try to insert non-neighbored platform");
       return;
     }
