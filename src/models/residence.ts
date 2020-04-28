@@ -1,3 +1,4 @@
+import ticker from "../utils/ticker";
 import Company from "./company";
 import Human from "./human";
 import modelListener, { EventType } from "./listener";
@@ -15,21 +16,12 @@ class Residence extends PointableObject implements Steppable {
    * 人の生成速度。INTERVAL_SEC 秒 経過すると1人生成する
    */
   public static INTERVAL_SEC: number = 0.2;
-
-  public static FPS: number = 30;
   /**
    * 残り remain frame 経過すると人を生成する
    */
   private remainFrame: number;
 
-  private humanEventHandler: (h: Human) => void;
-
-  constructor(
-    destinations: Company[],
-    x: number,
-    y: number,
-    cb: (h: Human) => void
-  ) {
+  constructor(destinations: Company[], x: number, y: number) {
     super(x, y) /* istanbul ignore next */;
     // 会社の魅力度に応じて行き先を比例配分する
     destinations.forEach((c) => {
@@ -37,8 +29,7 @@ class Residence extends PointableObject implements Steppable {
         this.destinations.push(c);
       }
     });
-    this.remainFrame = Math.floor(Residence.INTERVAL_SEC * Residence.FPS);
-    this.humanEventHandler = cb;
+    this.remainFrame = Math.floor(Residence.INTERVAL_SEC * ticker.fps());
     modelListener.add(EventType.CREATED, this);
   }
 
@@ -52,15 +43,16 @@ class Residence extends PointableObject implements Steppable {
     return new Human(this, dest);
   }
 
-  public _step(frame: number) {
-    this.remainFrame -= frame;
+  public _step() {
+    this.remainFrame--;
     if (this.remainFrame <= 0) {
-      const h = this._spawn();
-      if (h) {
-        this.humanEventHandler(h);
-      }
-      this.remainFrame += Math.floor(Residence.INTERVAL_SEC * Residence.FPS);
+      this._spawn();
+      this.remainFrame += Math.floor(Residence.INTERVAL_SEC * ticker.fps());
     }
+  }
+
+  public _fire(subject: Human) {
+    console.warn("try to move human to residence");
   }
 }
 

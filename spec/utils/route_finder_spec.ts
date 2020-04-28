@@ -17,7 +17,7 @@ describe("route_finder", () => {
     routeFinder.init();
 
     const c = new Company(1, 0, 0);
-    const r = new Residence([c], 12, 15, () => undefined);
+    const r = new Residence([c], 12, 15);
     modelListener.fire(EventType.CREATED);
 
     expect(r.nextFor(c)).toEqual(c);
@@ -28,7 +28,7 @@ describe("route_finder", () => {
     routeFinder.init();
 
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => undefined);
+    const r = new Residence([c], 0, 0);
     modelListener.fire(EventType.CREATED);
 
     userResource.start(3, 4);
@@ -58,7 +58,7 @@ describe("route_finder", () => {
     userResource.end();
 
     const c = new Company(1, 9, 12);
-    const r = new Residence([c], 0, 0, () => undefined);
+    const r = new Residence([c], 0, 0);
     modelListener.fire(EventType.CREATED);
 
     const dept1 = userResource.getPrimaryLine().top;
@@ -80,14 +80,14 @@ describe("route_finder", () => {
     routeFinder.init();
 
     const c = new Company(1, 9, 12);
-    const r1 = new Residence([c], 0, 0, () => undefined);
+    const r1 = new Residence([c], 0, 0);
     modelListener.fire(EventType.CREATED);
 
     userResource.start(3, 4);
     userResource.extend(6, 8);
     userResource.end();
 
-    const r2 = new Residence([c], 0, 0, () => undefined);
+    const r2 = new Residence([c], 0, 0);
     modelListener.fire(EventType.CREATED);
 
     const dept1 = userResource.getPrimaryLine().top;

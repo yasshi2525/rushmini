@@ -13,6 +13,8 @@ const createHumanPanel: ViewerCreator<Human> = (
     scene: loadedScene,
     x: h.loc().x - width / 2,
     y: h.loc().y - height / 2,
+    width,
+    height,
   });
 
   panel.append(

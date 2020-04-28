@@ -14,6 +14,11 @@ describe("rail_node", () => {
     expect(rn.loc().y).toEqual(Y);
   });
 
+  it("_fire", () => {
+    const rn = new RailNode(0, 0);
+    rn._fire();
+  });
+
   describe("_extend", () => {
     const X = 3;
     const Y = 4;

@@ -1,3 +1,3 @@
 export interface Steppable {
-  _step(frame: number): void;
+  _step(): void;
 }

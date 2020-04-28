@@ -27,7 +27,7 @@ export enum EventType {
 
 const _triggers = new TriggerContainer<EventType, number>();
 
-let _scenes: { scene: g.Scene; fn: () => void }[];
+const _scenes: { scene: g.Scene; fn: () => void }[] = [];
 
 const ticker = {
   /**
@@ -36,13 +36,8 @@ const ticker = {
   init: (fps: number, val?: number) => {
     _fps = fps;
     _remainFrame = (val ? val : defaultTotalSec) * _fps;
-    _triggers.flush();
-    _triggers.unregisterAll();
-    if (_scenes) {
-      _scenes.forEach((s) => s.scene.update.remove(s.fn));
-    }
-    _scenes = [];
   },
+
   /**
    * 残りゲーム時間を秒単位で返す
    */
@@ -50,6 +45,7 @@ const ticker = {
     const remain = Math.floor(_remainFrame / _fps) - endingSec;
     return Math.max(remain, 0);
   },
+
   step: () => {
     if (_remainFrame > 0) {
       const oldGameTime = ticker.getRemainGameTime();
@@ -73,6 +69,7 @@ const ticker = {
       }
     }
   },
+
   /**
    * シーンの描画が更新される度に残りフレームを減らすようにする
    */
@@ -83,14 +80,27 @@ const ticker = {
     scene.update.add(fn);
     _scenes.push({ scene, fn });
   },
+
   /**
    * イベントハンドラの登録を受け付ける
    */
   triggers: _triggers,
+
   /**
    * 制限時間を使い切ったか判定する
    */
   isExpired: () => _remainFrame <= 0,
+
+  fps: () => _fps,
+
+  reset: () => {
+    _fps = 30;
+    _remainFrame = defaultTotalSec * _fps;
+    _triggers.flush();
+    _triggers.unregisterAll();
+    _scenes.forEach((s) => s.scene.update.remove(s.fn));
+    _scenes.length = 0;
+  },
 };
 
 export default ticker;

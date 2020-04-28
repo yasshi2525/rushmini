@@ -1,3 +1,4 @@
+import Human, { HumanState } from "./human";
 import modelListener, { EventType } from "./listener";
 import PointableObject from "./pointable";
 
@@ -14,6 +15,20 @@ class Company extends PointableObject {
     }
     this.attractiveness = attractiveness;
     modelListener.add(EventType.CREATED, this);
+  }
+
+  /**
+   * 指定された移動者を自身に向かって移動させる。到達したならば完了
+   * @param subject
+   * @param onComplete
+   */
+  public _fire(subject: Human, onComplete: () => void) {
+    if (subject._seek(this)) {
+      subject.state(HumanState.ARCHIVED);
+      onComplete();
+    } else {
+      subject.state(HumanState.MOVE);
+    }
   }
 }
 

@@ -1,24 +1,26 @@
 import Company from "../models/company";
 import Gate from "../models/gate";
+import Human from "../models/human";
 import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
 import { distance } from "../models/pointable";
 import Residence from "../models/residence";
-import userResource, { ModelStateType } from "../models/user_resource";
+import userResource, { ModelState } from "../models/user_resource";
 
 const finders: PathFinder[] = [];
 const rs: Residence[] = [];
 const cs: Company[] = [];
 const ps: Platform[] = [];
 const gs: Gate[] = [];
+const hs: Human[] = [];
 
 /**
  * P <=> P
  * @param f
  */
 const transport = (f: PathFinder) => {
-  if (userResource.getState() === ModelStateType.FIXED) {
+  if (userResource.getState() === ModelState.FIXED) {
     ps.forEach((dept) =>
       ps.forEach((dest) => f.edge(dept, dest, dept.costFor(dest)))
     );
@@ -62,7 +64,7 @@ const handler = {
         f.edge(g, c, distance(c, g));
 
         // all [G <=> P] for the goal
-        g.st.platforms.forEach((p) => {
+        g.station.platforms.forEach((p) => {
           f.edge(p, g, distance(g, p));
           f.edge(g, p, distance(p, g));
         });
@@ -88,7 +90,7 @@ const handler = {
         f.edge(g, c, distance(g, c));
 
         // G <=> P for each goal
-        g.st.platforms.forEach((p) => {
+        g.station.platforms.forEach((p) => {
           f.edge(p, g, distance(g, p));
           f.edge(g, p, distance(p, g));
         });

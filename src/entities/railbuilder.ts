@@ -1,19 +1,19 @@
-import userResource, { ModelStateType } from "../models/user_resource";
+import userResource, { ModelState } from "../models/user_resource";
 
 const startHandler = (x: number, y: number) => {
-  if (userResource.getState() === ModelStateType.INITED) {
+  if (userResource.getState() === ModelState.INITED) {
     userResource.start(x, y);
   }
 };
 
 const moveHandler = (x: number, y: number) => {
-  if (userResource.getState() === ModelStateType.STARTED) {
+  if (userResource.getState() === ModelState.STARTED) {
     userResource.extend(x, y);
   }
 };
 
 const endHandler = () => {
-  if (userResource.getState() === ModelStateType.STARTED) {
+  if (userResource.getState() === ModelState.STARTED) {
     userResource.end();
   }
 };

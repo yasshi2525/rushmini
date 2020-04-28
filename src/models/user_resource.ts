@@ -4,7 +4,7 @@ import RailNode from "./rail_node";
 
 export const stationInterval = 50;
 
-export enum ModelStateType {
+export enum ModelState {
   INITED,
   STARTED,
   FIXED,
@@ -13,7 +13,7 @@ export enum ModelStateType {
 export class UserResource {
   private primaryLine: RailLine;
   private tailNode?: RailNode;
-  private state: ModelStateType;
+  private state: ModelState;
 
   public readonly stateListeners: {
     onStarted?: (ev: UserResource) => void;
@@ -28,26 +28,26 @@ export class UserResource {
 
   constructor() {
     this.primaryLine = new RailLine();
-    this.state = ModelStateType.INITED;
+    this.state = ModelState.INITED;
     this.stateListeners = [];
   }
 
-  private setState(state: ModelStateType) {
+  private setState(state: ModelState) {
     switch (state) {
-      case ModelStateType.INITED:
-        this.state = ModelStateType.INITED;
+      case ModelState.INITED:
+        this.state = ModelState.INITED;
         this.stateListeners
           .filter((l) => l.onReset)
           .forEach((l) => l.onReset(this));
         break;
-      case ModelStateType.STARTED:
-        this.state = ModelStateType.STARTED;
+      case ModelState.STARTED:
+        this.state = ModelState.STARTED;
         this.stateListeners
           .filter((l) => l.onStarted)
           .forEach((l) => l.onStarted(this));
         break;
-      case ModelStateType.FIXED:
-        this.state = ModelStateType.FIXED;
+      case ModelState.FIXED:
+        this.state = ModelState.FIXED;
         this.stateListeners
           .filter((l) => l.onFixed)
           .forEach((l) => l.onFixed(this));
@@ -70,19 +70,19 @@ export class UserResource {
    */
   public start(x: number, y: number) {
     switch (this.state) {
-      case ModelStateType.INITED:
+      case ModelState.INITED:
         const rn = new RailNode(x, y);
         this.primaryLine._start(rn._buildStation());
         this.tailNode = rn;
 
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
-        this.setState(ModelStateType.STARTED);
+        this.setState(ModelState.STARTED);
         break;
-      case ModelStateType.STARTED:
+      case ModelState.STARTED:
         console.warn("try to start building model");
         break;
-      case ModelStateType.FIXED:
+      case ModelState.FIXED:
         console.warn("try to start already fixed model");
         break;
     }
@@ -95,10 +95,10 @@ export class UserResource {
    */
   public extend(x: number, y: number) {
     switch (this.state) {
-      case ModelStateType.INITED:
+      case ModelState.INITED:
         console.warn("try to extend init model");
         break;
-      case ModelStateType.STARTED:
+      case ModelState.STARTED:
         const edge = this.tailNode._extend(x, y);
 
         // 一定間隔で駅を作成する
@@ -114,7 +114,7 @@ export class UserResource {
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
         break;
-      case ModelStateType.FIXED:
+      case ModelState.FIXED:
         console.warn("try to extend already fixed model");
         break;
     }
@@ -125,10 +125,10 @@ export class UserResource {
    */
   public end() {
     switch (this.state) {
-      case ModelStateType.INITED:
+      case ModelState.INITED:
         console.warn("try to extend init model");
         break;
-      case ModelStateType.STARTED:
+      case ModelState.STARTED:
         if (!this.tailNode.platform) {
           const p = this.tailNode._buildStation();
           this.primaryLine._insertPlatform(p);
@@ -136,9 +136,9 @@ export class UserResource {
 
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
-        this.setState(ModelStateType.FIXED);
+        this.setState(ModelState.FIXED);
         break;
-      case ModelStateType.FIXED:
+      case ModelState.FIXED:
         console.warn("try to end already fixed model");
         break;
     }
@@ -146,7 +146,7 @@ export class UserResource {
 
   public reset() {
     this.primaryLine = new RailLine();
-    this.setState(ModelStateType.INITED);
+    this.setState(ModelState.INITED);
   }
 }
 

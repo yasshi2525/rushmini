@@ -12,6 +12,9 @@ describe("ticker", () => {
     beforeEach(() => {
       ticker.init(FPS, GAME + ENDING);
     });
+    afterEach(() => {
+      ticker.reset();
+    });
 
     it("init without value", () => {
       ticker.init(60);
@@ -36,6 +39,9 @@ describe("ticker", () => {
   describe("step", () => {
     beforeEach(() => {
       ticker.init(FPS, GAME + ENDING);
+    });
+    afterEach(() => {
+      ticker.reset();
     });
 
     it("change game time sec after invoking in 'FPS' times", () => {
@@ -68,6 +74,7 @@ describe("ticker", () => {
     });
 
     afterEach(() => {
+      ticker.reset();
       recreateGame();
     });
 
@@ -85,6 +92,9 @@ describe("ticker", () => {
   describe("notify", () => {
     beforeEach(() => {
       ticker.init(FPS, GAME + ENDING);
+    });
+    afterEach(() => {
+      ticker.reset();
     });
 
     it("notify changing second", () => {

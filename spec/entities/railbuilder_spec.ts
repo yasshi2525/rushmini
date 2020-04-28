@@ -2,7 +2,7 @@ import createRailBuilder from "entities/railbuilder";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
-import userResource, { ModelStateType } from "models/user_resource";
+import userResource, { ModelState } from "models/user_resource";
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
@@ -167,7 +167,7 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelState.FIXED);
 
     sensor.pointDown.fire({
       priority: 2,
@@ -179,7 +179,7 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelState.FIXED);
 
     sensor.pointMove.fire({
       priority: 2,
@@ -193,7 +193,7 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelState.FIXED);
 
     sensor.pointUp.fire({
       priority: 2,
@@ -207,6 +207,6 @@ describe("railbuilder", () => {
       target: panel,
     });
 
-    expect(userResource.getState()).toEqual(ModelStateType.FIXED);
+    expect(userResource.getState()).toEqual(ModelState.FIXED);
   });
 });

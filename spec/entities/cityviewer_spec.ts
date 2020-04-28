@@ -3,6 +3,7 @@ import cityResource from "models/city_resource";
 import Company from "models/company";
 import Human from "models/human";
 import modelListener, { EventType } from "models/listener";
+import { distance } from "models/pointable";
 import Residence from "models/residence";
 import random from "utils/random";
 import { createLoadedScene } from "../_helper/scene";
@@ -35,7 +36,6 @@ describe("cityviewer", () => {
   });
 
   afterEach(() => {
-    cityResource.reset();
     modelListener.unregisterAll();
     modelListener.flush();
     recreateGame();
@@ -59,11 +59,29 @@ describe("cityviewer", () => {
   it("human creates panel", () => {
     const panel = createCityViewer(scene);
     cityResource.init(WIDTH, HEIGHT, rand);
-    rs[0]._step(6);
+    for (let j = 0; j < 6; j++) rs[0]._step();
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(3);
     const human = panel.children[2];
     const hPanel = human.children[0];
+    expect(human.x + hPanel.width / 2).toEqual(hs[0].loc().x);
+    expect(human.y + hPanel.height / 2).toEqual(hs[0].loc().y);
+  });
+
+  it("human moving changes panel", () => {
+    const panel = createCityViewer(scene);
+    cityResource.init(WIDTH, HEIGHT, rand);
+    rs[0]._setNext(cs[0], cs[0], distance(cs[0], rs[0]));
+    for (let j = 0; j < 6; j++) rs[0]._step();
+    modelListener.fire(EventType.CREATED);
+
+    const human = panel.children[2];
+    const hPanel = human.children[0];
+    expect(panel.children.length).toEqual(3);
+    expect(human.x + hPanel.width / 2).toEqual(hs[0].loc().x);
+    expect(human.y + hPanel.height / 2).toEqual(hs[0].loc().y);
+    hs[0]._step();
+    modelListener.fire(EventType.MODIFIED);
     expect(human.x + hPanel.width / 2).toEqual(hs[0].loc().x);
     expect(human.y + hPanel.height / 2).toEqual(hs[0].loc().y);
   });

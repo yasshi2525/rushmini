@@ -2,7 +2,7 @@ import DeptTask from "models/dept_task";
 import modelListener from "models/listener";
 import RailLine from "models/rail_line";
 import {
-  ModelStateType,
+  ModelState,
   stationInterval,
   UserResource,
 } from "models/user_resource";
@@ -17,7 +17,7 @@ describe("user_resource", () => {
       const instance = new UserResource();
       expect(instance.getPrimaryLine()).toBeInstanceOf(RailLine);
       expect(instance.getPrimaryLine().top).toBeUndefined();
-      expect(instance.getState()).toEqual(ModelStateType.INITED);
+      expect(instance.getState()).toEqual(ModelState.INITED);
     });
   });
 
@@ -36,7 +36,7 @@ describe("user_resource", () => {
       expect(dept).toBeInstanceOf(DeptTask);
       expect(dept.departure().loc()).toEqual({ x: X, y: Y });
       expect(dept.desttination().loc()).toEqual({ x: X, y: Y });
-      expect(instance.getState()).toEqual(ModelStateType.STARTED);
+      expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 
     it("forbit start when started state", () => {
@@ -51,7 +51,7 @@ describe("user_resource", () => {
       expect(dept.departure().loc()).toEqual({ x: X, y: Y });
       expect(dept.desttination().loc()).toEqual({ x: X, y: Y });
       expect(dept.next).toEqual(dept);
-      expect(instance.getState()).toEqual(ModelStateType.STARTED);
+      expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 
     it("forbit start when fixed state", () => {
@@ -67,7 +67,7 @@ describe("user_resource", () => {
       expect(dept.departure().loc()).toEqual({ x: X, y: Y });
       expect(dept.desttination().loc()).toEqual({ x: X, y: Y });
       expect(dept.next).toEqual(dept);
-      expect(instance.getState()).toEqual(ModelStateType.FIXED);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
     });
   });
 
@@ -100,7 +100,7 @@ describe("user_resource", () => {
       expect(inbound.desttination().loc()).toEqual({ x: X1, y: Y1 });
 
       expect(inbound.next).toEqual(dept);
-      expect(instance.getState()).toEqual(ModelStateType.STARTED);
+      expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 
     it("build station at regular interval", () => {
@@ -121,13 +121,13 @@ describe("user_resource", () => {
       instance.extend(stationInterval, 0);
       tail = tail.next;
       expect(tail.desttination().platform).toBeUndefined();
-      expect(instance.getState()).toEqual(ModelStateType.STARTED);
+      expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 
     it("forbit to extend when initial state", () => {
       instance.extend(3, 4);
       expect(instance.getPrimaryLine().top).toBeUndefined();
-      expect(instance.getState()).toEqual(ModelStateType.INITED);
+      expect(instance.getState()).toEqual(ModelState.INITED);
     });
 
     it("forbit to extend when fixed state", () => {
@@ -136,7 +136,7 @@ describe("user_resource", () => {
       instance.extend(3, 4);
       const dept = instance.getPrimaryLine().top;
       expect(dept.next).toEqual(dept);
-      expect(instance.getState()).toEqual(ModelStateType.FIXED);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
     });
   });
 
@@ -153,13 +153,13 @@ describe("user_resource", () => {
       const dept = instance.getPrimaryLine().top.next.next;
       expect(dept).toBeInstanceOf(DeptTask);
       expect(dept.departure().loc()).toEqual({ x: 1, y: 1 });
-      expect(instance.getState()).toEqual(ModelStateType.FIXED);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
     });
 
     it("forbit to end when state is 'INITED'", () => {
       instance.end();
       expect(instance.getPrimaryLine().top).toBeUndefined();
-      expect(instance.getState()).toEqual(ModelStateType.INITED);
+      expect(instance.getState()).toEqual(ModelState.INITED);
     });
 
     it("forbit to end when state is 'FIXED'", () => {
@@ -168,7 +168,7 @@ describe("user_resource", () => {
       instance.end();
       expect(instance.getPrimaryLine().top).toBeInstanceOf(DeptTask);
       expect(instance.getPrimaryLine().top.next).toBeInstanceOf(DeptTask);
-      expect(instance.getState()).toEqual(ModelStateType.FIXED);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
     });
   });
 

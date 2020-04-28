@@ -276,6 +276,11 @@
 			"type": "script",
 			"path": "script/utils/transport_finder.js",
 			"global": true
+		},
+		"stepper": {
+			"type": "script",
+			"path": "script/utils/stepper.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

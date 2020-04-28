@@ -1,16 +1,29 @@
+import Human, { HumanState } from "./human";
 import modelListener, { EventType } from "./listener";
 import RailNode from "./rail_node";
 import RoutableObject from "./routable";
 import Station from "./station";
 
 class Platform extends RoutableObject {
+  public static CAPACITY: number = 20;
+
   public readonly on: RailNode;
   public readonly station: Station;
+  /**
+   * プラットフォーム上で電車を待機している人
+   */
+  private readonly inQueue: Human[];
+  /**
+   * 電車から降りた人
+   */
+  readonly outQueue: Human[];
 
   constructor(on: RailNode, st: Station) {
     super();
     this.on = on;
     this.station = st;
+    this.inQueue = [];
+    this.outQueue = [];
     on.platform = this;
     st.platforms.push(this);
     modelListener.add(EventType.CREATED, this);
@@ -18,6 +31,38 @@ class Platform extends RoutableObject {
 
   public loc() {
     return this.on.loc();
+  }
+
+  /**
+   * 自身を目的地とされた場合、移動者に指示を出します。
+   * コンコース上にいる場合は入場を許可します
+   * プラットフォーム上にいる場合は出場を許可します
+   * @param subject
+   * @param onComplete
+   */
+  public _fire(subject: Human, onComplete: () => void) {
+    const gate = this.station.gate;
+
+    // 駅入場者をプラットフォーム上にならばせる。
+    if (
+      gate._concourse.some((h) => h === subject) &&
+      this.inQueue.length < Platform.CAPACITY
+    ) {
+      gate._concourse.splice(gate._concourse.indexOf(subject), 1);
+      this.inQueue.push(subject);
+      subject.state(HumanState.WAIT_TRAIN);
+      onComplete();
+      return;
+    }
+
+    // 到着した人を改札に向かわせる
+    if (this.outQueue.some((h) => h === subject)) {
+      this.outQueue.splice(this.outQueue.indexOf(subject), 1);
+      subject.state(HumanState.WAIT_EXIT_GATE);
+      gate.outQueue.push({ subject, onComplete });
+      onComplete();
+      return;
+    }
   }
 }
 

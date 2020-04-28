@@ -20,7 +20,6 @@ const _gameState = {
 const init = (param: GameMainParameterObject) => {
   // 制限時間の設定
   ticker.init(g.game.fps, param.sessionParameter.totalTimeLimit);
-  Residence.FPS = g.game.fps;
   // 共通seed値の設定
   random.init(param.random);
   // 変数の初期化

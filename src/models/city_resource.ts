@@ -1,5 +1,4 @@
 import Company from "./company";
-import Human from "./human";
 import modelListener, { EventType } from "./listener";
 import Residence from "./residence";
 
@@ -11,9 +10,6 @@ export class CityResource {
 
   private width: number;
   private height: number;
-
-  private readonly rs: Residence[] = [];
-  private readonly hs: Human[] = [];
 
   public init(
     width: number,
@@ -30,25 +26,9 @@ export class CityResource {
     const r = new Residence(
       [c],
       rand(0, CityResource.AREA),
-      rand(0, CityResource.AREA),
-      (h) => {
-        this.hs.push(h);
-      }
+      rand(0, CityResource.AREA)
     );
-    this.rs.push(r);
     modelListener.fire(EventType.CREATED);
-  }
-
-  public step(frame: number) {
-    this.rs.forEach((r) => r._step(frame));
-    this.hs.forEach((h) => h._step(frame));
-    modelListener.fire(EventType.CREATED);
-    modelListener.fire(EventType.MODIFIED);
-  }
-
-  public reset() {
-    this.rs.length = 0;
-    this.hs.length = 0;
   }
 }
 
