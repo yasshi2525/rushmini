@@ -89,7 +89,7 @@ class Human extends RoutableObject implements Steppable {
   }
 
   public _step() {
-    this.next._fire(this, () => this._complete());
+    if (this.next) this.next._fire(this, () => this._complete());
   }
 
   private _complete() {
