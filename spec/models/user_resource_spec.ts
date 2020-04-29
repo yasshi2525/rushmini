@@ -1,4 +1,5 @@
 import DeptTask from "models/dept_task";
+import LineTask from "models/line_task";
 import modelListener from "models/listener";
 import RailLine from "models/rail_line";
 import {
@@ -105,7 +106,7 @@ describe("user_resource", () => {
 
     it("build station at regular interval", () => {
       instance.start(0, 0);
-      let tail = instance.getPrimaryLine().top;
+      let tail: LineTask = instance.getPrimaryLine().top;
       for (let i = 0; i < stationInterval - 1; i++) {
         instance.extend(i, 0);
         tail = tail.next;

@@ -1,8 +1,8 @@
 import Human from "./human";
 
 type Route = {
-  readonly goal: RoutableObject;
-  next: RoutableObject;
+  readonly goal: Routable;
+  next: Routable;
   cost: number;
 };
 
@@ -28,23 +28,22 @@ export interface Routable {
   /**
    * 自身を目的地とする移動者に対し、指定されたframe分、アクションさせます
    * @param subject
-   * @param onComplete
    */
-  _fire(subject: Human, onComplete: () => void): void;
+  _fire(subject: Human): void;
 }
 
 abstract class RoutableObject implements Routable {
   private readonly table: Route[] = [];
 
-  public nextFor(goal: RoutableObject) {
+  public nextFor(goal: Routable) {
     return this.table.find((r) => r.goal === goal)?.next;
   }
 
-  public costFor(goal: RoutableObject) {
+  public costFor(goal: Routable) {
     return this.table.find((r) => r.goal === goal)?.cost ?? NaN;
   }
 
-  public _setNext(next: RoutableObject, goal: RoutableObject, cost: number) {
+  public _setNext(next: Routable, goal: Routable, cost: number) {
     const current = this.table.find((r) => r.goal === goal);
     if (current) {
       current.next = next;
@@ -54,7 +53,7 @@ abstract class RoutableObject implements Routable {
     }
   }
 
-  abstract _fire(subject: Human, onComplete: () => void): void;
+  abstract _fire(subject: Human): void;
 }
 
 export default RoutableObject;

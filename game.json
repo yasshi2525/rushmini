@@ -281,6 +281,31 @@
 			"type": "script",
 			"path": "script/utils/stepper.js",
 			"global": true
+		},
+		"move_task": {
+			"type": "script",
+			"path": "script/models/move_task.js",
+			"global": true
+		},
+		"stay_task": {
+			"type": "script",
+			"path": "script/models/stay_task.js",
+			"global": true
+		},
+		"train": {
+			"type": "script",
+			"path": "script/models/train.js",
+			"global": true
+		},
+		"train_executor": {
+			"type": "script",
+			"path": "script/models/train_executor.js",
+			"global": true
+		},
+		"train_task": {
+			"type": "script",
+			"path": "script/models/train_task.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

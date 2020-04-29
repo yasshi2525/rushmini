@@ -1,5 +1,6 @@
 import ticker from "../utils/ticker";
 import Company from "./company";
+import DeptTask from "./dept_task";
 import modelListener, { EventType } from "./listener";
 import Point, { distance } from "./point";
 import { Pointable, substract } from "./pointable";
@@ -13,7 +14,10 @@ export enum HumanState {
   WAIT_ENTER_GATE,
   WAIT_ENTER_PLATFORM,
   WAIT_TRAIN,
+  WAIT_ENTER_TRAIN,
   ON_TRAIN,
+  WAIT_EXIT_TRAIN,
+  WAIT_EXIT_PLATFORM,
   WAIT_EXIT_GATE,
   ARCHIVED,
 }
@@ -53,10 +57,10 @@ class Human extends RoutableObject implements Steppable {
     return this.pos;
   }
 
-  private move(p: Pointable): void;
-  private move(x: number, y: number): void;
+  public _move(p: Pointable): void;
+  public _move(x: number, y: number): void;
 
-  private move(arg1: Pointable | number, arg2?: number) {
+  public _move(arg1: Pointable | number, arg2?: number) {
     const prev = this.pos;
     if (typeof arg1 === "number") {
       this.pos = new Point(arg1, arg2);
@@ -73,10 +77,10 @@ class Human extends RoutableObject implements Steppable {
     const available = Human.SPEED / ticker.fps();
     if (available >= remain.length()) {
       // オーバーランを防ぐ
-      this.move(goal);
+      this._move(goal);
       return true;
     } else {
-      this.move(
+      this._move(
         this.pos.x + available * Math.cos(remain.angle()),
         this.pos.y + available * Math.sin(remain.angle())
       );
@@ -88,11 +92,27 @@ class Human extends RoutableObject implements Steppable {
     console.warn("try to handle human");
   }
 
-  public _step() {
-    if (this.next) this.next._fire(this, () => this._complete());
+  /**
+   * 指定された乗車タスクが目前にあった場合でも、降りずに乗車しつづけるか返します
+   * @param lt
+   */
+  public _keepsRide(lt: DeptTask) {
+    return this.next === lt;
   }
 
-  private _complete() {
+  /**
+   * 指定された乗車タスクが目前にあった場合、乗車するか返します
+   * @param lt
+   */
+  public _shuoldRide(lt: DeptTask) {
+    return this.next === lt;
+  }
+
+  public _step() {
+    if (this.next) this.next._fire(this);
+  }
+
+  public _complete() {
     this.next = this.next.nextFor(this.destination);
   }
 }

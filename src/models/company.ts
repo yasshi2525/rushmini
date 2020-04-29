@@ -20,12 +20,11 @@ class Company extends PointableObject {
   /**
    * 指定された移動者を自身に向かって移動させる。到達したならば完了
    * @param subject
-   * @param onComplete
    */
-  public _fire(subject: Human, onComplete: () => void) {
+  public _fire(subject: Human) {
     if (subject._seek(this)) {
       subject.state(HumanState.ARCHIVED);
-      onComplete();
+      subject._complete();
     } else {
       subject.state(HumanState.MOVE);
     }

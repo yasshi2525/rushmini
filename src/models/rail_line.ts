@@ -80,7 +80,7 @@ const _findFarLeft = (top: LineTask, edge: RailEdge) => {
 };
 
 class RailLine {
-  public top?: LineTask;
+  public top?: DeptTask;
 
   constructor() {
     modelListener.add(EventType.CREATED, this);
@@ -96,7 +96,7 @@ class RailLine {
     }
 
     const result: LineTask[] = [];
-    let current = this.top;
+    let current: LineTask = this.top;
     do {
       if (current.desttination() === node) {
         result.push(current);

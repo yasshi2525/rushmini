@@ -1,15 +1,44 @@
+import Human from "./human";
 import LineTask from "./line_task";
 import { _createTask } from "./line_task_utils";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
+import RoutableObject, { Routable } from "./routable";
 
-export class DeptTask extends LineTask {
+/**
+ * 列車移動のための乗車タスクを経路中継点で表したもの
+ */
+class DeptTaskRouter extends RoutableObject {
+  readonly queue: Human[];
+  private readonly parent: DeptTask;
+
+  constructor(parent: DeptTask) {
+    super();
+    this.parent = parent;
+    this.queue = [];
+  }
+
+  /**
+   * プラットフォームで電車を待っているならば、乗車待ちリストに登録します
+   * @param subject
+   */
+  public _fire(subject: Human) {
+    if (this.queue.some((h) => h === subject)) {
+      return;
+    }
+    this.queue.push(subject);
+  }
+}
+
+export class DeptTask extends LineTask implements Routable {
+  private readonly router: DeptTaskRouter;
   public readonly stay: Platform;
 
   constructor(parent: RailLine, stay: Platform, prev?: LineTask) {
     super(parent, prev) /* istanbul ignore next */;
+    this.router = new DeptTaskRouter(this);
     this.stay = stay;
     modelListener.add(EventType.CREATED, this);
   }
@@ -80,6 +109,26 @@ export class DeptTask extends LineTask {
 
   public _insertPlatform(platform: Platform) {
     console.warn("try to insert platform to DeptTask");
+  }
+
+  public _fire(subject: Human) {
+    this.router._fire(subject);
+  }
+
+  public _setNext(next: RoutableObject, goal: RoutableObject, cost: number) {
+    return this.router._setNext(next, goal, cost);
+  }
+
+  public nextFor(goal: RoutableObject) {
+    return this.router.nextFor(goal);
+  }
+
+  public costFor(goal: RoutableObject) {
+    return this.router.costFor(goal);
+  }
+
+  public _queue() {
+    return this.router.queue;
   }
 }
 export default DeptTask;

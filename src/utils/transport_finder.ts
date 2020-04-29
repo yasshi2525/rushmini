@@ -15,6 +15,7 @@ const ps: Platform[] = [];
 
 /**
  * 前の駅から次の駅までの距離をタスク距離合計とする
+ * 乗車プラットフォーム => 発車タスク => 到着プラットフォームとする
  */
 const scanRailLine = (f: PathFinder, l: RailLine) => {
   let prevDept = l.top;
@@ -23,11 +24,10 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
 
   while (current !== l.top) {
     if (current.isDeptTask()) {
-      f.edge(
-        prevDept.departure().platform,
-        current.departure().platform,
-        length
-      );
+      // プラットフォームから乗車タスクをつなぐ
+      f.edge(prevDept.departure().platform, prevDept, 0);
+      // 乗車タスクを経由してプラットフォーム間を紐付ける
+      f.edge(prevDept, current.departure().platform, length);
       prevDept = current;
       length = 0;
     } else {
@@ -35,7 +35,9 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
     }
     current = current.next;
   }
-  f.edge(prevDept.departure().platform, current.departure().platform, length);
+
+  f.edge(prevDept.departure().platform, prevDept, 0);
+  f.edge(prevDept, current.departure().platform, length);
 };
 
 const handler = {

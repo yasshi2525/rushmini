@@ -12,7 +12,7 @@ class Platform extends RoutableObject {
   /**
    * プラットフォーム上で電車を待機している人
    */
-  private readonly inQueue: Human[];
+  public readonly inQueue: Human[];
   /**
    * 電車から降りた人
    */
@@ -38,9 +38,8 @@ class Platform extends RoutableObject {
    * コンコース上にいる場合は入場を許可します
    * プラットフォーム上にいる場合は出場を許可します
    * @param subject
-   * @param onComplete
    */
-  public _fire(subject: Human, onComplete: () => void) {
+  public _fire(subject: Human) {
     const gate = this.station.gate;
 
     // 駅入場者をプラットフォーム上にならばせる。
@@ -51,7 +50,7 @@ class Platform extends RoutableObject {
       gate._concourse.splice(gate._concourse.indexOf(subject), 1);
       this.inQueue.push(subject);
       subject.state(HumanState.WAIT_TRAIN);
-      onComplete();
+      subject._complete();
       return;
     }
 
@@ -59,8 +58,8 @@ class Platform extends RoutableObject {
     if (this.outQueue.some((h) => h === subject)) {
       this.outQueue.splice(this.outQueue.indexOf(subject), 1);
       subject.state(HumanState.WAIT_EXIT_GATE);
-      gate.outQueue.push({ subject, onComplete });
-      onComplete();
+      gate.outQueue.push(subject);
+      subject._complete();
       return;
     }
   }

@@ -1,3 +1,4 @@
+import DeptTask from "./dept_task";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
@@ -18,7 +19,7 @@ abstract class LineTask {
       this.next = this;
     }
   }
-  public abstract isDeptTask(): boolean;
+  public abstract isDeptTask(): this is DeptTask;
   public abstract departure(): RailNode;
   public abstract desttination(): RailNode;
   /**
