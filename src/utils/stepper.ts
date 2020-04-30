@@ -3,6 +3,7 @@ import Human from "../models/human";
 import listener, { EventType as Ev } from "../models/listener";
 import Residence from "../models/residence";
 import Train from "../models/train";
+import userResource, { ModelState } from "../models/user_resource";
 
 const rs: Residence[] = [];
 const gs: Gate[] = [];
@@ -20,7 +21,8 @@ const stepper = {
   step: () => {
     rs.forEach((r) => r._step());
     gs.forEach((g) => g._step());
-    ts.forEach((t) => t._step());
+    if (userResource.getState() === ModelState.FIXED)
+      ts.forEach((t) => t._step());
     hs.forEach((h) => h._step());
     listener.fire(Ev.CREATED);
     listener.fire(Ev.MODIFIED);

@@ -51,7 +51,7 @@ export class DeptTask extends LineTask implements Routable {
     return this.stay.on;
   }
 
-  public desttination() {
+  public destination() {
     return this.stay.on;
   }
 

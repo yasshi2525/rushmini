@@ -120,13 +120,13 @@ export class UserResource {
         // 一定間隔で電車を作成する
         this.trainCounter++;
         if (this.trainCounter >= UserResource.TRAIN_INTERVAL) {
-          this.ts.push(
-            new Train(
-              find(this.primaryLine.filterDestIs(this.tailNode), (lt) =>
-                this.ts.every((t) => t._current() !== lt)
-              )
-            )
-          );
+          this.primaryLine
+            .filter((lt) => lt.departure() === this.tailNode)
+            .forEach((lt) => {
+              if (this.ts.every((t) => t._current() !== lt)) {
+                this.ts.push(new Train(lt));
+              }
+            });
           this.trainCounter = 0;
         }
 

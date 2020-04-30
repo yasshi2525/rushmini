@@ -19,8 +19,8 @@ describe("track_finder", () => {
 
     const dept = userResource.getPrimaryLine().top;
     const rn1 = dept.departure();
-    const rn2 = dept.next.desttination();
-    const rn3 = dept.next.next.desttination();
+    const rn2 = dept.next.destination();
+    const rn3 = dept.next.next.destination();
 
     expect(rn1.nextFor(rn1)).toEqual(rn2);
     expect(rn1.costFor(rn1)).toEqual(1);

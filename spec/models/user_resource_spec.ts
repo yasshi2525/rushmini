@@ -33,7 +33,7 @@ describe("user_resource", () => {
       const dept = instance.getPrimaryLine().top;
       expect(dept).toBeInstanceOf(DeptTask);
       expect(dept.departure().loc()).toEqual({ x: X, y: Y });
-      expect(dept.desttination().loc()).toEqual({ x: X, y: Y });
+      expect(dept.destination().loc()).toEqual({ x: X, y: Y });
       expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 
@@ -47,7 +47,7 @@ describe("user_resource", () => {
       const dept = instance.getPrimaryLine().top;
       expect(dept).toBeInstanceOf(DeptTask);
       expect(dept.departure().loc()).toEqual({ x: X, y: Y });
-      expect(dept.desttination().loc()).toEqual({ x: X, y: Y });
+      expect(dept.destination().loc()).toEqual({ x: X, y: Y });
       expect(dept.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelState.STARTED);
     });
@@ -63,7 +63,7 @@ describe("user_resource", () => {
       const dept = instance.getPrimaryLine().top;
       expect(dept).toBeInstanceOf(DeptTask);
       expect(dept.departure().loc()).toEqual({ x: X, y: Y });
-      expect(dept.desttination().loc()).toEqual({ x: X, y: Y });
+      expect(dept.destination().loc()).toEqual({ x: X, y: Y });
       expect(dept.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelState.FIXED);
     });
@@ -94,15 +94,15 @@ describe("user_resource", () => {
 
       const dept = instance.getPrimaryLine().top;
       expect(dept.departure().loc()).toEqual({ x: X1, y: Y1 });
-      expect(dept.desttination().loc()).toEqual({ x: X1, y: Y1 });
+      expect(dept.destination().loc()).toEqual({ x: X1, y: Y1 });
 
       const outbound = dept.next;
       expect(outbound.departure().loc()).toEqual({ x: X1, y: Y1 });
-      expect(outbound.desttination().loc()).toEqual({ x: X2, y: Y2 });
+      expect(outbound.destination().loc()).toEqual({ x: X2, y: Y2 });
 
       const inbound = outbound.next;
       expect(inbound.departure().loc()).toEqual({ x: X2, y: Y2 });
-      expect(inbound.desttination().loc()).toEqual({ x: X1, y: Y1 });
+      expect(inbound.destination().loc()).toEqual({ x: X1, y: Y1 });
 
       expect(inbound.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelState.STARTED);
@@ -114,18 +114,18 @@ describe("user_resource", () => {
       for (let i = 0; i < UserResource.STATION_INTERVAL - 1; i++) {
         instance.extend(i, 0);
         tail = tail.next;
-        expect(tail.desttination().platform).toBeUndefined();
+        expect(tail.destination().platform).toBeUndefined();
       }
 
       instance.extend(UserResource.STATION_INTERVAL - 1, 0);
       tail = tail.next;
-      expect(tail.desttination().platform).not.toBeUndefined();
+      expect(tail.destination().platform).not.toBeUndefined();
       tail = tail.next;
       expect(tail).toBeInstanceOf(DeptTask);
 
       instance.extend(UserResource.STATION_INTERVAL, 0);
       tail = tail.next;
-      expect(tail.desttination().platform).toBeUndefined();
+      expect(tail.destination().platform).toBeUndefined();
       expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 
@@ -138,7 +138,7 @@ describe("user_resource", () => {
       for (let i = 0; i < UserResource.TRAIN_INTERVAL - 1; i++) {
         instance.extend(i, 0);
         tail = tail.next;
-        if (tail.desttination().platform) {
+        if (tail.destination().platform) {
           tail = tail.next;
         }
         expect(ts.length).toEqual(1);
@@ -146,11 +146,13 @@ describe("user_resource", () => {
 
       instance.extend(UserResource.TRAIN_INTERVAL - 1, 0);
       tail = tail.next;
-      expect(ts.length).toEqual(2);
+      tail = tail.next;
+      expect(ts.length).toEqual(3);
       expect(ts[1].loc()).toEqual(tail.departure().loc());
+      expect(ts[2].loc()).toEqual(tail.departure().loc());
 
       instance.extend(UserResource.TRAIN_INTERVAL, 0);
-      expect(ts.length).toEqual(2);
+      expect(ts.length).toEqual(3);
       expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 

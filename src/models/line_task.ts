@@ -21,7 +21,7 @@ abstract class LineTask {
   }
   public abstract isDeptTask(): this is DeptTask;
   public abstract departure(): RailNode;
-  public abstract desttination(): RailNode;
+  public abstract destination(): RailNode;
   /**
    * 自タスクの終点から何ラジアン回転すれば引数の線路に一致するか返す。(左回り正)
    * @param edge

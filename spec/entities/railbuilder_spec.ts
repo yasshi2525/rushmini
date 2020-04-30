@@ -67,12 +67,12 @@ describe("railbuilder", () => {
     const outbound = dept.next;
     expect(outbound).toBeInstanceOf(EdgeTask);
     expect(outbound.departure().loc()).toEqual({ x: 10, y: 20 });
-    expect(outbound.desttination().loc()).toEqual({ x: 11, y: 22 });
+    expect(outbound.destination().loc()).toEqual({ x: 11, y: 22 });
 
     const inbound = outbound.next;
     expect(inbound).toBeInstanceOf(EdgeTask);
     expect(inbound.departure().loc()).toEqual({ x: 11, y: 22 });
-    expect(inbound.desttination().loc()).toEqual({ x: 10, y: 20 });
+    expect(inbound.destination().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept);
   });
@@ -118,7 +118,7 @@ describe("railbuilder", () => {
     const outbound = dept1.next;
     expect(outbound).toBeInstanceOf(EdgeTask);
     expect(outbound.departure().loc()).toEqual({ x: 10, y: 20 });
-    expect(outbound.desttination().loc()).toEqual({ x: 11, y: 22 });
+    expect(outbound.destination().loc()).toEqual({ x: 11, y: 22 });
 
     const dept2 = outbound.next;
     expect(dept2).toBeInstanceOf(DeptTask);
@@ -127,7 +127,7 @@ describe("railbuilder", () => {
     const inbound = dept2.next;
     expect(inbound).toBeInstanceOf(EdgeTask);
     expect(inbound.departure().loc()).toEqual({ x: 11, y: 22 });
-    expect(inbound.desttination().loc()).toEqual({ x: 10, y: 20 });
+    expect(inbound.destination().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept1);
   });

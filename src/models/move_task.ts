@@ -13,7 +13,7 @@ class MoveTask extends TrainTask {
 
   public loc() {
     const from = this.base.departure().loc();
-    const to = this.base.desttination().loc();
+    const to = this.base.destination().loc();
     return new Point(
       (1 - this.progress) * from.x + this.progress * to.x,
       (1 - this.progress) * from.y + this.progress * to.y

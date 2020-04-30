@@ -24,7 +24,7 @@ describe("line_task", () => {
     expect(dept.prev).toEqual(dept);
     expect(dept.next).toEqual(dept);
     expect(dept.departure()).toEqual(rn);
-    expect(dept.desttination()).toEqual(rn);
+    expect(dept.destination()).toEqual(rn);
     expect(dept.length()).toEqual(0);
   });
 
@@ -134,7 +134,7 @@ describe("line_task", () => {
         expect(outbound.parent).toEqual(l);
         expect(outbound.edge).toEqual(e1);
         expect(outbound.departure()).toEqual(from);
-        expect(outbound.desttination()).toEqual(to);
+        expect(outbound.destination()).toEqual(to);
         expect(outbound.length()).toEqual(e1.arrow.length());
       });
 
@@ -155,7 +155,7 @@ describe("line_task", () => {
         expect(inbound.parent).toEqual(l);
         expect(inbound.edge).toEqual(e2);
         expect(inbound.departure()).toEqual(to);
-        expect(inbound.desttination()).toEqual(from);
+        expect(inbound.destination()).toEqual(from);
       });
 
       it("'inbound' task is setted between 'outbound' and 'dept' task", () => {
@@ -187,14 +187,14 @@ describe("line_task", () => {
         const dept = l.top;
         expect(dept).toBeInstanceOf(DeptTask);
         expect(dept.departure()).toEqual(from);
-        expect(dept.desttination()).toEqual(from);
+        expect(dept.destination()).toEqual(from);
       });
 
       it("2. move from 'from' to 'to'", () => {
         const outbound = l.top.next;
         expect(outbound).toBeInstanceOf(EdgeTask);
         expect(outbound.departure()).toEqual(from);
-        expect(outbound.desttination()).toEqual(to);
+        expect(outbound.destination()).toEqual(to);
         expect(outbound.prev).toEqual(l.top);
       });
 
@@ -202,7 +202,7 @@ describe("line_task", () => {
         const dept = l.top.next.next;
         expect(dept).toBeInstanceOf(DeptTask);
         expect(dept.departure()).toEqual(to);
-        expect(dept.desttination()).toEqual(to);
+        expect(dept.destination()).toEqual(to);
         expect(dept.prev).toEqual(l.top.next);
       });
 
@@ -210,7 +210,7 @@ describe("line_task", () => {
         const inbound = l.top.next.next.next;
         expect(inbound).toBeInstanceOf(EdgeTask);
         expect(inbound.departure()).toEqual(to);
-        expect(inbound.desttination()).toEqual(from);
+        expect(inbound.destination()).toEqual(from);
         expect(inbound.prev).toEqual(l.top.next.next);
         expect(inbound.next).toEqual(l.top);
       });
@@ -247,7 +247,7 @@ describe("line_task", () => {
         expect(e23task).toBeInstanceOf(EdgeTask);
         expect((e23task as EdgeTask).edge).toEqual(e23);
         expect(e23task.departure()).toEqual(e23.from);
-        expect(e23task.desttination()).toEqual(e23.to);
+        expect(e23task.destination()).toEqual(e23.to);
         expect(e23task.prev).toEqual(l.top.next);
       });
 
@@ -257,7 +257,7 @@ describe("line_task", () => {
         expect(e32task).toBeInstanceOf(EdgeTask);
         expect((e32task as EdgeTask).edge).toEqual(e32);
         expect(e32task.departure()).toEqual(e32.from);
-        expect(e32task.desttination()).toEqual(e32.to);
+        expect(e32task.destination()).toEqual(e32.to);
         expect(e32task.prev).toEqual(l.top.next.next);
         expect(e32task.next).toEqual(l.top.prev);
       });
@@ -295,7 +295,7 @@ describe("line_task", () => {
         expect(e23task).toBeInstanceOf(EdgeTask);
         expect((e23task as EdgeTask).edge).toEqual(e23);
         expect(e23task.departure()).toEqual(e23.from);
-        expect(e23task.desttination()).toEqual(e23.to);
+        expect(e23task.destination()).toEqual(e23.to);
         expect(e23task.prev).toEqual(l.top.next);
       });
 
@@ -306,7 +306,7 @@ describe("line_task", () => {
         expect(dept).toBeInstanceOf(DeptTask);
         expect((dept as DeptTask).stay).toEqual(p3);
         expect(dept.departure()).toEqual(rn3);
-        expect(dept.desttination()).toEqual(rn3);
+        expect(dept.destination()).toEqual(rn3);
         expect(dept.prev).toEqual(l.top.next.next);
       });
 
@@ -316,7 +316,7 @@ describe("line_task", () => {
         expect(e32task).toBeInstanceOf(EdgeTask);
         expect((e32task as EdgeTask).edge).toEqual(e32);
         expect(e32task.departure()).toEqual(e32.from);
-        expect(e32task.desttination()).toEqual(e32.to);
+        expect(e32task.destination()).toEqual(e32.to);
         expect(e32task.prev).toEqual(l.top.next.next.next);
         expect(e32task.next).toEqual(l.top.prev);
       });
@@ -350,7 +350,7 @@ describe("line_task", () => {
         expect(dept1).toBeInstanceOf(DeptTask);
         expect((dept1 as DeptTask).stay).toEqual(e12.from.platform);
         expect(dept1.departure()).toEqual(e12.from);
-        expect(dept1.desttination()).toEqual(e12.from);
+        expect(dept1.destination()).toEqual(e12.from);
       });
 
       it("move from 'rn1' to 'rn2", () => {
@@ -358,7 +358,7 @@ describe("line_task", () => {
         expect(move12).toBeInstanceOf(EdgeTask);
         expect((move12 as EdgeTask).edge).toEqual(e12);
         expect(move12.departure()).toEqual(e12.from);
-        expect(move12.desttination()).toEqual(e12.to);
+        expect(move12.destination()).toEqual(e12.to);
         expect(move12.prev).toEqual(l.top);
       });
 
@@ -367,7 +367,7 @@ describe("line_task", () => {
         expect(dept2).toBeInstanceOf(DeptTask);
         expect((dept2 as DeptTask).stay).toEqual(e12.to.platform);
         expect(dept2.departure()).toEqual(e12.to);
-        expect(dept2.desttination()).toEqual(e12.to);
+        expect(dept2.destination()).toEqual(e12.to);
         expect(dept2.prev).toEqual(l.top.next);
       });
 
@@ -376,7 +376,7 @@ describe("line_task", () => {
         expect(move23).toBeInstanceOf(EdgeTask);
         expect((move23 as EdgeTask).edge).toEqual(e23);
         expect(move23.departure()).toEqual(e23.from);
-        expect(move23.desttination()).toEqual(e23.to);
+        expect(move23.destination()).toEqual(e23.to);
         expect(move23.prev).toEqual(l.top.next.next);
       });
     });
@@ -426,11 +426,11 @@ describe("line_task", () => {
       l.top._insertEdge(e12);
       outbound = l.top.next;
       expect(outbound.departure()).toEqual(rn1);
-      expect(outbound.desttination()).toEqual(rn2);
+      expect(outbound.destination()).toEqual(rn2);
 
       inbound = l.top.prev;
       expect(inbound.departure()).toEqual(rn2);
-      expect(inbound.desttination()).toEqual(rn1);
+      expect(inbound.destination()).toEqual(rn1);
 
       const p2 = e12.to._buildStation();
       outbound._insertPlatform(p2);

@@ -24,7 +24,7 @@ class EdgeTask extends LineTask {
     return this.edge.from;
   }
 
-  public desttination() {
+  public destination() {
     return this.edge.to;
   }
 
@@ -66,7 +66,7 @@ class EdgeTask extends LineTask {
    * @param platform
    */
   public _insertPlatform(platform: Platform) {
-    if (this.desttination() !== platform.on) {
+    if (this.destination() !== platform.on) {
       console.warn("try to insert non-neighbored platform");
       return;
     }

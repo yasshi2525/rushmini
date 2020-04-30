@@ -6,27 +6,32 @@ import RailEdge from "./rail_edge";
 import RailNode from "./rail_node";
 
 /**
- * 指定された線路の始点を終点とする隣接タスクを返します
- * @param edge
+ * 指定した条件にあうタスクを絞り込みます
+ * @param l
+ * @param cond
  */
-const _filterNeighbors = (top: LineTask, edge: RailEdge) => {
+const _filter = (l: RailLine, cond: (lt: LineTask) => boolean) => {
+  if (!l.top) return [];
   const result: LineTask[] = [];
-  let current = top;
+  let current: LineTask = l.top;
   do {
-    if (
-      // 隣接していないタスクはスキップ
-      !current._isNeighbor(edge) ||
-      // 駅に到着するタスクはスキップ。発車タスクの後に挿入する
-      current.next.isDeptTask()
-    ) {
-      // do-nothing
-    } else {
+    if (cond(current)) {
       result.push(current);
     }
     current = current.next;
-  } while (current !== top);
+  } while (current !== l.top);
   return result;
 };
+
+/**
+ * 指定された線路の始点を終点とする隣接タスクを返します
+ * @param l
+ * @param edge
+ */
+const _filterNeighbors = (l: RailLine, edge: RailEdge) =>
+  // 隣接していないタスクはスキップ
+  // 駅に到着するタスクはスキップ。発車タスクの後に挿入する
+  _filter(l, (lt) => lt._isNeighbor(edge) && !lt.next.isDeptTask());
 
 /**
  * 候補が複数ある場合、距離0の移動タスクは角度の計算ができないのでスキップ
@@ -57,22 +62,22 @@ const _findLargestAngle = (list: LineTask[], edge: RailEdge) =>
  * これは線路を分岐させたとき、どの分岐先を選べばよいか判定するためのものです
  * @param edge
  */
-const _findFarLeft = (top: LineTask, edge: RailEdge) => {
-  if (!top) {
+const _findFarLeft = (l: RailLine, edge: RailEdge) => {
+  if (!l.top) {
     return undefined;
   }
 
   // セルフループの場合自身を返す
-  if (top.next === top) {
-    if (!top._isNeighbor(edge)) {
+  if (l.top.next === l.top) {
+    if (!l.top._isNeighbor(edge)) {
       console.warn("top is not neighbored edge");
       return undefined;
     }
-    return top;
+    return l.top;
   }
 
   // 隣接するタスクを絞り込む
-  const neighbors = _filterNeighbors(top, edge);
+  const neighbors = _filterNeighbors(l, edge);
   // 候補が複数ある場合、距離0の移動タスクは角度の計算ができないのでスキップ
   const candinates = _filterOutUnangled(neighbors);
   // 次のタスクへの回転角が最も大きいものを返す
@@ -87,23 +92,11 @@ class RailLine {
   }
 
   /**
-   * 指定された点を出発点と持つタスクを絞り込みます
-   * @param node
+   * 指定された条件を満たすタスクを絞り込みます
+   * @param cond
    */
-  public filterDestIs(node: RailNode) {
-    if (!this.top) {
-      return [];
-    }
-
-    const result: LineTask[] = [];
-    let current: LineTask = this.top;
-    do {
-      if (current.desttination() === node) {
-        result.push(current);
-      }
-      current = current.next;
-    } while (current !== this.top);
-    return result;
+  public filter(cond: (lt: LineTask) => boolean) {
+    return _filter(this, cond);
   }
 
   /**
@@ -123,7 +116,7 @@ class RailLine {
    * @param edge
    */
   public _insertEdge(edge: RailEdge) {
-    const result = _findFarLeft(this.top, edge);
+    const result = _findFarLeft(this, edge);
     if (!result) {
       console.warn("no insert candinate");
       return;
@@ -136,7 +129,7 @@ class RailLine {
    * @param platform
    */
   public _insertPlatform(platform: Platform) {
-    this.filterDestIs(platform.on).forEach((lt) =>
+    this.filter((lt) => lt.destination() === platform.on).forEach((lt) =>
       lt._insertPlatform(platform)
     );
   }
