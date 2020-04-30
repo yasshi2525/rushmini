@@ -44,7 +44,8 @@ describe("route_finder", () => {
 
     expect(r.nextFor(c)).toEqual(g1);
     expect(g1.nextFor(c)).toEqual(p1);
-    expect(p1.nextFor(c)).toEqual(p2);
+    expect(p1.nextFor(c)).toEqual(dept1);
+    expect(dept1.nextFor(c)).toEqual(p2);
     expect(p2.nextFor(c)).toEqual(g2);
     expect(g2.nextFor(c)).toEqual(c);
   });
@@ -70,7 +71,8 @@ describe("route_finder", () => {
 
     expect(r.nextFor(c)).toEqual(g1);
     expect(g1.nextFor(c)).toEqual(p1);
-    expect(p1.nextFor(c)).toEqual(p2);
+    expect(p1.nextFor(c)).toEqual(dept1);
+    expect(dept1.nextFor(c)).toEqual(p2);
     expect(p2.nextFor(c)).toEqual(g2);
     expect(g2.nextFor(c)).toEqual(c);
   });
@@ -99,7 +101,8 @@ describe("route_finder", () => {
 
     expect(r2.nextFor(c)).toEqual(g1);
     expect(g1.nextFor(c)).toEqual(p1);
-    expect(p1.nextFor(c)).toEqual(p2);
+    expect(p1.nextFor(c)).toEqual(dept1);
+    expect(dept1.nextFor(c)).toEqual(p2);
     expect(p2.nextFor(c)).toEqual(g2);
     expect(g2.nextFor(c)).toEqual(c);
   });

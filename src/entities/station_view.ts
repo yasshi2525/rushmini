@@ -2,9 +2,9 @@ import Station from "../models/station";
 import { ViewerCreator } from "./factory";
 import createPointableView from "./point_view";
 
-const width = 30;
-const height = 30;
-const cssColor = "#112233";
+const width = 20;
+const height = 20;
+const cssColor = "#336699";
 
 const createStationPanel: ViewerCreator<Station> = (
   loadedScene: g.Scene,

@@ -1,6 +1,6 @@
 import ticker from "../utils/ticker";
-import DeptTask from "./dept_task";
 import EdgeTask from "./edge_task";
+import LineTask from "./line_task";
 import MoveTask from "./move_task";
 import { Pointable } from "./pointable";
 import StayTask from "./stay_task";
@@ -8,13 +8,19 @@ import { Steppable } from "./steppable";
 import Train from "./train";
 import TrainTask from "./train_task";
 
+const newTask = (train: Train, lt: LineTask, onComplete: () => void) =>
+  lt.isDeptTask()
+    ? new StayTask(train, lt, onComplete)
+    : new MoveTask(train, lt as EdgeTask, onComplete);
+
 class TrainExecutor implements Steppable, Pointable {
   private readonly train: Train;
   private current: TrainTask;
 
-  constructor(train: Train, initialTask: DeptTask) {
+  constructor(train: Train, initialTask: LineTask) {
     this.train = train;
-    this.current = new StayTask(train, initialTask, () => this.next());
+
+    this.current = newTask(train, initialTask, () => this.next());
   }
 
   public loc() {
@@ -28,15 +34,13 @@ class TrainExecutor implements Steppable, Pointable {
     }
   }
 
+  public _current() {
+    return this.current;
+  }
+
   private next() {
     const nxt = this.current._base().next;
-    if (nxt.isDeptTask()) {
-      this.current = new StayTask(this.train, nxt, () => this.next());
-    } else {
-      this.current = new MoveTask(this.train, nxt as EdgeTask, () =>
-        this.next()
-      );
-    }
+    this.current = newTask(this.train, nxt, () => this.next());
   }
 }
 

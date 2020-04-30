@@ -2,6 +2,7 @@ import ticker from "../utils/ticker";
 import Company from "./company";
 import DeptTask from "./dept_task";
 import modelListener, { EventType } from "./listener";
+import Platform from "./platform";
 import Point, { distance } from "./point";
 import { Pointable, substract } from "./pointable";
 import Residence from "./residence";
@@ -14,7 +15,6 @@ export enum HumanState {
   WAIT_ENTER_GATE,
   WAIT_ENTER_PLATFORM,
   WAIT_TRAIN,
-  WAIT_ENTER_TRAIN,
   ON_TRAIN,
   WAIT_EXIT_TRAIN,
   WAIT_EXIT_PLATFORM,
@@ -93,11 +93,11 @@ class Human extends RoutableObject implements Steppable {
   }
 
   /**
-   * 指定された乗車タスクが目前にあった場合でも、降りずに乗車しつづけるか返します
-   * @param lt
+   * 指定されたホームが目前にあった場合で、降車するか返します
+   * @param p
    */
-  public _keepsRide(lt: DeptTask) {
-    return this.next === lt;
+  public _shouldGetOff(p: Platform) {
+    return this.next === p;
   }
 
   /**

@@ -37,6 +37,7 @@ const _appendButton = (parent: g.E) => {
     fontSize,
     textAlign: g.TextAlign.Center,
     text: "Replay",
+    textColor: "#000000",
   });
   // パネルを押下したとき半透明にする
   parent.pointDown.add(() => {
@@ -47,6 +48,7 @@ const _appendButton = (parent: g.E) => {
     parent.opacity = activeOpacity;
     parent.modified();
   });
+  parent.append(btn);
 };
 
 const createReplay = (loadedScene: g.Scene) => {

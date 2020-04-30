@@ -306,6 +306,16 @@
 			"type": "script",
 			"path": "script/models/train_task.js",
 			"global": true
+		},
+		"train_view": {
+			"type": "script",
+			"path": "script/entities/train_view.js",
+			"global": true
+		},
+		"common": {
+			"type": "script",
+			"path": "script/utils/common.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

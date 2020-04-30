@@ -1,8 +1,8 @@
+import { find } from "../utils/common";
 import modelListener, { EventType } from "./listener";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
-
-export const stationInterval = 50;
+import Train from "./train";
 
 export enum ModelState {
   INITED,
@@ -11,9 +11,13 @@ export enum ModelState {
 }
 
 export class UserResource {
+  public static STATION_INTERVAL: number = 50;
+  public static TRAIN_INTERVAL: number = 100;
+
   private primaryLine: RailLine;
   private tailNode?: RailNode;
   private state: ModelState;
+  private ts: Train[];
 
   public readonly stateListeners: {
     onStarted?: (ev: UserResource) => void;
@@ -25,9 +29,11 @@ export class UserResource {
    * 駅を一定間隔で設置するため、最後に駅を持ってからextendした回数を保持するカウンター
    */
   private railCounter: number = 0;
+  private trainCounter: number = 0;
 
   constructor() {
     this.primaryLine = new RailLine();
+    this.ts = [];
     this.state = ModelState.INITED;
     this.stateListeners = [];
   }
@@ -74,7 +80,7 @@ export class UserResource {
         const rn = new RailNode(x, y);
         this.primaryLine._start(rn._buildStation());
         this.tailNode = rn;
-
+        this.ts.push(new Train(this.primaryLine.top));
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
         this.setState(ModelState.STARTED);
@@ -103,13 +109,26 @@ export class UserResource {
 
         // 一定間隔で駅を作成する
         this.railCounter++;
-        if (this.railCounter >= stationInterval) {
+        if (this.railCounter >= UserResource.STATION_INTERVAL) {
           edge.to._buildStation();
           this.railCounter = 0;
         }
 
         this.primaryLine._insertEdge(edge);
         this.tailNode = edge.to;
+
+        // 一定間隔で電車を作成する
+        this.trainCounter++;
+        if (this.trainCounter >= UserResource.TRAIN_INTERVAL) {
+          this.ts.push(
+            new Train(
+              find(this.primaryLine.filterDestIs(this.tailNode), (lt) =>
+                this.ts.every((t) => t._current() !== lt)
+              )
+            )
+          );
+          this.trainCounter = 0;
+        }
 
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);

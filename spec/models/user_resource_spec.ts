@@ -1,12 +1,9 @@
 import DeptTask from "models/dept_task";
 import LineTask from "models/line_task";
-import modelListener from "models/listener";
+import modelListener, { EventType } from "models/listener";
 import RailLine from "models/rail_line";
-import {
-  ModelState,
-  stationInterval,
-  UserResource,
-} from "models/user_resource";
+import Train from "models/train";
+import { ModelState, UserResource } from "models/user_resource";
 
 afterAll(() => {
   modelListener.flush();
@@ -74,9 +71,16 @@ describe("user_resource", () => {
 
   describe("extend", () => {
     let instance: UserResource;
+    let ts: Train[];
 
     beforeEach(() => {
       instance = new UserResource();
+      ts = [];
+      modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
+    });
+
+    afterEach(() => {
+      modelListener.unregisterAll();
     });
 
     it("extend", () => {
@@ -107,21 +111,46 @@ describe("user_resource", () => {
     it("build station at regular interval", () => {
       instance.start(0, 0);
       let tail: LineTask = instance.getPrimaryLine().top;
-      for (let i = 0; i < stationInterval - 1; i++) {
+      for (let i = 0; i < UserResource.STATION_INTERVAL - 1; i++) {
         instance.extend(i, 0);
         tail = tail.next;
         expect(tail.desttination().platform).toBeUndefined();
       }
 
-      instance.extend(stationInterval - 1, 0);
+      instance.extend(UserResource.STATION_INTERVAL - 1, 0);
       tail = tail.next;
       expect(tail.desttination().platform).not.toBeUndefined();
       tail = tail.next;
       expect(tail).toBeInstanceOf(DeptTask);
 
-      instance.extend(stationInterval, 0);
+      instance.extend(UserResource.STATION_INTERVAL, 0);
       tail = tail.next;
       expect(tail.desttination().platform).toBeUndefined();
+      expect(instance.getState()).toEqual(ModelState.STARTED);
+    });
+
+    it("deploy train at regular interval", () => {
+      instance.start(0, 0);
+      expect(ts.length).toEqual(1);
+      let tail: LineTask = instance.getPrimaryLine().top;
+      expect(ts[0].loc()).toEqual(tail.departure().loc());
+
+      for (let i = 0; i < UserResource.TRAIN_INTERVAL - 1; i++) {
+        instance.extend(i, 0);
+        tail = tail.next;
+        if (tail.desttination().platform) {
+          tail = tail.next;
+        }
+        expect(ts.length).toEqual(1);
+      }
+
+      instance.extend(UserResource.TRAIN_INTERVAL - 1, 0);
+      tail = tail.next;
+      expect(ts.length).toEqual(2);
+      expect(ts[1].loc()).toEqual(tail.departure().loc());
+
+      instance.extend(UserResource.TRAIN_INTERVAL, 0);
+      expect(ts.length).toEqual(2);
       expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 

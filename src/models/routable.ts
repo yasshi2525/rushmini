@@ -1,3 +1,4 @@
+import { find } from "../utils/common";
 import Human from "./human";
 
 type Route = {
@@ -36,15 +37,15 @@ abstract class RoutableObject implements Routable {
   private readonly table: Route[] = [];
 
   public nextFor(goal: Routable) {
-    return this.table.find((r) => r.goal === goal)?.next;
+    return find(this.table, (r) => r.goal === goal)?.next;
   }
 
   public costFor(goal: Routable) {
-    return this.table.find((r) => r.goal === goal)?.cost ?? NaN;
+    return find(this.table, (r) => r.goal === goal)?.cost ?? NaN;
   }
 
   public _setNext(next: Routable, goal: Routable, cost: number) {
-    const current = this.table.find((r) => r.goal === goal);
+    const current = find(this.table, (r) => r.goal === goal);
     if (current) {
       current.next = next;
       current.cost = cost;

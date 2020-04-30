@@ -1,16 +1,16 @@
-import Human from "../models/human";
+import Train from "../models/train";
 import { ViewerCreator } from "./factory";
 import createPointableView from "./point_view";
 
-const width = 3;
-const height = 8;
-const cssColor = "#33ff66";
+const width = 40;
+const height = 20;
+const cssColor = "#008833";
 
-const createHumanPanel: ViewerCreator<Human> = (
+const createTrainPanel: ViewerCreator<Train> = (
   loadedScene: g.Scene,
-  h: Human
+  t: Train
 ) => {
-  const panel = createPointableView(loadedScene, h, width, height);
+  const panel = createPointableView(loadedScene, t, width, height);
 
   panel.append(
     new g.FilledRect({
@@ -24,4 +24,4 @@ const createHumanPanel: ViewerCreator<Human> = (
   return panel;
 };
 
-export default createHumanPanel;
+export default createTrainPanel;

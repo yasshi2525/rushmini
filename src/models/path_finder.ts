@@ -1,3 +1,4 @@
+import { find } from "../utils/common";
 import { Routable } from "./routable";
 
 class PathNode {
@@ -92,7 +93,7 @@ class PathFinder {
    * @param node
    */
   public node(node: Routable) {
-    const result = this.nodes.find((n) => n.origin === node);
+    const result = find(this.nodes, (n) => n.origin === node);
     if (!result) {
       const n = new PathNode(node);
       this.nodes.push(n);
@@ -108,7 +109,8 @@ class PathFinder {
    * @param cost
    */
   public edge(from: Routable, to: Routable, cost: number) {
-    const result = this.edges.find(
+    const result = find(
+      this.edges,
       (e) => e.from.origin === from && e.to.origin === to
     );
     if (result) {

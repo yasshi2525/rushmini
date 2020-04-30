@@ -39,7 +39,7 @@ class MoveTask extends TrainTask {
   }
 
   protected onPartialConsume(available: number) {
-    this.progress += available * (this.base.length() / Train.SPEED);
+    this.progress += available * (Train.SPEED / this.base.length());
     return 0;
   }
 

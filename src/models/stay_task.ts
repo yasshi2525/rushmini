@@ -71,9 +71,8 @@ class StayTask extends TrainTask {
    * 到着した瞬間にホームにいた客が対象
    */
   protected handleOnInited() {
-    this.train.passengers.forEach((h) => h._complete());
     this.train.passengers
-      .filter((h) => !h._keepsRide(this.base))
+      .filter((h) => h._shouldGetOff(this.base.stay))
       .forEach((h) => this.outQueue.push(h));
     this.base
       ._queue()

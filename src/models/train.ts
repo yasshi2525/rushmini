@@ -1,6 +1,7 @@
-import DeptTask from "./dept_task";
 import Human from "./human";
+import LineTask from "./line_task";
 import modelListener, { EventType } from "./listener";
+import { distance } from "./point";
 import { Pointable } from "./pointable";
 import { Steppable } from "./steppable";
 import TrainExecutor from "./train_executor";
@@ -33,18 +34,26 @@ class Train implements Pointable, Steppable {
 
   private readonly executor: TrainExecutor;
 
-  constructor(current: DeptTask) {
+  constructor(current: LineTask) {
     this.passengers = [];
     this.executor = new TrainExecutor(this, current);
     modelListener.add(EventType.CREATED, this);
   }
 
   public _step() {
+    const prev = this.loc();
     this.executor._step();
+    if (distance(prev, this.loc()) > 0) {
+      modelListener.add(EventType.MODIFIED, this);
+    }
   }
 
   public loc() {
     return this.executor.loc();
+  }
+
+  public _current() {
+    return this.executor._current()._base();
   }
 }
 

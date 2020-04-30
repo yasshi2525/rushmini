@@ -3,9 +3,11 @@ import Human from "models/human";
 import modelListener, { EventType } from "models/listener";
 import Platform from "models/platform";
 import { distance } from "models/pointable";
+import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
+import Train from "models/train";
 import stepper from "utils/stepper";
 import ticker from "utils/ticker";
 
@@ -31,6 +33,11 @@ describe("stepper", () => {
     const st = new Station();
     const g = st.gate;
     const p = new Platform(rn, st);
+
+    const l = new RailLine();
+    l._start(p);
+    const t = new Train(l.top);
+
     r._setNext(c, c, distance(c, r));
     hs = [];
     modelListener.find(EventType.CREATED, Human).register((h) => hs.push(h));

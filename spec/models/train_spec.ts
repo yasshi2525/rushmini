@@ -125,8 +125,7 @@ describe("train", () => {
     const g3 = p3.station.gate;
     l._insertEdge(e23);
     const dept2 = l.top.next.next as DeptTask;
-    p2._setNext(dept2, c, distance(c, p2));
-    dept2._setNext(p3, c, distance(c, p2));
+    l.top._setNext(p3, c, distance(p1, p3) / 10);
     p3._setNext(g3, c, distance(c, p3));
     g3._setNext(c, c, distance(c, g3));
 

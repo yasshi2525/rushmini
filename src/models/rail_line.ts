@@ -90,7 +90,7 @@ class RailLine {
    * 指定された点を出発点と持つタスクを絞り込みます
    * @param node
    */
-  private filterDestIs(node: RailNode) {
+  public filterDestIs(node: RailNode) {
     if (!this.top) {
       return [];
     }
