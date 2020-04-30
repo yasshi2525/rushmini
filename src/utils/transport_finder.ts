@@ -1,9 +1,9 @@
+import DeptTask from "../models/dept_task";
 import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
 import RailLine from "../models/rail_line";
 import userResource from "../models/user_resource";
-import DeptTask from "../models/dept_task";
 
 /**
  * 徒歩に比べて鉄道の移動がどれほど優位か

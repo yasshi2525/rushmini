@@ -8,9 +8,9 @@ import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
 import Train from "models/train";
+import userResource from "models/user_resource";
 import stepper from "utils/stepper";
 import ticker from "utils/ticker";
-import userResource from "models/user_resource";
 
 const FPS = 15;
 const oldINTERVAL = Residence.INTERVAL_SEC;
@@ -44,7 +44,7 @@ describe("stepper", () => {
     hs = [];
     ts = [];
     modelListener.find(EventType.CREATED, Human).register((h) => hs.push(h));
-    modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
+    modelListener.find(EventType.CREATED, Train).register((_t) => ts.push(_t));
   });
 
   afterEach(() => {

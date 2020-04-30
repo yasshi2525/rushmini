@@ -2,12 +2,11 @@ import Company from "models/company";
 import Human, { HumanState } from "models/human";
 import modelListener, { EventType } from "models/listener";
 import { distance } from "models/pointable";
-import Residence from "models/residence";
-import ticker from "utils/ticker";
-import RailNode from "models/rail_node";
 import RailLine from "models/rail_line";
-import { ModelState } from "models/user_resource";
+import RailNode from "models/rail_node";
+import Residence from "models/residence";
 import Train from "models/train";
+import ticker from "utils/ticker";
 
 const oldSpeed = Human.SPEED;
 
