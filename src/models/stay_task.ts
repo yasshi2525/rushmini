@@ -95,7 +95,7 @@ class StayTask extends TrainTask {
         const h = this.outQueue.shift();
         h.state(HumanState.WAIT_EXIT_PLATFORM);
         p.outQueue.push(h);
-        psngr.slice(psngr.indexOf(h), 1);
+        psngr.splice(psngr.indexOf(h), 1);
         this.waitSec += 1 / Train.MOBILITY;
       } else if (
         this.inQueue.length > 0 &&
@@ -105,7 +105,7 @@ class StayTask extends TrainTask {
         const h = this.inQueue.shift();
         h.state(HumanState.ON_TRAIN);
         h._complete();
-        p.inQueue.slice(p.inQueue.indexOf(h), 1);
+        p.inQueue.splice(p.inQueue.indexOf(h), 1);
         this.train.passengers.push(h);
         this.waitSec += 1 / Train.MOBILITY;
       }
