@@ -16,6 +16,9 @@ const stepper = {
     listener.find(Ev.CREATED, Gate).register((g) => gs.push(g));
     listener.find(Ev.CREATED, Train).register((t) => ts.push(t));
     listener.find(Ev.CREATED, Human).register((h) => hs.push(h));
+    listener
+      .find(Ev.DELETED, Human)
+      .register((h) => hs.splice(hs.indexOf(h), 1));
   },
 
   step: () => {
@@ -27,6 +30,7 @@ const stepper = {
     listener.fire(Ev.CREATED);
     listener.fire(Ev.MODIFIED);
     listener.fire(Ev.SCORED);
+    listener.fire(Ev.DELETED);
   },
 
   reset: () => {

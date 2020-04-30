@@ -127,8 +127,10 @@ class Human extends RoutableObject implements Steppable {
     }
     const prev = this.next;
     this.next = this.next.nextFor(this.destination);
+    // 会社到着
     if (!this.next) {
       modelListener.add(EventType.SCORED, Human.COMPLETE_SCORE);
+      modelListener.add(EventType.DELETED, this);
     }
     this.payment = prev.paymentFor(this.next);
   }
