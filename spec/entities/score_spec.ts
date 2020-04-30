@@ -3,7 +3,7 @@ import scorer from "utils/scorer";
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => void;
-const toText = (score: number) => `SCORE: ${("000" + score).slice(-3)}`;
+const toText = (score: number) => `SCORE: ${score}`;
 
 describe("score", () => {
   let scene: g.Scene;

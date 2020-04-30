@@ -4,7 +4,8 @@ import Human from "./human";
 type Route = {
   readonly goal: Routable;
   next: Routable;
-  cost: number;
+  distance: number;
+  payment: number;
 };
 
 export interface Routable {
@@ -17,14 +18,25 @@ export interface Routable {
    * 指定された地点までの移動コストを返します
    * @param goal
    */
-  costFor(goal: Routable): number;
+  distanceFor(goal: Routable): number;
+  /**
+   * 指定された地点までの運賃を返します
+   * @param goal
+   */
+  paymentFor(goal: Routable): number;
   /**
    * 指定された目的地に向かうには、どれほどのコストがかかり、次にどこに向かう必要があるか返します
    * @param next
    * @param goal
    * @param cost
+   * @param payment
    */
-  _setNext(next: Routable, goal: Routable, cost: number): void;
+  _setNext(
+    next: Routable,
+    goal: Routable,
+    cost: number,
+    payment?: number
+  ): void;
 
   /**
    * 自身を目的地とする移動者に対し、指定されたframe分、アクションさせます
@@ -40,17 +52,27 @@ abstract class RoutableObject implements Routable {
     return find(this.table, (r) => r.goal === goal)?.next;
   }
 
-  public costFor(goal: Routable) {
-    return find(this.table, (r) => r.goal === goal)?.cost ?? NaN;
+  public distanceFor(goal: Routable) {
+    return find(this.table, (r) => r.goal === goal)?.distance ?? NaN;
   }
 
-  public _setNext(next: Routable, goal: Routable, cost: number) {
+  public paymentFor(goal: Routable) {
+    return find(this.table, (r) => r.goal === goal)?.payment ?? 0;
+  }
+
+  public _setNext(
+    next: Routable,
+    goal: Routable,
+    distance: number,
+    payment: number = 0
+  ) {
     const current = find(this.table, (r) => r.goal === goal);
     if (current) {
       current.next = next;
-      current.cost = cost;
+      current.distance = distance;
+      current.payment = payment;
     } else {
-      this.table.push({ goal, next, cost });
+      this.table.push({ goal, next, distance, payment });
     }
   }
 

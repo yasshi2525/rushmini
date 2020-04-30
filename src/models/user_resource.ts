@@ -122,11 +122,7 @@ export class UserResource {
         if (this.trainCounter >= UserResource.TRAIN_INTERVAL) {
           this.primaryLine
             .filter((lt) => lt.departure() === this.tailNode)
-            .forEach((lt) => {
-              if (this.ts.every((t) => t._current() !== lt)) {
-                this.ts.push(new Train(lt));
-              }
-            });
+            .forEach((lt) => this.ts.push(new Train(lt)));
           this.trainCounter = 0;
         }
 
@@ -151,6 +147,13 @@ export class UserResource {
         if (!this.tailNode.platform) {
           const p = this.tailNode._buildStation();
           this.primaryLine._insertPlatform(p);
+          this.ts.push(
+            new Train(
+              this.primaryLine.filter(
+                (lt) => lt.isDeptTask() && lt.stay === p
+              )[0]
+            )
+          );
         }
 
         // 作成した結果を通知する

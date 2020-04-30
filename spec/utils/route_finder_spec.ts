@@ -48,6 +48,13 @@ describe("route_finder", () => {
     expect(dept1.nextFor(c)).toEqual(p2);
     expect(p2.nextFor(c)).toEqual(g2);
     expect(g2.nextFor(c)).toEqual(c);
+
+    expect(r.paymentFor(c)).toEqual(0.5);
+    expect(g1.paymentFor(c)).toEqual(0.5);
+    expect(p1.paymentFor(c)).toEqual(0.5);
+    expect(dept1.paymentFor(c)).toEqual(0.5);
+    expect(p2.paymentFor(c)).toEqual(0);
+    expect(g2.paymentFor(c)).toEqual(0);
   });
 
   it("user, then city", () => {

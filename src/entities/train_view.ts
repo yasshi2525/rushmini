@@ -3,7 +3,7 @@ import { ViewerCreator } from "./factory";
 import createPointableView from "./point_view";
 
 const width = 40;
-const height = 20;
+const height = 8;
 const cssColor = "#008833";
 
 const createTrainPanel: ViewerCreator<Train> = (

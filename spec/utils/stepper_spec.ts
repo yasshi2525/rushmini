@@ -10,6 +10,7 @@ import Station from "models/station";
 import Train from "models/train";
 import stepper from "utils/stepper";
 import ticker from "utils/ticker";
+import userResource from "models/user_resource";
 
 const FPS = 15;
 const oldINTERVAL = Residence.INTERVAL_SEC;
@@ -23,6 +24,7 @@ afterAll(() => {
 
 describe("stepper", () => {
   let hs: Human[];
+  let ts: Train[];
 
   beforeEach(() => {
     Residence.INTERVAL_SEC = 1;
@@ -40,13 +42,16 @@ describe("stepper", () => {
 
     r._setNext(c, c, distance(c, r));
     hs = [];
+    ts = [];
     modelListener.find(EventType.CREATED, Human).register((h) => hs.push(h));
+    modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
   });
 
   afterEach(() => {
     stepper.reset();
     modelListener.unregisterAll();
     modelListener.flush();
+    userResource.reset();
   });
 
   it("ticking FPS frame creates one human", () => {
@@ -73,5 +78,21 @@ describe("stepper", () => {
     expect(moveCount).toEqual(0);
     stepper.step();
     expect(moveCount).toEqual(1);
+  });
+
+  it("ticking moves train", () => {
+    let moveCount = 0;
+    modelListener.find(EventType.MODIFIED, Train).register(() => moveCount++);
+    userResource.start(0, 0);
+    userResource.extend(3, 4);
+    userResource.end();
+    console.log();
+    expect(moveCount).toEqual(0);
+    for (let j = 0; j < FPS * Train.STAY_SEC; j++) {
+      stepper.step();
+      expect(moveCount).toEqual(0);
+    }
+    stepper.step();
+    expect(moveCount).toEqual(2);
   });
 });

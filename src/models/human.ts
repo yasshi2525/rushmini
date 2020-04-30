@@ -29,12 +29,20 @@ class Human extends RoutableObject implements Steppable {
    * 1秒間に何pixcel進むか
    */
   public static SPEED: number = 50;
+  /**
+   * 会社に到着した際の加点
+   */
+  public static COMPLETE_SCORE: number = 0;
   public readonly departure: Residence;
   public readonly destination: Company;
   /**
    * 次に向かう経由点
    */
   private next: Routable;
+  /**
+   * 降車時に払う運賃
+   */
+  private payment: number;
 
   constructor(departure: Residence, destination: Company) {
     super();
@@ -113,7 +121,16 @@ class Human extends RoutableObject implements Steppable {
   }
 
   public _complete() {
+    // 運賃支払
+    if (this.payment) {
+      modelListener.add(EventType.SCORED, this.payment);
+    }
+    const prev = this.next;
     this.next = this.next.nextFor(this.destination);
+    if (!this.next) {
+      modelListener.add(EventType.SCORED, Human.COMPLETE_SCORE);
+    }
+    this.payment = prev.paymentFor(this.next);
   }
 }
 

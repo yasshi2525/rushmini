@@ -1,9 +1,13 @@
 import Company from "models/company";
 import Human, { HumanState } from "models/human";
-import modelListener from "models/listener";
+import modelListener, { EventType } from "models/listener";
 import { distance } from "models/pointable";
 import Residence from "models/residence";
 import ticker from "utils/ticker";
+import RailNode from "models/rail_node";
+import RailLine from "models/rail_line";
+import { ModelState } from "models/user_resource";
+import Train from "models/train";
 
 const oldSpeed = Human.SPEED;
 
@@ -42,6 +46,10 @@ describe("human", () => {
       ticker.init(FPS);
       Human.SPEED = defaultSpeed;
     });
+    afterEach(() => {
+      modelListener.unregisterAll();
+    });
+
     it("human walk one frame forward directory to company", () => {
       Human.SPEED = 1;
       const c = new Company(1, 1, 0);
@@ -83,5 +91,63 @@ describe("human", () => {
       expect(h.loc().x).toBeCloseTo(3);
       expect(h.loc().y).toBeCloseTo(4);
     });
+  });
+
+  it("payment after arrival", () => {
+    const c = new Company(1, 3, 4);
+    const r = new Residence([c], 0, 0);
+    const rn = new RailNode(0, 0);
+    const p1 = rn._buildStation();
+    const g1 = p1.station.gate;
+    const e12 = rn._extend(3, 4);
+    const p2 = e12.to._buildStation();
+    const g2 = p2.station.gate;
+    const l = new RailLine();
+    l._start(p1);
+    l._insertEdge(e12);
+    const t = new Train(l.top);
+    let score = 0;
+    modelListener
+      .find(EventType.SCORED, Number)
+      .register((n: number) => (score += n));
+    g2._setNext(c, c, distance(c, g2));
+    p2._setNext(g2, c, distance(c, p2));
+    l.top._setNext(p2, c, distance(c, p1));
+    l.top._setNext(p2, p2, distance(p2, p1), distance(p2, p1));
+    p1._setNext(l.top, c, distance(c, p1));
+    g1._setNext(p1, c, distance(c, g1));
+    r._setNext(g1, c, distance(c, r));
+
+    const h = new Human(r, c);
+    expect(h.state()).toEqual(HumanState.SPAWNED);
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
+    g1._step();
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_TRAIN);
+    h._step();
+    for (let j = 0; j < Train.STAY_SEC * FPS; j++) {
+      t._step();
+      expect(h.state()).toEqual(HumanState.ON_TRAIN);
+    }
+    for (let j = 0; j < (5 * FPS) / Train.SPEED; j++) {
+      t._step();
+      expect(h.state()).toEqual(HumanState.ON_TRAIN);
+    }
+    modelListener.fire(EventType.SCORED);
+    expect(score).toEqual(0);
+    t._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    modelListener.fire(EventType.SCORED);
+    expect(score).toEqual(0);
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    modelListener.fire(EventType.SCORED);
+    expect(score).toEqual(5);
+    g2._step();
+    expect(h.state()).toEqual(HumanState.MOVE);
+    modelListener.fire(EventType.SCORED);
+    expect(score).toEqual(5);
   });
 });

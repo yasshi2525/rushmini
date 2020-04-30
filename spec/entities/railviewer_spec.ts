@@ -64,12 +64,12 @@ describe("railviewer", () => {
       t._step();
       modelListener.fire(EventType.MODIFIED);
       expect(trainContainer.x).toEqual(-20);
-      expect(trainContainer.y).toEqual(-10);
+      expect(trainContainer.y).toEqual(-4);
     }
     t._step();
     modelListener.fire(EventType.MODIFIED);
 
     expect(trainContainer.x).not.toEqual(-20);
-    expect(trainContainer.y).not.toEqual(-10);
+    expect(trainContainer.y).not.toEqual(-4);
   });
 });

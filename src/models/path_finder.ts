@@ -7,6 +7,10 @@ class PathNode {
    * ゴールに行くまでのコスト
    */
   public cost: number = Number.MAX_VALUE;
+  /**
+   * ゴールに行くまでの運賃
+   */
+  public payment: number = 0;
 
   /**
    * この地点に次移動すればゴールにつく
@@ -27,6 +31,7 @@ class PathNode {
     return this._in
       .map((e) => {
         e.from.cost = e.cost;
+        e.from.payment = e.payment;
         e.from.via = this;
         return e.from;
       })
@@ -48,6 +53,7 @@ class PathNode {
         // より短い経路がみつかった
         if (v < y.cost) {
           y.cost = v;
+          y.payment = x.payment + e.payment;
           y.via = x;
           queue.push(y);
           queue.sort((a, b) => a.cost - b.cost);
@@ -58,6 +64,7 @@ class PathNode {
 
   public _reset() {
     this.cost = Number.MAX_VALUE;
+    this.payment = 0;
     this.via = undefined;
   }
 }
@@ -69,11 +76,16 @@ class PathEdge {
    * from から to に行くまでのコスト
    */
   public cost: number;
+  /**
+   * from から to に行くまでの運賃
+   */
+  public payment: number;
 
-  constructor(from: PathNode, to: PathNode, cost: number) {
+  constructor(from: PathNode, to: PathNode, cost: number, payment: number) {
     this.from = from;
     this.to = to;
     this.cost = cost;
+    this.payment = payment;
     from._out.push(this);
     to._in.push(this);
   }
@@ -107,16 +119,18 @@ class PathFinder {
    * @param from
    * @param to
    * @param cost
+   * @param payment
    */
-  public edge(from: Routable, to: Routable, cost: number) {
+  public edge(from: Routable, to: Routable, cost: number, payment: number = 0) {
     const result = find(
       this.edges,
       (e) => e.from.origin === from && e.to.origin === to
     );
     if (result) {
       result.cost = cost;
+      result.payment = payment;
     } else {
-      const e = new PathEdge(this.node(from), this.node(to), cost);
+      const e = new PathEdge(this.node(from), this.node(to), cost, payment);
       this.edges.push(e);
     }
     return result;
@@ -128,7 +142,7 @@ class PathFinder {
     this.nodes
       .filter((n) => n.via)
       .forEach((n) =>
-        n.origin._setNext(n.via.origin, this.goal.origin, n.cost)
+        n.origin._setNext(n.via.origin, this.goal.origin, n.cost, n.payment)
       );
   }
 }

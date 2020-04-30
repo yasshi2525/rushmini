@@ -115,16 +115,25 @@ export class DeptTask extends LineTask implements Routable {
     this.router._fire(subject);
   }
 
-  public _setNext(next: RoutableObject, goal: RoutableObject, cost: number) {
-    return this.router._setNext(next, goal, cost);
+  public _setNext(
+    next: RoutableObject,
+    goal: RoutableObject,
+    cost: number,
+    payment: number = 0
+  ) {
+    return this.router._setNext(next, goal, cost, payment);
   }
 
   public nextFor(goal: RoutableObject) {
     return this.router.nextFor(goal);
   }
 
-  public costFor(goal: RoutableObject) {
-    return this.router.costFor(goal);
+  public distanceFor(goal: RoutableObject) {
+    return this.router.distanceFor(goal);
+  }
+
+  public paymentFor(goal: RoutableObject) {
+    return this.router.paymentFor(goal);
   }
 
   public _queue() {

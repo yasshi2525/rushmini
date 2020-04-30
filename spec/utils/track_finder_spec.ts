@@ -23,17 +23,17 @@ describe("track_finder", () => {
     const rn3 = dept.next.next.destination();
 
     expect(rn1.nextFor(rn1)).toEqual(rn2);
-    expect(rn1.costFor(rn1)).toEqual(1);
+    expect(rn1.distanceFor(rn1)).toEqual(1);
     expect(rn1.nextFor(rn2)).toEqual(rn2);
-    expect(rn1.costFor(rn2)).toEqual(0.5);
+    expect(rn1.distanceFor(rn2)).toEqual(0.5);
     expect(rn1.nextFor(rn3)).toEqual(rn2);
-    expect(rn1.costFor(rn3)).toEqual(1);
+    expect(rn1.distanceFor(rn3)).toEqual(1);
 
     expect(rn2.nextFor(rn1)).toEqual(rn1);
-    expect(rn2.costFor(rn1)).toEqual(0.5);
+    expect(rn2.distanceFor(rn1)).toEqual(0.5);
     expect(rn2.nextFor(rn2)).toEqual(rn1);
-    expect(rn2.costFor(rn2)).toEqual(1);
+    expect(rn2.distanceFor(rn2)).toEqual(1);
     expect(rn2.nextFor(rn3)).toEqual(rn3);
-    expect(rn2.costFor(rn3)).toEqual(0.5);
+    expect(rn2.distanceFor(rn3)).toEqual(0.5);
   });
 });

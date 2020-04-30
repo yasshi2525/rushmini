@@ -34,10 +34,6 @@ class TrainExecutor implements Steppable, Pointable {
     }
   }
 
-  public _current() {
-    return this.current;
-  }
-
   private next() {
     const nxt = this.current._base().next;
     this.current = newTask(this.train, nxt, () => this.next());

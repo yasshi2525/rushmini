@@ -16,7 +16,7 @@ describe("path_finding", () => {
     instance.edge(r, c, distance(c, r));
     instance.execute();
     expect(r.nextFor(c)).toEqual(c);
-    expect(r.costFor(c)).toEqual(15);
+    expect(r.distanceFor(c)).toEqual(15);
   });
 
   it("with train", () => {
@@ -51,15 +51,15 @@ describe("path_finding", () => {
     instance.execute();
 
     expect(r.nextFor(c)).toEqual(g1);
-    expect(r.costFor(c)).toEqual(11);
+    expect(r.distanceFor(c)).toEqual(11);
     expect(g1.nextFor(c)).toEqual(p1);
-    expect(g1.costFor(c)).toEqual(6);
+    expect(g1.distanceFor(c)).toEqual(6);
     expect(p1.nextFor(c)).toEqual(p2);
-    expect(p1.costFor(c)).toEqual(6);
+    expect(p1.distanceFor(c)).toEqual(6);
     expect(p2.nextFor(c)).toEqual(g2);
-    expect(p2.costFor(c)).toEqual(5);
+    expect(p2.distanceFor(c)).toEqual(5);
     expect(g2.nextFor(c)).toEqual(c);
-    expect(g2.costFor(c)).toEqual(5);
+    expect(g2.distanceFor(c)).toEqual(5);
   });
 
   it("update cost", () => {
@@ -71,7 +71,7 @@ describe("path_finding", () => {
     instance.edge(r, c, 15);
     instance.edge(r, c, 10);
     instance.execute();
-    expect(r.costFor(c)).toEqual(10);
+    expect(r.distanceFor(c)).toEqual(10);
   });
 
   it("update next", () => {
@@ -112,6 +112,6 @@ describe("path_finding", () => {
     const c = new Company(1, 9, 12);
     const r = new Residence([c], 0, 0);
     expect(r.nextFor(c)).toBeUndefined();
-    expect(r.costFor(c)).toBeNaN();
+    expect(r.distanceFor(c)).toBeNaN();
   });
 });

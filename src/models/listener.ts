@@ -1,6 +1,7 @@
 export enum EventType {
   CREATED,
   MODIFIED,
+  SCORED,
   DELETED,
 }
 

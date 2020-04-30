@@ -1,3 +1,5 @@
+import modelListener, { EventType } from "../models/listener";
+
 export type ScoreStorage = { score: number };
 let _storage: ScoreStorage;
 
@@ -8,6 +10,9 @@ const _listeners: ScoreListener[] = [];
 const scorer = {
   init: (gameState: ScoreStorage) => {
     _storage = gameState;
+    modelListener
+      .find(EventType.SCORED, Number)
+      .register((v: number) => scorer.add(Math.floor(v)));
   },
   get: () => _storage.score,
   add: (v: number) => {

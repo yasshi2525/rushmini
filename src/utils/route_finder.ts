@@ -19,14 +19,21 @@ const lts: DeptTask[] = [];
 const hs: Human[] = [];
 
 /**
- * Lt => P
+ * lt => P => P
+ * Transportでは 駅間のコストを持っているため、これを対会社ゴールのリストにコピーする
  * @param f
  */
 const transport = (f: PathFinder) => {
   if (userResource.getState() === ModelState.FIXED) {
     lts.forEach((dept) =>
       ps.forEach((dest) => {
-        if (dept.nextFor(dest)) f.edge(dept, dest, dept.costFor(dest));
+        if (dept.nextFor(dest))
+          f.edge(
+            dept,
+            dest,
+            dept.distanceFor(dest),
+            dept.stay.paymentFor(dest)
+          );
       })
     );
   }
@@ -44,9 +51,6 @@ const handler = {
 
         // R => all G for each goal
         gs.forEach((g) => f.edge(r, g, distance(g, r)));
-
-        // Lt => P
-        transport(f);
 
         f.execute();
       });

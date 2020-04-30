@@ -51,10 +51,6 @@ class Train implements Pointable, Steppable {
   public loc() {
     return this.executor.loc();
   }
-
-  public _current() {
-    return this.executor._current()._base();
-  }
 }
 
 export default Train;
