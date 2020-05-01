@@ -1,6 +1,6 @@
 {
-	"width": 640,
-	"height": 360,
+	"width": 816,
+	"height": 624,
 	"fps": 30,
 	"main": "./script/_bootstrap.js",
 	"assets": {
@@ -40,11 +40,6 @@
 		"railbuild_guide": {
 			"type": "script",
 			"path": "script/entities/railbuild_guide.js",
-			"global": true
-		},
-		"railviewer": {
-			"type": "script",
-			"path": "script/entities/railviewer.js",
 			"global": true
 		},
 		"rail_edge_view": {
@@ -207,11 +202,6 @@
 			"path": "script/models/steppable.js",
 			"global": true
 		},
-		"cityviewer": {
-			"type": "script",
-			"path": "script/entities/cityviewer.js",
-			"global": true
-		},
 		"company_view": {
 			"type": "script",
 			"path": "script/entities/company_view.js",
@@ -222,19 +212,9 @@
 			"path": "script/entities/residence_view.js",
 			"global": true
 		},
-		"citybuilder": {
-			"type": "script",
-			"path": "script/entities/citybuilder.js",
-			"global": true
-		},
 		"point_view": {
 			"type": "script",
 			"path": "script/entities/point_view.js",
-			"global": true
-		},
-		"background": {
-			"type": "script",
-			"path": "script/entities/background.js",
 			"global": true
 		},
 		"line_task_utils": {
@@ -315,6 +295,21 @@
 		"common": {
 			"type": "script",
 			"path": "script/utils/common.js",
+			"global": true
+		},
+		"creator": {
+			"type": "script",
+			"path": "script/entities/creator.js",
+			"global": true
+		},
+		"model_viewer": {
+			"type": "script",
+			"path": "script/entities/model_viewer.js",
+			"global": true
+		},
+		"rectangle": {
+			"type": "script",
+			"path": "script/entities/rectangle.js",
 			"global": true
 		}
 	},

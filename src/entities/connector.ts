@@ -3,22 +3,30 @@ import { Pointable } from "../models/pointable";
 import ViewObjectFactory, { ViewObject } from "./factory";
 
 /**
+ * モデルが移動した場合、描画物の座標も移動させます
+ * @param vo
+ */
+const modifier = <T extends Pointable>(vo: ViewObject<T>) => {
+  vo.viewer.x = vo.subject.loc().x - vo.viewer.width / 2;
+  vo.viewer.y = vo.subject.loc().y - vo.viewer.height / 2;
+  vo.viewer.modified();
+};
+
+/**
  * モデルの変化にあわせて描画物を作成・削除します
  * @param factory
  * @param listener
  */
 const connect = <T extends Pointable>(
   factory: ViewObjectFactory<T>,
-  cls: new (...args: any[]) => T,
-  modifier?: (vo: ViewObject<T>) => void
+  cls: new (...args: any[]) => T
 ) => {
   modelListener.find(EventType.CREATED, cls).register((subject) => {
     const vo = factory.createInstance(subject);
-    if (modifier) {
-      const tracker = new Tracker(vo.subject);
-      tracker.register((h) => modifier(vo));
-      modelListener.track(EventType.MODIFIED, tracker);
-    }
+
+    const tracker = new Tracker(vo.subject);
+    tracker.register((h) => modifier(vo));
+    modelListener.track(EventType.MODIFIED, tracker);
   });
   modelListener
     .find(EventType.DELETED, cls)

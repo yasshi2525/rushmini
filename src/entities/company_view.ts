@@ -1,27 +1,11 @@
 import Company from "../models/company";
-import { ViewerCreator } from "./factory";
-import createPointableView from "./point_view";
+import creators from "./creator";
+import { createFramedRect } from "./rectangle";
 
 const width = 10;
 const height = 10;
-const cssColor = "#2266ff";
+const cssColor = "#4169e1";
 
-const createCompanyPanel: ViewerCreator<Company> = (
-  loadedScene: g.Scene,
-  c: Company
-) => {
-  const panel = createPointableView(loadedScene, c, width, height);
-
-  panel.append(
-    new g.FilledRect({
-      scene: loadedScene,
-      width,
-      height,
-      cssColor,
-    })
-  );
-
-  return panel;
-};
-
-export default createCompanyPanel;
+creators.put(Company, (scene, _) =>
+  createFramedRect(scene, width, height, cssColor)
+);

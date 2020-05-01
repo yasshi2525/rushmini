@@ -1,4 +1,5 @@
 import { Pointable } from "../models/pointable";
+import { ViewCreator } from "./creator";
 
 /**
  * Modelの描画情報を含んだオブジェクト
@@ -8,17 +9,12 @@ export type ViewObject<T> = {
   readonly viewer: g.E;
 };
 
-export type ViewerCreator<T extends Pointable> = (
-  loadedScene: g.Scene,
-  subject: T
-) => g.E;
-
 /**
  * モデルとビューアが紐付いたViewObjectを作成します
  */
 class ViewObjectFactory<T extends Pointable> {
   private readonly panel: g.E;
-  private readonly creator: ViewerCreator<T>;
+  private readonly creator: ViewCreator<T>;
   private readonly children: ViewObject<T>[];
 
   /**
@@ -26,7 +22,7 @@ class ViewObjectFactory<T extends Pointable> {
    * @param panel 描画物を配置するエンティティ
    * @param creator モデルから描画物を作成する関数
    */
-  constructor(panel: g.E, creator: ViewerCreator<T>) {
+  constructor(panel: g.E, creator: ViewCreator<T>) {
     this.panel = panel;
     this.creator = creator;
     this.children = [];

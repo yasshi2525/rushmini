@@ -1,4 +1,5 @@
-import ViewObjectFactory, { ViewerCreator } from "entities/factory";
+import { ViewCreator } from "entities/creator";
+import ViewObjectFactory from "entities/factory";
 import { ZeroPoint } from "models/point";
 import { Pointable } from "models/pointable";
 import { createLoadedScene } from "../_helper/scene";
@@ -13,7 +14,7 @@ class Simple implements Pointable {
 describe("factory", () => {
   let loadedScene: g.Scene;
   let panel: g.E;
-  let creator: ViewerCreator<Simple>;
+  let creator: ViewCreator<Simple>;
   let factory: ViewObjectFactory<Simple>;
 
   beforeEach(async () => {

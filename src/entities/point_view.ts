@@ -8,13 +8,13 @@ import { Pointable } from "../models/pointable";
  * @param height
  */
 const createPointableView = (
-  loadedScene: g.Scene,
+  scene: g.Scene,
   p: Pointable,
   width: number,
   height: number
 ) =>
   new g.E({
-    scene: loadedScene,
+    scene,
     x: p.loc().x - width / 2,
     y: p.loc().y - height / 2,
     width,
