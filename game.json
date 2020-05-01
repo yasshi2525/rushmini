@@ -311,6 +311,11 @@
 			"type": "script",
 			"path": "script/entities/rectangle.js",
 			"global": true
+		},
+		"bonus": {
+			"type": "script",
+			"path": "script/entities/bonus.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {},

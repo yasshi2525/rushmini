@@ -1,3 +1,4 @@
+import createBonusPanel from "../entities/bonus";
 import createModelViewer from "../entities/model_viewer";
 import createRailBuilder from "../entities/railbuilder";
 import createRailBuildGuide from "../entities/railbuild_guide";
@@ -54,6 +55,7 @@ const createGameScene = (): GameScene => {
         container.append(createRailBuildGuide(scene));
         container.append(createTickLabel(scene));
         container.append(createScoreLabel(scene));
+        container.append(createBonusPanel(scene));
         scene.append(container);
         initController(container.width, container.height);
         // 制限時間がなくなれば遷移する
