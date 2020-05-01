@@ -43,6 +43,7 @@ describe("train", () => {
   let g2: Gate;
   let p2: Platform;
   let l: RailLine;
+  let dept: DeptTask;
 
   beforeEach(() => {
     Train.SPEED = SPEED;
@@ -58,11 +59,12 @@ describe("train", () => {
     g2 = p2.station.gate;
     l = new RailLine();
     l._start(p1);
+    dept = l.top;
     l._insertEdge(e12);
     r._setNext(g1, c, distance(c, r));
     g1._setNext(p1, c, distance(c, g1));
-    p1._setNext(l.top, c, distance(c, p1) / 10);
-    l.top._setNext(p2, c, distance(c, p1) / 10);
+    p1._setNext(dept, c, distance(c, p1) / 10);
+    dept._setNext(p2, c, distance(c, p1) / 10);
     p2._setNext(g2, c, distance(c, g2));
     g2._setNext(c, c, distance(c, g2));
     h = new Human(r, c);
@@ -95,27 +97,39 @@ describe("train", () => {
     expect(t.loc()).toEqual(rn2.loc());
   });
 
-  it("human ride", () => {
+  it("ride human", () => {
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
     g1._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
     h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_TRAIN);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
     h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
+    expect(dept._queue()[0]).toEqual(h);
+
     const t = new Train(l.top);
-    for (let j = 0; j < FPS * STAY_SEC; j++) {
-      t._step();
-      expect(h.state()).toEqual(HumanState.ON_TRAIN);
-      expect(h.loc()).toEqual(rn1.loc());
-    }
-    for (let j = 0; j < FPS; j++) {
-      t._step();
-      expect(h.state()).toEqual(HumanState.ON_TRAIN);
-    }
     t._step();
-    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
-    expect(h.loc()).toEqual(rn2.loc());
+    expect(h.state()).toEqual(HumanState.ON_TRAIN);
+    expect(dept._queue().length).toEqual(0);
+    expect(t.passengers[0]).toEqual(h);
+    expect(h.loc()).toEqual(rn1.loc());
+  });
+
+  it("suspend to ride human", () => {
+    const h2 = new Human(r, c);
+    [h, h2].forEach((_h) => {
+      _h._step();
+      g1._step();
+      _h._step();
+      _h._step();
+      expect(_h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
+      for (let j = 0; j < Gate.MOBILITY_SEC * FPS; j++) g1._step();
+    });
+    const t = new Train(l.top);
+    t._step();
+    expect(h.state()).toEqual(HumanState.ON_TRAIN);
+    expect(h2.state()).toEqual(HumanState.WAIT_ENTER_TRAIN);
   });
 
   it("human pass the station", () => {
@@ -130,11 +144,8 @@ describe("train", () => {
     g3._setNext(c, c, distance(c, g3));
 
     h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
     g1._step();
-    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
     h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_TRAIN);
     h._step();
     h._step();
     const t = new Train(l.top);
@@ -161,9 +172,49 @@ describe("train", () => {
     expect(h.loc()).toEqual(rn3.loc());
   });
 
+  it("get off passenger", () => {
+    h._step();
+    g1._step();
+    h._step();
+    h._step();
+
+    const t = new Train(l.top);
+    for (let j = 0; j < FPS * STAY_SEC; j++) t._step();
+    for (let j = 0; j < FPS; j++) t._step();
+
+    expect(h.state()).toEqual(HumanState.ON_TRAIN);
+    expect(t.passengers[0]).toEqual(h);
+    expect(p2.outQueue.length).toEqual(0);
+
+    t._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(t.passengers.length).toEqual(0);
+    expect(p2.outQueue[0]).toEqual(h);
+    expect(h.loc()).toEqual(rn2.loc());
+  });
+
+  it("suspend get off passenger", () => {
+    const h2 = new Human(r, c);
+    const t = new Train(l.top);
+    [h, h2].forEach((_h) => {
+      _h._step();
+      g1._step();
+      _h._step();
+      _h._step();
+      expect(_h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
+      for (let j = 0; j < Gate.MOBILITY_SEC * FPS; j++) g1._step();
+    });
+    for (let j = 0; j < (Train.STAY_SEC + 1) * FPS; j++) t._step();
+    expect(h.state()).toEqual(HumanState.ON_TRAIN);
+    expect(h2.state()).toEqual(HumanState.ON_TRAIN);
+    t._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(h2.state()).toEqual(HumanState.WAIT_EXIT_TRAIN);
+  });
+
   it("suspend departure because crowded", () => {
     const hs: Human[] = [];
-    for (let j = 0; j < Train.STAY_SEC * Train.MOBILITY + 2; j++) {
+    for (let j = 0; j < Train.STAY_SEC * Train.MOBILITY_SEC + 2; j++) {
       hs.push(new Human(r, c));
     }
     hs.forEach((_h) => {
@@ -177,7 +228,7 @@ describe("train", () => {
     hs.forEach((_h) => {
       _h._step();
       _h._step();
-      expect(_h.state()).toEqual(HumanState.WAIT_TRAIN);
+      expect(_h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
     });
     const t = new Train(l.top);
     for (let j = 0; j < FPS * STAY_SEC + 1; j++) {

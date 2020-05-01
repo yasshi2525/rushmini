@@ -20,7 +20,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
    * 後、どれくらいのフレーム数経過すれば、人が1人通れるか
    */
   private waitFrame: number;
-  private readonly inQueue: Human[];
+  public readonly inQueue: Human[];
   /**
    * プラットフォームへの入場待機者
    */

@@ -20,7 +20,7 @@ class Train implements Pointable, Steppable {
   /**
    * 一秒間に何人乗り降りできるか
    */
-  public static MOBILITY: number = 10;
+  public static MOBILITY_SEC: number = 10;
 
   /**
    * 最低何秒間駅に停車するか

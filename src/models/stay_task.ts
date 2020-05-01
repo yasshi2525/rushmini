@@ -73,11 +73,17 @@ class StayTask extends TrainTask {
   protected handleOnInited() {
     this.train.passengers
       .filter((h) => h._shouldGetOff(this.base.stay))
-      .forEach((h) => this.outQueue.push(h));
+      .forEach((h) => {
+        h.state(HumanState.WAIT_EXIT_TRAIN);
+        this.outQueue.push(h);
+      });
     this.base
       ._queue()
       .filter((h) => h._shuoldRide(this.base))
-      .forEach((h) => this.inQueue.push(h));
+      .forEach((h) => {
+        h.state(HumanState.WAIT_ENTER_TRAIN);
+        this.inQueue.push(h);
+      });
   }
 
   /**
@@ -86,8 +92,9 @@ class StayTask extends TrainTask {
    */
   protected handleOnConsumed(available: number) {
     this.waitSec = Math.max(this.waitSec - available, 0);
-    if (this.waitSec < 1 / Train.MOBILITY + DELTA) {
-      const p = this.base.stay;
+    if (this.waitSec < 1 / Train.MOBILITY_SEC + DELTA) {
+      const dept = this.base;
+      const p = dept.stay;
       const psngr = this.train.passengers;
       // 降車優先
       if (this.outQueue.length > 0) {
@@ -96,7 +103,7 @@ class StayTask extends TrainTask {
         h.state(HumanState.WAIT_EXIT_PLATFORM);
         p.outQueue.push(h);
         psngr.splice(psngr.indexOf(h), 1);
-        this.waitSec += 1 / Train.MOBILITY;
+        this.waitSec += 1 / Train.MOBILITY_SEC;
       } else if (
         this.inQueue.length > 0 &&
         this.train.passengers.length < Train.CAPACITY
@@ -105,9 +112,9 @@ class StayTask extends TrainTask {
         const h = this.inQueue.shift();
         h.state(HumanState.ON_TRAIN);
         h._complete();
-        p.inQueue.splice(p.inQueue.indexOf(h), 1);
+        dept._queue().splice(dept._queue().indexOf(h), 1);
         this.train.passengers.push(h);
-        this.waitSec += 1 / Train.MOBILITY;
+        this.waitSec += 1 / Train.MOBILITY_SEC;
       }
     }
   }

@@ -59,9 +59,13 @@ describe("platform", () => {
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
     g._step();
+    expect(g._concourse[0]).toEqual(h);
+    expect(p.inQueue.length).toEqual(0);
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
     h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_TRAIN);
+    expect(g._concourse.length).toEqual(0);
+    expect(p.inQueue[0]).toEqual(h);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
   });
 
   it("move human on platform to gate", () => {
@@ -80,7 +84,12 @@ describe("platform", () => {
     g._setNext(c, c, distance(c, g));
     p.outQueue.push(h);
 
+    expect(p.outQueue[0]).toEqual(h);
+    expect(g.outQueue.length).toEqual(0);
+
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(p.outQueue.length).toEqual(0);
+    expect(g.outQueue[0]).toEqual(h);
   });
 });

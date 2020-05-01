@@ -10,7 +10,7 @@ class Platform extends RoutableObject {
   public readonly on: RailNode;
   public readonly station: Station;
   /**
-   * プラットフォーム上で電車を待機している人
+   * プラットフォームで、電車待機列に入るのを待機している人
    */
   public readonly inQueue: Human[];
   /**
@@ -49,7 +49,7 @@ class Platform extends RoutableObject {
     ) {
       gate._concourse.splice(gate._concourse.indexOf(subject), 1);
       this.inQueue.push(subject);
-      subject.state(HumanState.WAIT_TRAIN);
+      subject.state(HumanState.WAIT_ENTER_DEPTQUEUE);
       subject._complete();
       return;
     }

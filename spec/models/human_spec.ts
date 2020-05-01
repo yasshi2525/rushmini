@@ -124,8 +124,9 @@ describe("human", () => {
     g1._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
     h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_TRAIN);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
     h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
     for (let j = 0; j < Train.STAY_SEC * FPS; j++) {
       t._step();
       expect(h.state()).toEqual(HumanState.ON_TRAIN);

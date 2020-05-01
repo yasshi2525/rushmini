@@ -1,4 +1,4 @@
-import Human from "./human";
+import Human, { HumanState } from "./human";
 import LineTask from "./line_task";
 import { _createTask } from "./line_task_utils";
 import modelListener, { EventType } from "./listener";
@@ -28,6 +28,9 @@ class DeptTaskRouter extends RoutableObject {
     if (this.queue.some((h) => h === subject)) {
       return;
     }
+    subject.state(HumanState.WAIT_TRAIN_ARRIVAL);
+    const p = this.parent.stay;
+    p.inQueue.splice(p.inQueue.indexOf(subject), 1);
     this.queue.push(subject);
   }
 }
