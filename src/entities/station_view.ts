@@ -1,11 +1,10 @@
 import Station from "../models/station";
 import creators from "./creator";
 import { createFramedRect } from "./rectangle";
+import { createSquareSprite } from "./sprite";
 
-const width = 20;
-const height = 20;
-const cssColor = "#32cd32";
+const scale = 1 / 4;
 
 creators.put(Station, (scene, _) =>
-  createFramedRect(scene, width, height, cssColor)
+  createSquareSprite(scene, "station_image", scale)
 );

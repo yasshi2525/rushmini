@@ -1,13 +1,13 @@
 import { main } from "main";
 import ticker from "utils/ticker";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 const DEFAULT_GAME = 60;
 const ENDING = 10;
 
 describe("main", () => {
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("set default value when timelimit is not given", () => {

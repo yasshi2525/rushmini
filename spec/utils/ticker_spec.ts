@@ -1,6 +1,6 @@
 import ticker, { EventType } from "utils/ticker";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 
 const FPS = 30;
 const DEFAULT_GAME = 60;
@@ -73,9 +73,9 @@ describe("ticker", () => {
       ticker.init(FPS, GAME + ENDING);
     });
 
-    afterEach(() => {
+    afterEach(async () => {
       ticker.reset();
-      recreateGame();
+      await recreateGame();
     });
 
     it("step", () => {

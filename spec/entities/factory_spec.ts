@@ -4,7 +4,7 @@ import { ZeroPoint } from "models/point";
 import { Pointable } from "models/pointable";
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 class Simple implements Pointable {
   loc() {
     return ZeroPoint;
@@ -18,14 +18,14 @@ describe("factory", () => {
   let factory: ViewObjectFactory<Simple>;
 
   beforeEach(async () => {
-    loadedScene = await createLoadedScene(g.game);
+    loadedScene = await createLoadedScene();
     panel = new g.E({ scene: loadedScene });
     creator = (scene, _) => new g.E({ scene });
     factory = new ViewObjectFactory(panel, creator);
   });
 
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("createInstance adds entity to panel", () => {

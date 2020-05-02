@@ -13,7 +13,7 @@ export const createFramedRect = (
   width: number,
   height: number,
   color: string,
-  border = 4
+  border: number
 ) => {
   const frame = new g.FilledRect({
     scene,

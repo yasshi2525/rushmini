@@ -5,19 +5,19 @@ import modelListener from "models/listener";
 import userResource, { ModelState } from "models/user_resource";
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 
 describe("railbuilder", () => {
   let scene: g.Scene;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(g.game);
+    scene = await createLoadedScene();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     userResource.reset();
     modelListener.flush();
-    recreateGame();
+    await recreateGame();
   });
 
   it("dragging starts rail building", () => {

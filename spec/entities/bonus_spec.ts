@@ -2,19 +2,19 @@ import createBonusPanel from "entities/bonus";
 import scorer from "utils/scorer";
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 const FIRST_BONUS = 1000;
 
 describe("bonus", () => {
   let scene: g.Scene;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(g.game);
+    scene = await createLoadedScene();
     scorer.init({ score: 0 });
   });
 
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("pop up modal when 1st bonus score is god", () => {

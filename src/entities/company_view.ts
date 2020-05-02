@@ -1,11 +1,10 @@
 import Company from "../models/company";
 import creators from "./creator";
 import { createFramedRect } from "./rectangle";
+import { createSquareSprite } from "./sprite";
 
-const width = 10;
-const height = 10;
-const cssColor = "#4169e1";
+const scale = 1 / 4;
 
 creators.put(Company, (scene, _) =>
-  createFramedRect(scene, width, height, cssColor)
+  createSquareSprite(scene, "company_image", scale)
 );

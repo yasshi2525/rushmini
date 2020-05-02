@@ -2,18 +2,18 @@ import createScoreLabel from "entities/score";
 import scorer from "utils/scorer";
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 const toText = (score: number) => `SCORE: ${score}`;
 
 describe("score", () => {
   let scene: g.Scene;
   beforeEach(async () => {
-    scene = await createLoadedScene(g.game);
+    scene = await createLoadedScene();
     scorer.init({ score: 0 });
   });
 
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("observe", () => {

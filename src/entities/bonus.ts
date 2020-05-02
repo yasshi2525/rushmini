@@ -5,7 +5,7 @@ const borders = [1000, 2000, 4000, 8000];
 const labels = ["新駅建設", "支線建設", "電車増発", "住宅開発"];
 
 const createScoreHandler = (panel: g.E): ScoreListener => {
-  const bs = borders.map((n) => n);
+  const bs = [...borders];
   return (num: number) => {
     if (bs.length > 0 && num >= bs[0]) {
       panel.show();

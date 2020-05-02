@@ -1,11 +1,10 @@
 import Train from "../models/train";
 import creators from "./creator";
 import { createFramedRect } from "./rectangle";
+import { createSquareSprite } from "./sprite";
 
-const width = 40;
-const height = 8;
-const cssColor = "#ee82ee";
+const scale = 1 / 8;
 
 creators.put(Train, (scene, _) =>
-  createFramedRect(scene, width, height, cssColor)
+  createSquareSprite(scene, "train_image", scale)
 );

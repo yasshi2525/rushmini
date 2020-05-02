@@ -1,6 +1,6 @@
 import createModelViewer from "entities/model_viewer";
 import Company from "models/company";
-import Human from "models/human";
+import Human, { HumanState } from "models/human";
 import modelListener, { EventType } from "models/listener";
 import RailEdge from "models/rail_edge";
 import RailLine from "models/rail_line";
@@ -10,7 +10,7 @@ import Station from "models/station";
 import Train from "models/train";
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 
 const WIDTH = 800;
 const HEIGHT = 640;
@@ -28,7 +28,7 @@ describe("model_viewer", () => {
   let t: Train;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(g.game);
+    scene = await createLoadedScene(true);
     c = new Company(1, 3, 4);
     r = new Residence([c], 6, 8);
     h = new Human(r, c);
@@ -41,10 +41,10 @@ describe("model_viewer", () => {
     t = new Train(l.top);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     modelListener.unregisterAll();
     modelListener.flush();
-    recreateGame();
+    await recreateGame();
   });
 
   it("panel has 6 type panel", () => {
@@ -52,66 +52,142 @@ describe("model_viewer", () => {
     expect(panel.children.length).toEqual(6);
   });
 
-  it("layer 1. human", () => {
-    const panel = createModelViewer(scene);
+  it("layer 1. residence", () => {
+    const panel = createModelViewer(scene).children[0];
     modelListener.fire(EventType.CREATED);
-    const human = panel.children[0].children[0];
-    expect(human.x).toEqual(6 - 2 - B);
-    expect(human.y).toEqual(8 - 4 - B);
-    expect((human.children[0].children[0] as g.FilledRect).cssColor).toEqual(
-      "#800000"
-    );
+    expect(panel.children.length).toEqual(1);
+
+    const pos = panel.children[0];
+    expect(pos.x).toEqual(6);
+    expect(pos.y).toEqual(8);
+    expect(pos.width).toEqual(512);
+    expect(pos.height).toEqual(512);
+    expect(pos.children.length).toEqual(1);
+
+    const sprite = pos.children[0];
+    expect(sprite.x).toEqual(0);
+    expect(sprite.y).toEqual(0);
+    expect(sprite.scaleX).toEqual(0.25);
+    expect(sprite.scaleY).toEqual(0.25);
+    expect(sprite.width).toEqual(512);
+    expect(sprite.height).toEqual(512);
   });
 
-  it("layer 2. residence", () => {
-    const panel = createModelViewer(scene);
+  it("layer 2. company", () => {
+    const panel = createModelViewer(scene).children[1];
     modelListener.fire(EventType.CREATED);
-    const residence = panel.children[1].children[0];
-    expect(residence.x).toEqual(6 - 5 - B);
-    expect(residence.y).toEqual(8 - 5 - B);
-    expect(
-      (residence.children[0].children[0] as g.FilledRect).cssColor
-    ).toEqual("#cd5c5c");
+    expect(panel.children.length).toEqual(1);
+
+    const pos = panel.children[0];
+    expect(pos.x).toEqual(3);
+    expect(pos.y).toEqual(4);
+    expect(pos.width).toEqual(512);
+    expect(pos.height).toEqual(512);
+    expect(pos.children.length).toEqual(1);
+
+    const sprite = pos.children[0];
+    expect(sprite.x).toEqual(0);
+    expect(sprite.y).toEqual(0);
+    expect(sprite.scaleX).toEqual(0.25);
+    expect(sprite.scaleY).toEqual(0.25);
+    expect(sprite.width).toEqual(512);
+    expect(sprite.height).toEqual(512);
   });
 
-  it("layer 3. company", () => {
-    const panel = createModelViewer(scene);
+  it("layer 3. human", () => {
+    const panel = createModelViewer(scene).children[2];
     modelListener.fire(EventType.CREATED);
-    const company = panel.children[2].children[0];
-    expect(company.x).toEqual(3 - 5 - B);
-    expect(company.y).toEqual(4 - 5 - B);
-    expect((company.children[0].children[0] as g.FilledRect).cssColor).toEqual(
-      "#4169e1"
-    );
+    expect(panel.children.length).toEqual(1);
+
+    const pos = panel.children[0];
+    expect(pos.x).toEqual(6);
+    expect(pos.y).toEqual(8);
+    expect(pos.width).toEqual(512);
+    expect(pos.height).toEqual(512);
+    expect(pos.children.length).toEqual(1);
+
+    const sprite = pos.children[0];
+    expect(sprite.x).toEqual(0);
+    expect(sprite.y).toEqual(0);
+    expect(sprite.scaleX).toEqual(0.125);
+    expect(sprite.scaleY).toEqual(0.125);
+    expect(sprite.width).toEqual(512);
+    expect(sprite.height).toEqual(512);
   });
+
+  it("layer 3. human on train is hidden", () => {
+    const panel = createModelViewer(scene).children[2];
+    modelListener.fire(EventType.CREATED);
+    expect(panel.children.length).toEqual(1);
+
+    const pos = panel.children[0];
+    expect(pos.visible()).toBeTruthy();
+
+    h.state(HumanState.ON_TRAIN);
+    modelListener.fire(EventType.MODIFIED, h);
+    expect(pos.visible()).toBeFalsy();
+
+    h.state(HumanState.MOVE);
+    modelListener.fire(EventType.MODIFIED, h);
+    expect(pos.visible()).toBeTruthy();
+  });
+
   it("layer 4. rail_edge", () => {
-    const panel = createModelViewer(scene);
+    const panel = createModelViewer(scene).children[3];
     modelListener.fire(EventType.CREATED);
-    const rail_edge = panel.children[3].children[0];
-    expect(rail_edge.x).toEqual(10 - 2.5 + 1.25 - Math.sqrt(2));
-    expect(rail_edge.y).toEqual(11 - 0.5);
-    expect((rail_edge.children[0] as g.FilledRect).cssColor).toEqual("#aaaaaa");
+    expect(panel.children.length).toEqual(2);
+
+    const pos = panel.children[0];
+    expect(pos.x).toEqual(10);
+    expect(pos.y).toEqual(13);
+    expect(pos.children.length).toEqual(1);
+
+    const rect = pos.children[0];
+    expect(rect.y).toEqual(-2.5);
+    expect(rect.width).toBeCloseTo(2 * Math.sqrt(2) + 2.5);
+    expect(rect.height).toEqual(5);
+    expect((rect as g.FilledRect).cssColor).toEqual("#aaaaaa");
   });
 
   it("layer 5. station", () => {
-    const panel = createModelViewer(scene);
+    const panel = createModelViewer(scene).children[4];
     modelListener.fire(EventType.CREATED);
-    const station = panel.children[4].children[0];
-    expect(station.x).toEqual(9 - 10 - B);
-    expect(station.y).toEqual(12 - 10 - B);
-    expect((station.children[0].children[0] as g.FilledRect).cssColor).toEqual(
-      "#32cd32"
-    );
+    expect(panel.children.length).toEqual(1);
+
+    const pos = panel.children[0];
+    expect(pos.x).toEqual(9);
+    expect(pos.y).toEqual(12);
+    expect(pos.width).toEqual(512);
+    expect(pos.height).toEqual(512);
+    expect(pos.children.length).toEqual(1);
+
+    const sprite = pos.children[0];
+    expect(sprite.x).toEqual(0);
+    expect(sprite.y).toEqual(0);
+    expect(sprite.scaleX).toEqual(0.25);
+    expect(sprite.scaleY).toEqual(0.25);
+    expect(sprite.width).toEqual(512);
+    expect(sprite.height).toEqual(512);
   });
 
   it("layer 6. train", () => {
-    const panel = createModelViewer(scene);
+    const panel = createModelViewer(scene).children[5];
     modelListener.fire(EventType.CREATED);
-    const train = panel.children[5].children[0];
-    expect(train.x).toEqual(9 - 20 - B);
-    expect(train.y).toEqual(12 - 4 - B);
-    expect((train.children[0].children[0] as g.FilledRect).cssColor).toEqual(
-      "#ee82ee"
-    );
+    expect(panel.children.length).toEqual(1);
+
+    const pos = panel.children[0];
+    expect(pos.x).toEqual(9);
+    expect(pos.y).toEqual(12);
+    expect(pos.width).toEqual(512);
+    expect(pos.height).toEqual(512);
+    expect(pos.children.length).toEqual(1);
+
+    const sprite = pos.children[0];
+    expect(sprite.x).toEqual(0);
+    expect(sprite.y).toEqual(0);
+    expect(sprite.scaleX).toEqual(0.125);
+    expect(sprite.scaleY).toEqual(0.125);
+    expect(sprite.width).toEqual(512);
+    expect(sprite.height).toEqual(512);
   });
 });

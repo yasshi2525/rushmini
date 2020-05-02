@@ -118,6 +118,10 @@ class Human extends RoutableObject implements Steppable {
     return this.next === lt;
   }
 
+  public isOnTrain() {
+    return this._state === HumanState.ON_TRAIN;
+  }
+
   public _step() {
     if (this.next) this.next._fire(this);
   }

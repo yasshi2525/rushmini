@@ -16,16 +16,19 @@ class ViewObjectFactory<T extends Pointable> {
   private readonly panel: g.E;
   private readonly creator: ViewCreator<T>;
   private readonly children: ViewObject<T>[];
+  private readonly desc: boolean;
 
   /**
    * ファクトリーを作ります
    * @param panel 描画物を配置するエンティティ
    * @param creator モデルから描画物を作成する関数
+   * @param desc 古い物ほど上に表示する場合 true
    */
-  constructor(panel: g.E, creator: ViewCreator<T>) {
+  constructor(panel: g.E, creator: ViewCreator<T>, desc: boolean = false) {
     this.panel = panel;
     this.creator = creator;
     this.children = [];
+    this.desc = desc;
   }
 
   /**
@@ -36,6 +39,14 @@ class ViewObjectFactory<T extends Pointable> {
     const viewer = this.creator(this.panel.scene, subject);
     const obj: ViewObject<T> = { subject, viewer };
     this.panel.append(viewer);
+    if (this.desc) {
+      [...this.panel.children]
+        .filter((e) => e !== viewer)
+        .forEach((e) => {
+          this.panel.remove(e);
+          this.panel.append(e);
+        });
+    }
     this.children.push(obj);
     return obj;
   }

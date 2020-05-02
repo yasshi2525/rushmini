@@ -37,7 +37,17 @@ const initController = (width: number, height: number) => {
 };
 
 const createGameScene = (): GameScene => {
-  const scene = new g.Scene({ game: g.game, name: "game" });
+  const scene = new g.Scene({
+    game: g.game,
+    name: "game",
+    assetIds: [
+      "company_image",
+      "human_image",
+      "residence_image",
+      "station_image",
+      "train_image",
+    ],
+  });
   ticker.register(scene);
   return {
     scene,

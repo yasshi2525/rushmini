@@ -6,7 +6,7 @@ import Residence from "../models/residence";
 import Station from "../models/station";
 import Train from "../models/train";
 import "./company_view";
-import connect from "./connector";
+import connect, { ModelModifier } from "./connector";
 import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import "./human_view";
@@ -15,13 +15,31 @@ import "./residence_view";
 import "./station_view";
 import "./train_view";
 
-const order: (new (...args: any[]) => Pointable)[] = [
-  Human,
-  Residence,
-  Company,
-  RailEdge,
-  Station,
-  Train,
+type Config<T extends Pointable> = {
+  key: new (...args: any[]) => T;
+  desc?: boolean;
+  modifer?: ModelModifier<T>;
+};
+
+const riderModifier: ModelModifier<Human> = (vo) => {
+  if (vo.subject.isOnTrain()) {
+    vo.viewer.hide();
+  } else if (!vo.viewer.visible()) {
+    vo.viewer.show();
+  }
+};
+
+const configs: Config<Pointable>[] = [
+  { key: Residence },
+  { key: Company },
+  {
+    key: Human,
+    desc: true,
+    modifer: riderModifier,
+  },
+  { key: RailEdge },
+  { key: Station },
+  { key: Train },
 ];
 
 /**
@@ -30,11 +48,15 @@ const order: (new (...args: any[]) => Pointable)[] = [
  * @param parent
  */
 const createResourcePanel = <T extends Pointable>(
-  key: new (...args: any[]) => T,
+  config: Config<T>,
   scene: g.Scene
 ) => {
   const panel = new g.E({ scene });
-  connect(new ViewObjectFactory<T>(panel, creators.find(key)), key);
+  connect(
+    new ViewObjectFactory<T>(panel, creators.find(config.key), config.desc),
+    config.key,
+    config.modifer
+  );
   return panel;
 };
 
@@ -44,7 +66,9 @@ const createResourcePanel = <T extends Pointable>(
  */
 const createModelViewer = (loadedScene: g.Scene) => {
   const panel = new g.E({ scene: loadedScene });
-  order.forEach((key) => panel.append(createResourcePanel(key, loadedScene)));
+  configs.forEach((resource) =>
+    panel.append(createResourcePanel(resource, loadedScene))
+  );
   return panel;
 };
 

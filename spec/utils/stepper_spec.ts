@@ -86,7 +86,6 @@ describe("stepper", () => {
     userResource.start(0, 0);
     userResource.extend(3, 4);
     userResource.end();
-    console.log();
     expect(moveCount).toEqual(0);
     for (let j = 0; j < FPS * Train.STAY_SEC; j++) {
       stepper.step();

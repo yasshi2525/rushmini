@@ -5,7 +5,7 @@ import { ZeroPoint } from "models/point";
 import { Pointable } from "models/pointable";
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 class Simple implements Pointable {
   loc() {
     return ZeroPoint;
@@ -22,7 +22,7 @@ describe("connetor", () => {
   let factory: ViewObjectFactory<Simple>;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(g.game);
+    scene = await createLoadedScene();
     panel = new g.E({ scene });
     factory = new ViewObjectFactory(
       panel,
@@ -30,8 +30,8 @@ describe("connetor", () => {
     );
   });
 
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("viewer object is created after onDone event", () => {
@@ -52,5 +52,17 @@ describe("connetor", () => {
     modelListener.add(EventType.DELETED, subject);
     modelListener.fire(EventType.DELETED);
     expect(panel.children.length).toEqual(0);
+  });
+
+  it("connect with modifier", () => {
+    let counter = 0;
+    const subject = new Simple();
+    connect(factory, Simple, () => counter++);
+    modelListener.add(EventType.CREATED, subject);
+    modelListener.fire(EventType.CREATED);
+    expect(counter).toEqual(0);
+    modelListener.add(EventType.MODIFIED, subject);
+    modelListener.fire(EventType.MODIFIED);
+    expect(counter).toEqual(1);
   });
 });

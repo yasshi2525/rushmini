@@ -1,30 +1,143 @@
+/**
+ * プログラム中から参照している g.game は Akashic Engine が作成したもの。
+ * 単体テストのために事前にインスタンスを生成する
+ */
+
 const NodeEnvironment = require("jest-environment-node");
 const fs = require("fs");
-const g = require("@akashic/akashic-engine");
-const driver = require("@akashic/game-driver");
-const { JSDOM } = require("jsdom");
+const btoa = require("btoa");
 
-const createGame = () =>
-  new driver.Game({
-    configuration: { width: 640, height: 360 },
-    player: { id: 99999 },
+// 呼び出し順序 akashic-engine -> game-driver -> pdi-browser -> XHR
+const { JSDOM } = require("jsdom");
+window = new JSDOM().window;
+document = window.document;
+const pdi = require("@akashic/pdi-browser");
+const gdr = require("@akashic/game-driver");
+const g = require("@akashic/akashic-engine");
+
+/**
+ * pdi-browser は XHR で game.json を取得している。これを fs 経由の取得に切り替える
+ */
+class FileSystemPlatform extends pdi.Platform {
+  loadGameConfiguration(_, cb) {
+    fs.readFile("game.json", (err, data) => {
+      if (err) {
+        cb(err, null);
+      } else {
+        cb(null, JSON.parse(data));
+      }
+    });
+    return;
+  }
+}
+
+// 参考 : pdi-browser の XHRScriptAsset
+class FileSystemScriptAsset extends g.ScriptAsset {
+  static PRE_SCRIPT =
+    "(function(exports, require, module, __filename, __dirname) {";
+  static POST_SCRIPT =
+    "\n})(g.module.exports, g.module.require, g.module, g.filename, g.dirname);";
+
+  constructor(id, assetPath) {
+    super(id, assetPath);
+    this.script = undefined;
+  }
+
+  _load(handler) {
+    fs.readFile(this.path, (err, data) => {
+      if (err) {
+        handler._onAssetError(this, err);
+      } else {
+        this.script = data.toString();
+        handler._onAssetLoad(this);
+      }
+    });
+  }
+
+  execute(env) {
+    this._wrap(env);
+    return env.module.exports;
+  }
+
+  _wrap() {
+    return new Function(
+      "g",
+      FileSystemScriptAsset.PRE_SCRIPT +
+        this.script +
+        FileSystemScriptAsset.POST_SCRIPT
+    );
+  }
+}
+
+// 参考 : pid-browser の HTMLImageAsset
+class FileSystemImageAsset extends g.ImageAsset {
+  _load(handler) {
+    const image = document.createElement("img");
+    image.src = "data:image/png;base64," + btoa(fs.readFileSync(this.path));
+    this.data = image;
+    handler._onAssetLoad(this);
+  }
+
+  asSurface() {
+    if (!this._surface) {
+      this._surface = new g.Surface(this.width, this.height, this.data);
+    }
+    return this._surface;
+  }
+}
+
+class FileSystemResourceFactory extends pdi.ResourceFactory {
+  createImageAsset(id, assetPath, width, height) {
+    return new FileSystemImageAsset(id, assetPath, width, height);
+  }
+  createScriptAsset(id, assetPath) {
+    return new FileSystemScriptAsset(id, assetPath);
+  }
+}
+
+/**
+ * g.Game インスタンスを生成
+ */
+const createGame = async () => {
+  const driver = new gdr.GameDriver({
+    platform: new FileSystemPlatform({
+      resourceFactory: new FileSystemResourceFactory({
+        audioPluginManager: new pdi.AudioPluginManager(),
+      }),
+      amflow: new gdr.MemoryAmflowClient({
+        playId: "dummyPlayID",
+      }),
+      containerView: document.createElement("div"),
+    }),
+    player: { id: "dummyPlayerID", name: "test" },
   });
 
-class AkashicEngineEnvironment extends NodeEnvironment {
-  oldWindow;
+  await driver.doInitialize({
+    driverConfiguration: {
+      playId: "dummyPlayID",
+      playToken: gdr.MemoryAmflowClient.TOKEN_ACTIVE,
+      executionMode: gdr.ExecutionMode.Active,
+    },
+    configurationBase: __dirname,
+    configurationUrl: __dirname,
+    loopConfiguration: { loopMode: gdr.LoopMode.Realtime },
+  });
+  return driver._game;
+};
 
+class AkashicEngineEnvironment extends NodeEnvironment {
   async setup() {
     // g.game インスタンスを生成しておく
     await super.setup();
-    if (!g.game) {
-      g.game = createGame();
-    }
+    // window を定義
+    this.global.window = window;
     this.global.g = g;
+    g.game = await createGame();
+
     // game を繰り返し使うテストのために、作成関数を定義
-    this.global.recreateGame = () => (g.game = createGame());
-    // windoe を定義
-    this.oldWindow = this.global.window;
-    this.global.window = new JSDOM().window;
+    this.global.recreateGame = async () => {
+      g.game = await createGame();
+    };
   }
 
   runScript(script) {
@@ -34,7 +147,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
   async teardown() {
     delete this.global.g;
     delete this.global.recreateGame;
-    this.global.window = this.oldWindow;
+    delete this.global.window;
     await super.teardown();
   }
 }

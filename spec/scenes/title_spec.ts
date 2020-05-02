@@ -1,7 +1,7 @@
 import createTitleScene from "scenes/title";
 import ticker from "utils/ticker";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 const FPS = 60;
 
 describe("title", () => {
@@ -9,8 +9,8 @@ describe("title", () => {
     ticker.init(FPS);
   });
 
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("create scene", () => {

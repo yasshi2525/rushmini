@@ -1,10 +1,10 @@
 import createEndingScene from "scenes/ending";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 
 describe("ending", () => {
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("create scene", () => {

@@ -5,7 +5,7 @@ import bootstrap = require("_bootstrap");
 
 const ENDING = 10;
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 declare const window: RPGAtsumaruWindow;
 
 /**
@@ -13,27 +13,27 @@ declare const window: RPGAtsumaruWindow;
  * カバレッジのため通している
  */
 describe("_bootstrap", () => {
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("with empty", () => {
     bootstrap({});
     const scene = g.game.scene();
-    expect(scene).toBeUndefined();
+    expect(scene).not.toBeUndefined();
   });
 
   it("with arguments", () => {
     bootstrap({ args: "foo" });
     const scene = g.game.scene();
-    expect(scene).toBeUndefined();
+    expect(scene).not.toBeUndefined();
   });
 
   it("with atsumaru", () => {
     window.RPGAtsumaru = true;
     bootstrap({});
     const scene = g.game.scene();
-    expect(scene).toBeUndefined();
+    expect(scene).not.toBeUndefined();
   });
 
   it("load bootstrap scene by ticking", () => {
@@ -61,7 +61,7 @@ describe("_bootstrap", () => {
     const TOTAL = 180;
     const SEED = 100;
     bootstrap({});
-    expect(g.game.scene()).toBeUndefined();
+    expect(g.game.scene()).not.toBeUndefined();
     g.game.tick(false);
     let scene = g.game.scene();
     expect(g.game.scene()).not.toBeUndefined();
@@ -81,7 +81,7 @@ describe("_bootstrap", () => {
   it("load main scene without random seed by firing message", () => {
     const TOTAL = 180;
     bootstrap({});
-    expect(g.game.scene()).toBeUndefined();
+    expect(g.game.scene()).not.toBeUndefined();
     g.game.tick(false);
     let scene = g.game.scene();
     expect(g.game.scene()).not.toBeUndefined();
@@ -95,6 +95,6 @@ describe("_bootstrap", () => {
     scene = g.game.scene();
     expect(scene.name).toEqual("title");
     expect(ticker.getRemainGameTime()).toEqual(TOTAL - ENDING);
-    expect(random.random()).toBeNull();
+    expect(random.random()).not.toBeNull();
   });
 });

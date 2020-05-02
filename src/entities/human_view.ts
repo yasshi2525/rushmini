@@ -1,11 +1,9 @@
 import Human from "../models/human";
 import creators from "./creator";
-import { createFramedRect } from "./rectangle";
+import { createSquareSprite } from "./sprite";
 
-const width = 4;
-const height = 8;
-const cssColor = "#800000";
+const scale = 1 / 8;
 
-creators.put(Human, (parent, _) =>
-  createFramedRect(parent, width, height, cssColor)
+creators.put(Human, (scene, _) =>
+  createSquareSprite(scene, "human_image", scale)
 );

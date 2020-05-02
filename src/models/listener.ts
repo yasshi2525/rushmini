@@ -273,7 +273,7 @@ export class ModelListener<T extends number> {
    * 監視対象のオブジェクトをすべて監視対象外にします
    */
   public flush() {
-    Object.keys(this.mapper).forEach((key) => this.mapper[key].unregisterAll());
+    Object.keys(this.mapper).forEach((key) => this.mapper[key].flush());
   }
 }
 

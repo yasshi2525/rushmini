@@ -7,7 +7,7 @@ import random from "utils/random";
 import scorer from "utils/scorer";
 import ticker from "utils/ticker";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 const FPS = 15;
 const GAME = 30;
 const ENDING = 10;
@@ -19,8 +19,8 @@ describe("game", () => {
     scorer.init({ score: 0 });
   });
 
-  afterEach(() => {
-    recreateGame();
+  afterEach(async () => {
+    await recreateGame();
   });
 
   it("create scene", () => {
@@ -70,8 +70,8 @@ describe("game", () => {
       expect(hs.length).toEqual(0);
     });
 
-    afterEach(() => {
-      recreateGame();
+    afterEach(async () => {
+      await recreateGame();
     });
   });
 

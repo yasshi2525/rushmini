@@ -3,7 +3,7 @@ import modelListener from "models/listener";
 import userResource from "models/user_resource";
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => void;
+declare const recreateGame: () => Promise<void>;
 const activeOpacity = 0.75;
 const inactiveOpacity = 0.25;
 
@@ -11,13 +11,13 @@ describe("railbuild_guide", () => {
   let scene: g.Scene;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(g.game);
+    scene = await createLoadedScene();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     userResource.reset();
     modelListener.flush();
-    recreateGame();
+    await recreateGame();
   });
 
   it("guide listen to model", () => {
