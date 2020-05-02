@@ -118,8 +118,8 @@ const createGame = async () => {
       playToken: gdr.MemoryAmflowClient.TOKEN_ACTIVE,
       executionMode: gdr.ExecutionMode.Active,
     },
-    configurationBase: __dirname,
-    configurationUrl: __dirname,
+    configurationBase: __dirname + "/",
+    configurationUrl: __dirname + "/",
     loopConfiguration: { loopMode: gdr.LoopMode.Realtime },
   });
   return driver._game;
