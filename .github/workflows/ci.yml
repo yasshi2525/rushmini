@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "14"
-      - run: apt-get -y pkg-config pango
+      - run: apt-get install -y pkg-config pango
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
       - run: npm run lint
