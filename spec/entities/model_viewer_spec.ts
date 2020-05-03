@@ -60,17 +60,13 @@ describe("model_viewer", () => {
     const pos = panel.children[0];
     expect(pos.x).toEqual(6);
     expect(pos.y).toEqual(8);
-    expect(pos.width).toEqual(512);
-    expect(pos.height).toEqual(512);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
     expect(sprite.x).toEqual(0);
     expect(sprite.y).toEqual(0);
-    expect(sprite.scaleX).toEqual(0.25);
-    expect(sprite.scaleY).toEqual(0.25);
-    expect(sprite.width).toEqual(512);
-    expect(sprite.height).toEqual(512);
+    expect(sprite.scaleX).toEqual(1);
+    expect(sprite.scaleY).toEqual(1);
   });
 
   it("layer 2. company", () => {
@@ -81,17 +77,13 @@ describe("model_viewer", () => {
     const pos = panel.children[0];
     expect(pos.x).toEqual(3);
     expect(pos.y).toEqual(4);
-    expect(pos.width).toEqual(512);
-    expect(pos.height).toEqual(512);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
     expect(sprite.x).toEqual(0);
     expect(sprite.y).toEqual(0);
-    expect(sprite.scaleX).toEqual(0.25);
-    expect(sprite.scaleY).toEqual(0.25);
-    expect(sprite.width).toEqual(512);
-    expect(sprite.height).toEqual(512);
+    expect(sprite.scaleX).toEqual(1);
+    expect(sprite.scaleY).toEqual(1);
   });
 
   it("layer 3. human", () => {
@@ -102,17 +94,13 @@ describe("model_viewer", () => {
     const pos = panel.children[0];
     expect(pos.x).toEqual(6);
     expect(pos.y).toEqual(8);
-    expect(pos.width).toEqual(512);
-    expect(pos.height).toEqual(512);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
     expect(sprite.x).toEqual(0);
     expect(sprite.y).toEqual(0);
-    expect(sprite.scaleX).toEqual(0.125);
-    expect(sprite.scaleY).toEqual(0.125);
-    expect(sprite.width).toEqual(512);
-    expect(sprite.height).toEqual(512);
+    expect(sprite.scaleX).toEqual(1);
+    expect(sprite.scaleY).toEqual(1);
   });
 
   it("layer 3. human on train is hidden", () => {
@@ -157,17 +145,13 @@ describe("model_viewer", () => {
     const pos = panel.children[0];
     expect(pos.x).toEqual(9);
     expect(pos.y).toEqual(12);
-    expect(pos.width).toEqual(512);
-    expect(pos.height).toEqual(512);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
     expect(sprite.x).toEqual(0);
     expect(sprite.y).toEqual(0);
-    expect(sprite.scaleX).toEqual(0.25);
-    expect(sprite.scaleY).toEqual(0.25);
-    expect(sprite.width).toEqual(512);
-    expect(sprite.height).toEqual(512);
+    expect(sprite.scaleX).toEqual(1);
+    expect(sprite.scaleY).toEqual(1);
   });
 
   it("layer 6. train", () => {
@@ -178,16 +162,12 @@ describe("model_viewer", () => {
     const pos = panel.children[0];
     expect(pos.x).toEqual(9);
     expect(pos.y).toEqual(12);
-    expect(pos.width).toEqual(512);
-    expect(pos.height).toEqual(512);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
     expect(sprite.x).toEqual(0);
     expect(sprite.y).toEqual(0);
-    expect(sprite.scaleX).toEqual(0.125);
-    expect(sprite.scaleY).toEqual(0.125);
-    expect(sprite.width).toEqual(512);
-    expect(sprite.height).toEqual(512);
+    expect(sprite.scaleX).toEqual(1);
+    expect(sprite.scaleY).toEqual(1);
   });
 });

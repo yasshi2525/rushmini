@@ -306,36 +306,38 @@
 		},
 		"company_image": {
 			"type": "image",
-			"width": 512,
-			"height": 512,
+			"width": 94,
+			"height": 94,
 			"path": "image/company_image.png"
 		},
 		"human_image": {
 			"type": "image",
-			"width": 512,
-			"height": 512,
+			"width": 54,
+			"height": 54,
 			"path": "image/human_image.png"
 		},
 		"residence_image": {
 			"type": "image",
-			"width": 512,
-			"height": 512,
+			"width": 94,
+			"height": 94,
 			"path": "image/residence_image.png"
 		},
 		"station_image": {
 			"type": "image",
-			"width": 512,
-			"height": 512,
+			"width": 94,
+			"height": 94,
 			"path": "image/station_image.png"
 		},
 		"train_image": {
 			"type": "image",
-			"width": 512,
-			"height": 512,
+			"width": 70,
+			"height": 70,
 			"path": "image/train_image.png"
 		}
 	},
-	"moduleMainScripts": {},
+	"moduleMainScripts": {
+		"@akashic/amflow": "node_modules/@akashic/amflow/lib/index.js"
+	},
 	"environment": {
 		"sandbox-runtime": "2",
 		"niconico": {
@@ -347,5 +349,7 @@
 			}
 		}
 	},
-	"globalScripts": []
+	"globalScripts": [
+		"node_modules/@akashic/amflow/lib/index.js"
+	]
 }

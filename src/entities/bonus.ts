@@ -45,9 +45,9 @@ const createBonusPanel = (loadedScene: g.Scene) => {
   panel.append(
     new g.SystemLabel({
       x: 40,
-      y: 40,
+      y: 50,
       scene: loadedScene,
-      fontSize: 40,
+      fontSize: 38,
       text: "ボーナスを1つ選んでください",
     })
   );
