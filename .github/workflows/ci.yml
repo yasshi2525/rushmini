@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "14"
-      - run: sudo apt-get install -y pkg-config pango
+      - run: sudo apt-get install -y pkg-config libpango*
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
       - run: npm run lint
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "14"
-      - run: sudo apt-get install -y pkg-config pango
+      - run: sudo apt-get install -y pkg-config libpango*
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
       - run: npm run build
