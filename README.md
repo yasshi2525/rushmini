@@ -7,7 +7,23 @@
 ## 前提条件
 
 - node.js  
-  動作確認 v.13
+  動作確認 v.14
+
+- pango (一時的)  
+  node.js v.14 用のバイナリが用意されていないため ([#1557](https://github.com/Automattic/node-canvas/issues/1557)) 、ビルドするために下記をインストールしてください
+
+  Ubuntsu 系
+
+  ```
+  sudo apt-get install pkg-config libgif-dev libpango*
+  ```
+
+  CentOS 系
+
+  ```
+  sudo dnf install pango-devel libjpeg-turbo-devel
+  ```
+
 - Akashic Engine, Sandbox  
   以下のコマンドを実行して Akashic Engine, Sandbox をインストールしてください
 
