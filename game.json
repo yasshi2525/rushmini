@@ -14,11 +14,6 @@
 			"path": "script/entities/instraction.js",
 			"global": true
 		},
-		"railbuilder": {
-			"type": "script",
-			"path": "script/entities/railbuilder.js",
-			"global": true
-		},
 		"railbuild_guide": {
 			"type": "script",
 			"path": "script/entities/railbuild_guide.js",
@@ -333,6 +328,36 @@
 			"width": 70,
 			"height": 70,
 			"path": "image/train_image.png"
+		},
+		"background": {
+			"type": "script",
+			"path": "script/entities/background.js",
+			"global": true
+		},
+		"bonus_branch": {
+			"type": "script",
+			"path": "script/entities/bonus_branch.js",
+			"global": true
+		},
+		"bonus_component": {
+			"type": "script",
+			"path": "script/entities/bonus_component.js",
+			"global": true
+		},
+		"controller": {
+			"type": "script",
+			"path": "script/entities/controller.js",
+			"global": true
+		},
+		"cursor": {
+			"type": "script",
+			"path": "script/entities/cursor.js",
+			"global": true
+		},
+		"sensor": {
+			"type": "script",
+			"path": "script/entities/sensor.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

@@ -26,6 +26,9 @@ const scorer = {
   observe: (listener: ScoreListener) => {
     _listeners.push(listener);
   },
+  reset: () => {
+    _listeners.length = 0;
+  },
 };
 
 export default scorer;

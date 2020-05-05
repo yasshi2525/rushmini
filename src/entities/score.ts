@@ -7,8 +7,8 @@ const createScoreLabel = (loadedScene: g.Scene) => {
 
   const label = new g.SystemLabel({
     scene: loadedScene,
-    x: g.game.width - 300,
-    y: 60,
+    x: g.game.width - 150,
+    y: 50,
     fontSize: 15,
     text: toText(scorer.get()),
   });

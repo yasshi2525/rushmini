@@ -1,4 +1,6 @@
 import createBonusPanel from "entities/bonus";
+import createBonusComponent from "entities/bonus_component";
+import modelListener from "models/listener";
 import scorer from "utils/scorer";
 import { createLoadedScene } from "../_helper/scene";
 
@@ -14,26 +16,35 @@ describe("bonus", () => {
   });
 
   afterEach(async () => {
+    modelListener.flush();
+    modelListener.unregisterAll();
     await recreateGame();
   });
 
   it("pop up modal when 1st bonus score is god", () => {
-    const bonus = createBonusPanel(scene);
+    let counter = 0;
+    const bonus = createBonusPanel(scene, () => counter++);
 
     expect(bonus.visible()).toBeFalsy();
+    expect(counter).toEqual(0);
     scorer.add(FIRST_BONUS);
     expect(bonus.visible()).toBeTruthy();
-    for (let i = 0; i < 4; i++) {
-      expect(bonus.children[i]).toBeTruthy();
-    }
+    expect(counter).toEqual(1);
   });
 
   it("pop down modal when select button preesed", () => {
-    const bonus = createBonusPanel(scene);
+    let counter = 0;
+    const bonus = createBonusPanel(scene, () => counter++);
+    const component = createBonusComponent(scene, "dummy", 0, () =>
+      bonus.hide()
+    );
+
     scorer.add(FIRST_BONUS);
     expect(bonus.visible()).toBeTruthy();
-    const selectedButton = bonus.children[1];
-    selectedButton.pointDown.fire();
+    expect(counter).toEqual(1);
+
+    component.pointDown.fire();
     expect(bonus.visible()).toBeFalsy();
+    expect(counter).toEqual(1);
   });
 });

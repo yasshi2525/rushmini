@@ -11,9 +11,14 @@ import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import "./human_view";
 import "./rail_edge_view";
+import { createFramedRect } from "./rectangle";
 import "./residence_view";
 import "./station_view";
 import "./train_view";
+
+const SIZE = 0.8;
+const COLOR = "#ffffff";
+const BORDER = 5;
 
 type Config<T extends Pointable> = {
   key: new (...args: any[]) => T;
@@ -65,9 +70,18 @@ const createResourcePanel = <T extends Pointable>(
  * @param loadedScene
  */
 const createModelViewer = (loadedScene: g.Scene) => {
-  const panel = new g.E({ scene: loadedScene });
+  const panel = createFramedRect(
+    loadedScene,
+    g.game.width * SIZE,
+    g.game.height * SIZE,
+    COLOR,
+    BORDER
+  );
+  panel.x = (g.game.width * (1 - SIZE)) / 2 - BORDER;
+  panel.y = (g.game.height * (1 - SIZE)) / 2 - BORDER;
+  panel.modified();
   configs.forEach((resource) =>
-    panel.append(createResourcePanel(resource, loadedScene))
+    panel.children[0].append(createResourcePanel(resource, loadedScene))
   );
   return panel;
 };

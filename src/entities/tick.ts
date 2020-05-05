@@ -9,7 +9,7 @@ const createTickLabel = (loadedScene: g.Scene) => {
     scene: loadedScene,
     text: toText(ticker.getRemainGameTime()),
     fontSize: 15,
-    x: g.game.width - 300,
+    x: g.game.width - 150,
     y: 30,
   });
 

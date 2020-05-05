@@ -45,7 +45,7 @@ export const createPaddingRect = (
   scene: g.Scene,
   padding: number,
   color: string,
-  border: number = 0
+  border: number
 ) => {
   const rect = createFramedRect(
     scene,

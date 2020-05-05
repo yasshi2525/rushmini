@@ -1,4 +1,4 @@
-import createRailBuilder from "entities/railbuilder";
+import createSensor from "entities/sensor";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
@@ -21,8 +21,8 @@ describe("railbuilder", () => {
   });
 
   it("dragging starts rail building", () => {
-    const panel = createRailBuilder(scene);
-    panel.children[0].pointDown.fire({
+    const panel = createSensor(scene);
+    panel.pointDown.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -38,8 +38,7 @@ describe("railbuilder", () => {
   });
 
   it("dragging extends rail", () => {
-    const panel = createRailBuilder(scene);
-    const sensor = panel.children[0];
+    const sensor = createSensor(scene);
     sensor.pointDown.fire({
       priority: 2,
       local: true,
@@ -47,7 +46,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 1,
-      target: panel,
+      target: sensor,
     });
     sensor.pointMove.fire({
       priority: 2,
@@ -58,7 +57,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: panel,
+      target: sensor,
     });
     const dept = userResource.getPrimaryLine().top;
     expect(dept).toBeInstanceOf(DeptTask);
@@ -78,8 +77,7 @@ describe("railbuilder", () => {
   });
 
   it("dragging ends rail", () => {
-    const panel = createRailBuilder(scene);
-    const sensor = panel.children[0];
+    const sensor = createSensor(scene);
     sensor.pointDown.fire({
       priority: 2,
       local: true,
@@ -87,7 +85,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 1,
-      target: panel,
+      target: sensor,
     });
     sensor.pointMove.fire({
       priority: 2,
@@ -98,7 +96,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: panel,
+      target: sensor,
     });
     sensor.pointUp.fire({
       priority: 2,
@@ -109,7 +107,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: panel,
+      target: sensor,
     });
     const dept1 = userResource.getPrimaryLine().top;
     expect(dept1).toBeInstanceOf(DeptTask);
@@ -133,8 +131,7 @@ describe("railbuilder", () => {
   });
 
   it("re-dragging causes nothing", () => {
-    const panel = createRailBuilder(scene);
-    const sensor = panel.children[0];
+    const sensor = createSensor(scene);
     sensor.pointDown.fire({
       priority: 2,
       local: true,
@@ -142,7 +139,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 1,
-      target: panel,
+      target: sensor,
     });
     sensor.pointMove.fire({
       priority: 2,
@@ -153,7 +150,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: panel,
+      target: sensor,
     });
     sensor.pointUp.fire({
       priority: 2,
@@ -164,7 +161,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: panel,
+      target: sensor,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);
@@ -176,7 +173,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 4,
-      target: panel,
+      target: sensor,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);
@@ -190,7 +187,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: panel,
+      target: sensor,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);
@@ -204,7 +201,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: panel,
+      target: sensor,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);

@@ -2,57 +2,45 @@ import scorer, { ScoreListener } from "../utils/scorer";
 import { createFramedRect } from "./rectangle";
 
 const borders = [1000, 2000, 4000, 8000];
-const labels = ["新駅建設", "支線建設", "電車増発", "住宅開発"];
+const WIDTH = 0.6;
+const HEIGHT = 300;
+const COLOR = "#f0f8ff";
+const BORDER = 8;
 
-const createScoreHandler = (panel: g.E): ScoreListener => {
+const createScoreHandler = (panel: g.E, cb: () => void): ScoreListener => {
   const bs = [...borders];
   return (num: number) => {
-    if (bs.length > 0 && num >= bs[0]) {
+    if (bs.length > 0 && num >= bs[0] && !panel.visible()) {
       panel.show();
+      cb();
       bs.shift();
     }
   };
 };
 
-const createBonusPanel = (loadedScene: g.Scene) => {
-  const panel = createFramedRect(loadedScene, 500, 300, "#aaaaaa", 8);
-  panel.x = 50;
-  panel.y = 50;
+const createBonusPanel = (loadedScene: g.Scene, onOpened: () => void) => {
+  const panel = createFramedRect(
+    loadedScene,
+    g.game.width * WIDTH - BORDER / 2,
+    HEIGHT,
+    COLOR,
+    BORDER
+  );
+  panel.x = (g.game.width * (1 - WIDTH)) / 2;
+  panel.y = (g.game.height - HEIGHT) / 2;
   panel.modified();
-  for (let i = 0; i < borders.length; i++) {
-    const c = createFramedRect(loadedScene, 100, 100, "#008000", 8);
-    c.touchable = true;
-    c.x = i * 108 + 50;
-    c.y = 100;
-    c.modified();
-    c.pointDown.add(() => {
-      (c.children[0] as g.FilledRect).cssColor = "#888888";
-      c.touchable = false;
-      c.modified();
-      panel.hide();
-    });
-    c.append(
-      new g.SystemLabel({
-        x: 20,
-        y: 40,
-        scene: loadedScene,
-        fontSize: 20,
-        text: labels[i],
-      })
-    );
-    panel.append(c);
-  }
   panel.append(
     new g.SystemLabel({
-      x: 40,
+      x: panel.width / 2,
       y: 50,
       scene: loadedScene,
-      fontSize: 38,
+      fontSize: 30,
       text: "ボーナスを1つ選んでください",
+      textAlign: g.TextAlign.Center,
     })
   );
   panel.hide();
-  scorer.observe(createScoreHandler(panel));
+  scorer.observe(createScoreHandler(panel, onOpened));
   return panel;
 };
 

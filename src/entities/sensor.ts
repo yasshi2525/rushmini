@@ -1,5 +1,7 @@
 import userResource, { ModelState } from "../models/user_resource";
 
+const SIZE = 0.8;
+
 const startHandler = (x: number, y: number) => {
   if (userResource.getState() === ModelState.INITED) {
     userResource.start(x, y);
@@ -25,10 +27,10 @@ const endHandler = () => {
 const createSensor = (loadedScene: g.Scene) => {
   const sensor = new g.E({
     scene: loadedScene,
-    x: 0,
-    y: 0,
-    width: g.game.width,
-    height: g.game.height,
+    x: (g.game.width * (1 - SIZE)) / 2,
+    y: (g.game.height * (1 - SIZE)) / 2,
+    width: g.game.width * SIZE,
+    height: g.game.height * SIZE,
     touchable: true,
   });
 
@@ -48,10 +50,4 @@ const createSensor = (loadedScene: g.Scene) => {
   return sensor;
 };
 
-const createRailBuilder = (loadedScene: g.Scene) => {
-  const panel = new g.E({ scene: loadedScene });
-  panel.append(createSensor(loadedScene));
-  return panel;
-};
-
-export default createRailBuilder;
+export default createSensor;
