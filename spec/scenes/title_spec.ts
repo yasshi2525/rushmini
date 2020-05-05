@@ -46,7 +46,7 @@ describe("title", () => {
     g.game.pushScene(obj.scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(obj.scene);
-    obj.scene.children[0].pointDown.fire();
+    obj.scene.children[0].pointUp.fire();
     expect(g.game.scene()).toEqual(obj.scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(mockScene);

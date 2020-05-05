@@ -48,12 +48,12 @@ describe("model_viewer", () => {
   });
 
   it("panel has 6 type panel", () => {
-    const panel = createModelViewer(scene).children[0];
+    const panel = createModelViewer(scene).children[0].children[0];
     expect(panel.children.length).toEqual(6);
   });
 
   it("layer 1. residence", () => {
-    const panel = createModelViewer(scene).children[0].children[0];
+    const panel = createModelViewer(scene).children[0].children[0].children[0];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -70,7 +70,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 2. company", () => {
-    const panel = createModelViewer(scene).children[0].children[1];
+    const panel = createModelViewer(scene).children[0].children[0].children[1];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -87,7 +87,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 3. human", () => {
-    const panel = createModelViewer(scene).children[0].children[2];
+    const panel = createModelViewer(scene).children[0].children[0].children[2];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -104,7 +104,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 3. human on train is hidden", () => {
-    const panel = createModelViewer(scene).children[0].children[2];
+    const panel = createModelViewer(scene).children[0].children[0].children[2];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -121,7 +121,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 4. rail_edge", () => {
-    const panel = createModelViewer(scene).children[0].children[3];
+    const panel = createModelViewer(scene).children[0].children[0].children[3];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(2);
 
@@ -138,7 +138,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 5. station", () => {
-    const panel = createModelViewer(scene).children[0].children[4];
+    const panel = createModelViewer(scene).children[0].children[0].children[4];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -155,7 +155,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 6. train", () => {
-    const panel = createModelViewer(scene).children[0].children[5];
+    const panel = createModelViewer(scene).children[0].children[0].children[5];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 

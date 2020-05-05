@@ -299,36 +299,6 @@
 			"path": "script/entities/sprite.js",
 			"global": true
 		},
-		"company_image": {
-			"type": "image",
-			"width": 94,
-			"height": 94,
-			"path": "image/company_image.png"
-		},
-		"human_image": {
-			"type": "image",
-			"width": 54,
-			"height": 54,
-			"path": "image/human_image.png"
-		},
-		"residence_image": {
-			"type": "image",
-			"width": 94,
-			"height": 94,
-			"path": "image/residence_image.png"
-		},
-		"station_image": {
-			"type": "image",
-			"width": 94,
-			"height": 94,
-			"path": "image/station_image.png"
-		},
-		"train_image": {
-			"type": "image",
-			"width": 70,
-			"height": 70,
-			"path": "image/train_image.png"
-		},
 		"background": {
 			"type": "script",
 			"path": "script/entities/background.js",
@@ -354,9 +324,61 @@
 			"path": "script/entities/cursor.js",
 			"global": true
 		},
-		"sensor": {
+		"company_basic": {
+			"type": "image",
+			"width": 94,
+			"height": 94,
+			"path": "image/company_basic.png"
+		},
+		"human_basic": {
+			"type": "image",
+			"width": 54,
+			"height": 54,
+			"path": "image/human_basic.png"
+		},
+		"residence_basic": {
+			"type": "image",
+			"width": 94,
+			"height": 94,
+			"path": "image/residence_basic.png"
+		},
+		"station_basic": {
+			"type": "image",
+			"width": 94,
+			"height": 94,
+			"path": "image/station_basic.png"
+		},
+		"station_candidate": {
+			"type": "image",
+			"width": 126,
+			"height": 126,
+			"path": "image/station_candidate.png"
+		},
+		"station_covered": {
+			"type": "image",
+			"width": 126,
+			"height": 126,
+			"path": "image/station_covered.png"
+		},
+		"train_basic": {
+			"type": "image",
+			"width": 70,
+			"height": 70,
+			"path": "image/train_basic.png"
+		},
+		"branch_builder": {
 			"type": "script",
-			"path": "script/entities/sensor.js",
+			"path": "script/entities/branch_builder.js",
+			"global": true
+		},
+		"builder": {
+			"type": "script",
+			"path": "script/entities/builder.js",
+			"global": true
+		},
+		"mask": {
+			"type": "script",
+			"path": "script/entities/mask.js",
 			"global": true
 		}
 	},

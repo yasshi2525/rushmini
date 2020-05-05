@@ -80,8 +80,16 @@ const createModelViewer = (loadedScene: g.Scene) => {
   panel.x = (g.game.width * (1 - SIZE)) / 2 - BORDER;
   panel.y = (g.game.height * (1 - SIZE)) / 2 - BORDER;
   panel.modified();
+
+  const pane = new g.Pane({
+    scene: loadedScene,
+    width: g.game.width * SIZE,
+    height: g.game.height * SIZE,
+  });
+  panel.children[0].append(pane);
+
   configs.forEach((resource) =>
-    panel.children[0].append(createResourcePanel(resource, loadedScene))
+    pane.append(createResourcePanel(resource, loadedScene))
   );
   return panel;
 };

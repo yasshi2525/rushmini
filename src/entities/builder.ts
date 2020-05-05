@@ -24,7 +24,7 @@ const endHandler = () => {
  * カーソルの動きに沿って路線を作成します
  * @param loadedScene
  */
-const createSensor = (loadedScene: g.Scene) => {
+const createBuilder = (loadedScene: g.Scene) => {
   const sensor = new g.E({
     scene: loadedScene,
     x: (g.game.width * (1 - SIZE)) / 2,
@@ -45,9 +45,12 @@ const createSensor = (loadedScene: g.Scene) => {
   });
 
   // カーソルの地点を終点とする
-  sensor.pointUp.add(() => endHandler());
+  sensor.pointUp.add(() => {
+    endHandler();
+    sensor.hide();
+  });
 
   return sensor;
 };
 
-export default createSensor;
+export default createBuilder;

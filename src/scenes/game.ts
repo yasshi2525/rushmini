@@ -20,11 +20,13 @@ const createGameScene = (): GameScene => {
     game: g.game,
     name: "game",
     assetIds: [
-      "company_image",
-      "human_image",
-      "residence_image",
-      "station_image",
-      "train_image",
+      "company_basic",
+      "human_basic",
+      "residence_basic",
+      "station_basic",
+      "station_candidate",
+      "station_covered",
+      "train_basic",
     ],
   });
   ticker.register(scene);

@@ -3,11 +3,13 @@ export const createLoadedScene = (loadsAssets: boolean = false) =>
     const opts: g.SceneParameterObject = { game: g.game, name: "mock" };
     if (loadsAssets) {
       opts.assetIds = [
-        "company_image",
-        "human_image",
-        "residence_image",
-        "station_image",
-        "train_image",
+        "company_basic",
+        "human_basic",
+        "residence_basic",
+        "station_basic",
+        "station_candidate",
+        "station_covered",
+        "train_basic",
       ];
     }
     const scene = new g.Scene(opts);

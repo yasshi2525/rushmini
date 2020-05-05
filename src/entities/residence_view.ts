@@ -3,5 +3,5 @@ import creators from "./creator";
 import { createSquareSprite } from "./sprite";
 
 creators.put(Residence, (scene, _) =>
-  createSquareSprite(scene, "residence_image")
+  createSquareSprite(scene, "residence_basic")
 );

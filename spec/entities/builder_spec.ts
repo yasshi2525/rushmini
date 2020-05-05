@@ -1,4 +1,4 @@
-import createSensor from "entities/sensor";
+import createBuilder from "entities/builder";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
@@ -21,7 +21,7 @@ describe("railbuilder", () => {
   });
 
   it("dragging starts rail building", () => {
-    const panel = createSensor(scene);
+    const panel = createBuilder(scene);
     panel.pointDown.fire({
       priority: 2,
       local: true,
@@ -38,7 +38,7 @@ describe("railbuilder", () => {
   });
 
   it("dragging extends rail", () => {
-    const sensor = createSensor(scene);
+    const sensor = createBuilder(scene);
     sensor.pointDown.fire({
       priority: 2,
       local: true,
@@ -77,7 +77,7 @@ describe("railbuilder", () => {
   });
 
   it("dragging ends rail", () => {
-    const sensor = createSensor(scene);
+    const sensor = createBuilder(scene);
     sensor.pointDown.fire({
       priority: 2,
       local: true,
@@ -128,10 +128,12 @@ describe("railbuilder", () => {
     expect(inbound.destination().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept1);
+
+    expect(sensor.visible()).toBeFalsy();
   });
 
   it("re-dragging causes nothing", () => {
-    const sensor = createSensor(scene);
+    const sensor = createBuilder(scene);
     sensor.pointDown.fire({
       priority: 2,
       local: true,

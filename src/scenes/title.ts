@@ -15,7 +15,7 @@ export type TitleScene = {
  * @param next
  */
 const preserveShift = (panel: g.E, next: g.Scene) => {
-  panel.pointDown.add(() => {
+  panel.pointUp.add(() => {
     g.game.replaceScene(next);
   });
 };

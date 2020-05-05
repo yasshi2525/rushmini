@@ -20,6 +20,16 @@ type CreatorMapper<T extends Pointable> = {
 
 const _storage: CreatorMapper<Pointable>[] = [];
 
+export const adjust = <T extends Pointable>(
+  scene: g.Scene,
+  subject: T,
+  core: g.E
+) => {
+  const panel = createPointableView(scene, subject, core.width, core.height);
+  panel.append(core);
+  return panel;
+};
+
 const creators = {
   /**
    * 指定されたクラスに対応するビューア作成関数を返します。
@@ -29,17 +39,8 @@ const creators = {
     key: new (...args: any[]) => T
   ): ViewCreator<T> => {
     const mapper = find(_storage, (obj) => obj.key === key);
-    return (scene, subject) => {
-      const core = mapper.creator(scene, subject);
-      const panel = createPointableView(
-        scene,
-        subject,
-        core.width,
-        core.height
-      );
-      panel.append(core);
-      return panel;
-    };
+    return (scene, subject) =>
+      adjust(scene, subject, mapper.creator(scene, subject));
   },
 
   /**

@@ -7,18 +7,26 @@ const HEIGHT = 300;
 const COLOR = "#f0f8ff";
 const BORDER = 8;
 
-const createScoreHandler = (panel: g.E, cb: () => void): ScoreListener => {
+const createScoreHandler = (
+  panel: g.E,
+  onOpened: () => void,
+  isActive: () => boolean
+): ScoreListener => {
   const bs = [...borders];
   return (num: number) => {
-    if (bs.length > 0 && num >= bs[0] && !panel.visible()) {
+    if (bs.length > 0 && num >= bs[0] && !isActive()) {
       panel.show();
-      cb();
+      onOpened();
       bs.shift();
     }
   };
 };
 
-const createBonusPanel = (loadedScene: g.Scene, onOpened: () => void) => {
+const createBonusPanel = (
+  loadedScene: g.Scene,
+  onOpened: () => void,
+  isActive: () => boolean
+) => {
   const panel = createFramedRect(
     loadedScene,
     g.game.width * WIDTH - BORDER / 2,
@@ -40,7 +48,7 @@ const createBonusPanel = (loadedScene: g.Scene, onOpened: () => void) => {
     })
   );
   panel.hide();
-  scorer.observe(createScoreHandler(panel, onOpened));
+  scorer.observe(createScoreHandler(panel, onOpened, isActive));
   return panel;
 };
 

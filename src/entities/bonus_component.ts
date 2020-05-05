@@ -1,6 +1,6 @@
 import { createFramedRect } from "./rectangle";
 
-const PARENT_RATIO = 0.8;
+const OFFSET_X = 20;
 const OFFSET_Y = 100;
 const SIZE = 100;
 const BORDER_WIDTH = 8;
@@ -21,10 +21,10 @@ const createBonusComponent = (
     BORDER_WIDTH
   );
   panel.touchable = true;
-  panel.x = (g.game.width * PARENT_RATIO - (SIZE * 4 + BORDER_WIDTH * 5)) / 2;
+  panel.x = OFFSET_X + (SIZE + BORDER_WIDTH) * index;
   panel.y = OFFSET_Y;
   panel.modified();
-  panel.pointDown.add(() => {
+  panel.pointUp.add(() => {
     (panel.children[0] as g.FilledRect).cssColor = DISABLED_COLOR;
     panel.touchable = false;
     panel.modified();
