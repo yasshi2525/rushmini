@@ -7,14 +7,9 @@ const BORDER_WIDTH = 8;
 const ENABLED_COLOR = "#3cb371";
 const DISABLED_COLOR = "#888888";
 
-const createBonusComponent = (
-  loadedScene: g.Scene,
-  label: string,
-  index: number,
-  cb: () => void
-) => {
+const createPanel = (scene: g.Scene, index: number) => {
   const panel = createFramedRect(
-    loadedScene,
+    scene,
     SIZE - BORDER_WIDTH,
     SIZE - BORDER_WIDTH,
     ENABLED_COLOR,
@@ -24,22 +19,33 @@ const createBonusComponent = (
   panel.x = OFFSET_X + (SIZE + BORDER_WIDTH) * index;
   panel.y = OFFSET_Y;
   panel.modified();
+  return panel;
+};
+
+const createInstruction = (scene: g.Scene, label: string) =>
+  new g.SystemLabel({
+    x: SIZE / 2,
+    y: SIZE / 4,
+    scene,
+    fontSize: SIZE / 5,
+    text: label,
+    textAlign: g.TextAlign.Center,
+  });
+
+const createBonusComponent = (
+  loadedScene: g.Scene,
+  label: string,
+  index: number,
+  cb: () => void
+) => {
+  const panel = createPanel(loadedScene, index);
   panel.pointUp.add(() => {
     (panel.children[0] as g.FilledRect).cssColor = DISABLED_COLOR;
     panel.touchable = false;
     panel.modified();
     cb();
   });
-  panel.append(
-    new g.SystemLabel({
-      x: SIZE / 2,
-      y: SIZE / 4,
-      scene: loadedScene,
-      fontSize: SIZE / 5,
-      text: label,
-      textAlign: g.TextAlign.Center,
-    })
-  );
+  panel.append(createInstruction(loadedScene, label));
   return panel;
 };
 
