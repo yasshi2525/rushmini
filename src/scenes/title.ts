@@ -1,5 +1,6 @@
 import createInstraction from "../entities/instraction";
 import ticker from "../utils/ticker";
+import { ViewerEvent } from "../utils/viewer";
 
 /**
  * タイトルシーンと、ゲームシーンを遷移先に登録するメソッド

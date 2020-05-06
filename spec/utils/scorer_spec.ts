@@ -23,7 +23,7 @@ describe("scorer", () => {
     let result = 0;
     const listener: ScoreListener = (v) => (result = v);
     scorer.init(state);
-    scorer.observe(listener);
+    scorer.register(listener);
     expect(result).toEqual(0);
     scorer.add(1);
     expect(result).toEqual(1);

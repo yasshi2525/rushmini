@@ -1,27 +1,39 @@
-import createBuilder from "entities/builder";
+import preserveEntityCreator from "entities/loader";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
 import userResource, { ModelState } from "models/user_resource";
+import random from "utils/random";
+import scorer from "utils/scorer";
+import viewer, { ViewerType } from "utils/viewer";
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;
 
+beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
+});
+
 describe("railbuilder", () => {
   let scene: g.Scene;
+  let panel: g.E;
 
   beforeEach(async () => {
-    scene = await createLoadedScene();
+    scorer.init({ score: 0 });
+    scene = await createLoadedScene(true);
+    preserveEntityCreator();
+    viewer.init(scene);
+    panel = viewer.viewers[ViewerType.BUILDER];
   });
 
   afterEach(async () => {
+    viewer.reset();
     userResource.reset();
     modelListener.flush();
     await recreateGame();
   });
 
   it("dragging starts rail building", () => {
-    const panel = createBuilder(scene);
     panel.pointDown.fire({
       priority: 2,
       local: true,
@@ -38,17 +50,16 @@ describe("railbuilder", () => {
   });
 
   it("dragging extends rail", () => {
-    const sensor = createBuilder(scene);
-    sensor.pointDown.fire({
+    panel.pointDown.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 1,
-      target: sensor,
+      target: panel,
     });
-    sensor.pointMove.fire({
+    panel.pointMove.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -57,7 +68,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: sensor,
+      target: panel,
     });
     const dept = userResource.getPrimaryLine().top;
     expect(dept).toBeInstanceOf(DeptTask);
@@ -77,17 +88,16 @@ describe("railbuilder", () => {
   });
 
   it("dragging ends rail", () => {
-    const sensor = createBuilder(scene);
-    sensor.pointDown.fire({
+    panel.pointDown.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 1,
-      target: sensor,
+      target: panel,
     });
-    sensor.pointMove.fire({
+    panel.pointMove.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -96,9 +106,9 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: sensor,
+      target: panel,
     });
-    sensor.pointUp.fire({
+    panel.pointUp.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -107,7 +117,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: sensor,
+      target: panel,
     });
     const dept1 = userResource.getPrimaryLine().top;
     expect(dept1).toBeInstanceOf(DeptTask);
@@ -129,21 +139,20 @@ describe("railbuilder", () => {
 
     expect(inbound.next).toEqual(dept1);
 
-    expect(sensor.visible()).toBeFalsy();
+    expect(panel.visible()).toBeFalsy();
   });
 
   it("re-dragging causes nothing", () => {
-    const sensor = createBuilder(scene);
-    sensor.pointDown.fire({
+    panel.pointDown.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 1,
-      target: sensor,
+      target: panel,
     });
-    sensor.pointMove.fire({
+    panel.pointMove.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -152,9 +161,9 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: sensor,
+      target: panel,
     });
-    sensor.pointUp.fire({
+    panel.pointUp.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -163,24 +172,24 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: sensor,
+      target: panel,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);
 
-    sensor.pointDown.fire({
+    panel.pointDown.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
       point: { x: 10, y: 20 },
       type: g.EventType.PointDown,
       pointerId: 4,
-      target: sensor,
+      target: panel,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);
 
-    sensor.pointMove.fire({
+    panel.pointMove.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -189,12 +198,12 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: sensor,
+      target: panel,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);
 
-    sensor.pointUp.fire({
+    panel.pointUp.fire({
       priority: 2,
       local: true,
       player: { id: "1" },
@@ -203,7 +212,7 @@ describe("railbuilder", () => {
       point: { x: 10, y: 20 },
       startDelta: { x: 1, y: 2 },
       prevDelta: { x: 1, y: 2 },
-      target: sensor,
+      target: panel,
     });
 
     expect(userResource.getState()).toEqual(ModelState.FIXED);

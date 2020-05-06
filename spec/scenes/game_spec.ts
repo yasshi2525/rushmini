@@ -6,6 +6,7 @@ import createGameScene from "scenes/game";
 import random from "utils/random";
 import scorer from "utils/scorer";
 import ticker from "utils/ticker";
+import viewer from "utils/viewer";
 
 declare const recreateGame: () => Promise<void>;
 const FPS = 15;
@@ -20,6 +21,9 @@ describe("game", () => {
   });
 
   afterEach(async () => {
+    viewer.reset();
+    modelListener.flush();
+    modelListener.unregisterAll();
     await recreateGame();
   });
 

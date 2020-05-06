@@ -23,7 +23,7 @@ const scorer = {
     // 得点ラベルなどに得点の変化があったことを通知する
     _listeners.forEach((ev) => ev(scorer.get()));
   },
-  observe: (listener: ScoreListener) => {
+  register: (listener: ScoreListener) => {
     _listeners.push(listener);
   },
   reset: () => {

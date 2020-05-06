@@ -1,7 +1,6 @@
-import controller from "../entities/controller";
+import preserveEntityCreator from "../entities/loader";
 import ticker, { EventType as TickEventType } from "../utils/ticker";
-
-const paddingRatio = 0.1;
+import viewer from "../utils/viewer";
 
 export type GameScene = {
   scene: g.Scene;
@@ -34,7 +33,8 @@ const createGameScene = (): GameScene => {
     scene,
     prepare: (next: g.Scene) => {
       scene.loaded.add(() => {
-        controller.init(scene);
+        preserveEntityCreator();
+        viewer.init(scene);
 
         // 制限時間がなくなれば遷移する
         preserveShift(next);

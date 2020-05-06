@@ -1,32 +1,11 @@
-import scorer, { ScoreListener } from "../utils/scorer";
 import { createFramedRect } from "./rectangle";
 
-const borders = [1000, 2000, 4000, 8000];
 const WIDTH = 0.6;
 const HEIGHT = 300;
 const COLOR = "#f0f8ff";
 const BORDER = 8;
 
-const createScoreHandler = (
-  panel: g.E,
-  onOpened: () => void,
-  isActive: () => boolean
-): ScoreListener => {
-  const bs = [...borders];
-  return (num: number) => {
-    if (bs.length > 0 && num >= bs[0] && !isActive()) {
-      panel.show();
-      onOpened();
-      bs.shift();
-    }
-  };
-};
-
-const createBonusPanel = (
-  loadedScene: g.Scene,
-  onOpened: () => void,
-  isActive: () => boolean
-) => {
+const createBonusPanel = (loadedScene: g.Scene) => {
   const panel = createFramedRect(
     loadedScene,
     g.game.width * WIDTH - BORDER / 2,
@@ -48,7 +27,6 @@ const createBonusPanel = (
     })
   );
   panel.hide();
-  scorer.observe(createScoreHandler(panel, onOpened, isActive));
   return panel;
 };
 

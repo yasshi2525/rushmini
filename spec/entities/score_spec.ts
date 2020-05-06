@@ -7,9 +7,12 @@ const toText = (score: number) => `SCORE: ${score}`;
 
 describe("score", () => {
   let scene: g.Scene;
+  let panel: g.E;
+
   beforeEach(async () => {
-    scene = await createLoadedScene();
     scorer.init({ score: 0 });
+    scene = await createLoadedScene();
+    panel = createScoreLabel(scene);
   });
 
   afterEach(async () => {
@@ -17,7 +20,6 @@ describe("score", () => {
   });
 
   it("observe", () => {
-    const panel = createScoreLabel(scene);
     const label = panel.children[0];
     expect(label).toBeInstanceOf(g.SystemLabel);
     expect((label as g.SystemLabel).text).toEqual(toText(0));

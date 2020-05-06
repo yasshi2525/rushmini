@@ -9,9 +9,11 @@ const inactiveOpacity = 0.25;
 
 describe("railbuild_guide", () => {
   let scene: g.Scene;
+  let panel: g.E;
 
   beforeEach(async () => {
     scene = await createLoadedScene();
+    panel = createRailBuildGuide(scene);
   });
 
   afterEach(async () => {
@@ -21,7 +23,6 @@ describe("railbuild_guide", () => {
   });
 
   it("guide listen to model", () => {
-    const panel = createRailBuildGuide(scene);
     expect(userResource.stateListeners.length).toEqual(1);
     expect(panel.opacity).toEqual(activeOpacity);
 

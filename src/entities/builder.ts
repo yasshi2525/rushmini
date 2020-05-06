@@ -1,4 +1,5 @@
 import userResource from "../models/user_resource";
+import viewer, { ViewerEvent } from "../utils/viewer";
 
 const SIZE = 0.8;
 
@@ -32,7 +33,7 @@ const createBuilder = (loadedScene: g.Scene) => {
   // カーソルの地点を終点とする
   sensor.pointUp.add(() => {
     userResource.end();
-    sensor.hide();
+    viewer.fire(ViewerEvent.BUILT);
   });
 
   return sensor;

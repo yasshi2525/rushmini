@@ -1,6 +1,7 @@
 import Station from "../models/station";
 import userResource from "../models/user_resource";
 import { find } from "../utils/common";
+import viewer, { ViewerEvent } from "../utils/viewer";
 import connect from "./connector";
 import { adjust } from "./creator";
 import ViewObjectFactory from "./factory";
@@ -18,8 +19,7 @@ const handleStart = (
   container: g.E,
   x: number,
   y: number,
-  factory: ViewObjectFactory<Station>,
-  onStarted: () => void
+  factory: ViewObjectFactory<Station>
 ) => {
   const panel = container.parent as g.Pane;
   const obj = panel.findPointSourceByPoint(
@@ -35,16 +35,12 @@ const handleStart = (
     container.hide();
     panel.append(createEmphasis(panel.scene, found.subject, "station_covered"));
     userResource.branch(found.subject.platforms[0]);
-    onStarted();
+    viewer.fire(ViewerEvent.BRANCHING);
   }
   return found !== undefined;
 };
 
-const createBranchBuilder = (
-  loadedScene: g.Scene,
-  onStarted: () => void,
-  onCompleted: () => void
-) => {
+const createBranchBuilder = (loadedScene: g.Scene) => {
   let started = false;
   const panel = new g.Pane({
     scene: loadedScene,
@@ -61,13 +57,7 @@ const createBranchBuilder = (
   );
   connect(factory, Station);
   panel.pointDown.add((ev) => {
-    started = handleStart(
-      container,
-      ev.point.x,
-      ev.point.y,
-      factory,
-      onStarted
-    );
+    started = handleStart(container, ev.point.x, ev.point.y, factory);
   });
   panel.pointMove.add((ev) => {
     if (started) {
@@ -80,8 +70,7 @@ const createBranchBuilder = (
   panel.pointUp.add(() => {
     if (started) {
       userResource.end();
-      panel.hide();
-      onCompleted();
+      viewer.fire(ViewerEvent.BRANCHED);
     }
   });
   panel.append(

@@ -86,9 +86,21 @@ describe("human", () => {
       const r = new Residence([c], 0, 0);
       r._setNext(c, c, distance(c, r));
       const h = new Human(r, c);
+
       for (let j = 0; j < FPS; j++) h._step();
+
       expect(h.loc().x).toBeCloseTo(3);
       expect(h.loc().y).toBeCloseTo(4);
+      expect(h.state()).toEqual(HumanState.MOVE);
+
+      h._step();
+
+      expect(h.state()).toEqual(HumanState.ARCHIVED);
+      expect(h.loc().x).toBeCloseTo(3);
+      expect(h.loc().y).toBeCloseTo(4);
+
+      h._step();
+      expect(h.state()).toEqual(HumanState.ARCHIVED);
     });
   });
 

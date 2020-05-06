@@ -4,7 +4,7 @@ const SIZE = 0.8;
 const COLOR = "#888888";
 const ALPHA = 0.5;
 
-const createMask = (loadedScene: g.Scene) => {
+const createShadow = (loadedScene: g.Scene) => {
   const mask = createFramedRect(
     loadedScene,
     g.game.width * SIZE,
@@ -20,4 +20,4 @@ const createMask = (loadedScene: g.Scene) => {
   return mask;
 };
 
-export default createMask;
+export default createShadow;

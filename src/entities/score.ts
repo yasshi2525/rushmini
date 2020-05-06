@@ -14,7 +14,7 @@ const createScoreLabel = (loadedScene: g.Scene) => {
   });
 
   // 得点が変化したならラベルテキストを更新する
-  scorer.observe(() => {
+  scorer.register(() => {
     label.text = toText(scorer.get());
     label.modified();
   });

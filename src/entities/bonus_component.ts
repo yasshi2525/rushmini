@@ -1,3 +1,4 @@
+import viewer, { ViewerEvent } from "../utils/viewer";
 import { createFramedRect } from "./rectangle";
 
 const OFFSET_X = 20;
@@ -36,14 +37,14 @@ const createBonusComponent = (
   loadedScene: g.Scene,
   label: string,
   index: number,
-  cb: () => void
+  onSelected: ViewerEvent
 ) => {
   const panel = createPanel(loadedScene, index);
   panel.pointUp.add(() => {
     (panel.children[0] as g.FilledRect).cssColor = DISABLED_COLOR;
     panel.touchable = false;
     panel.modified();
-    cb();
+    viewer.fire(onSelected);
   });
   panel.append(createInstruction(loadedScene, label));
   return panel;

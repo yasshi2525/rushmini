@@ -1,22 +1,33 @@
-import createBonusPanel from "entities/bonus";
 import createBonusComponent from "entities/bonus_component";
+import preserveEntityCreator from "entities/loader";
 import modelListener from "models/listener";
+import random from "utils/random";
 import scorer from "utils/scorer";
+import viewer, { ViewerEvent, ViewerType } from "utils/viewer";
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;
 const FIRST_BONUS = 1000;
 const SECOND_BONUS = 2000;
 
+beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
+});
+
 describe("bonus", () => {
   let scene: g.Scene;
+  let bonus: g.E;
 
   beforeEach(async () => {
-    scene = await createLoadedScene();
+    scene = await createLoadedScene(true);
     scorer.init({ score: 0 });
+    preserveEntityCreator();
+    viewer.init(scene);
+    bonus = viewer.viewers[ViewerType.BONUS];
   });
 
   afterEach(async () => {
+    viewer.reset();
     modelListener.flush();
     modelListener.unregisterAll();
     await recreateGame();
@@ -24,11 +35,7 @@ describe("bonus", () => {
 
   it("pop up modal when 1st bonus score is god", () => {
     let counter = 0;
-    const bonus = createBonusPanel(
-      scene,
-      () => counter++,
-      () => false
-    );
+    viewer.register(ViewerEvent.BONUS_STARTED, () => counter++);
 
     expect(bonus.visible()).toBeFalsy();
     expect(counter).toEqual(0);
@@ -39,13 +46,12 @@ describe("bonus", () => {
 
   it("pop down modal when select button preesed", () => {
     let counter = 0;
-    const bonus = createBonusPanel(
+    viewer.register(ViewerEvent.BONUS_STARTED, () => counter++);
+    const component = createBonusComponent(
       scene,
-      () => counter++,
-      () => false
-    );
-    const component = createBonusComponent(scene, "dummy", 0, () =>
-      bonus.hide()
+      "dummy",
+      0,
+      ViewerEvent.BRANCH_STARTED
     );
 
     scorer.add(FIRST_BONUS);
@@ -59,37 +65,20 @@ describe("bonus", () => {
 
   it("forbit to re-open during bonus panel is opened", () => {
     let isOpen = false;
-    let counter = 0;
-    const bonus = createBonusPanel(
-      scene,
-      () => {
-        counter++, (isOpen = true);
-      },
-      () => isOpen
-    );
-    const component = createBonusComponent(scene, "dummy", 0, () => {
-      isOpen = false;
-      bonus.hide();
+    let openCounter = 0;
+    viewer.register(ViewerEvent.BONUS_STARTED, () => {
+      isOpen = true;
+      openCounter++;
     });
 
     scorer.add(FIRST_BONUS);
     expect(bonus.visible()).toBeTruthy();
     expect(isOpen).toBeTruthy();
-    expect(counter).toEqual(1);
+    expect(openCounter).toEqual(1);
 
     scorer.add(SECOND_BONUS - FIRST_BONUS);
     expect(bonus.visible()).toBeTruthy();
     expect(isOpen).toBeTruthy();
-    expect(counter).toEqual(1);
-
-    component.pointUp.fire();
-    expect(bonus.visible()).toBeFalsy();
-    expect(isOpen).toBeFalsy();
-    expect(counter).toEqual(1);
-
-    scorer.add(1);
-    expect(bonus.visible()).toBeTruthy();
-    expect(isOpen).toBeTruthy();
-    expect(counter).toEqual(2);
+    expect(openCounter).toEqual(1);
   });
 });

@@ -309,16 +309,6 @@
 			"path": "script/entities/bonus_component.js",
 			"global": true
 		},
-		"controller": {
-			"type": "script",
-			"path": "script/entities/controller.js",
-			"global": true
-		},
-		"cursor": {
-			"type": "script",
-			"path": "script/entities/cursor.js",
-			"global": true
-		},
 		"company_basic": {
 			"type": "image",
 			"width": 94,
@@ -371,14 +361,24 @@
 			"path": "script/entities/builder.js",
 			"global": true
 		},
-		"mask": {
-			"type": "script",
-			"path": "script/entities/mask.js",
-			"global": true
-		},
 		"build_guide": {
 			"type": "script",
 			"path": "script/entities/build_guide.js",
+			"global": true
+		},
+		"shadow": {
+			"type": "script",
+			"path": "script/entities/shadow.js",
+			"global": true
+		},
+		"viewer": {
+			"type": "script",
+			"path": "script/utils/viewer.js",
+			"global": true
+		},
+		"loader": {
+			"type": "script",
+			"path": "script/entities/loader.js",
 			"global": true
 		}
 	},

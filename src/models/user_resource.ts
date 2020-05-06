@@ -1,9 +1,9 @@
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
+import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
 import Train from "./train";
-import RailEdge from "./rail_edge";
 
 export enum ModelState {
   INITED,

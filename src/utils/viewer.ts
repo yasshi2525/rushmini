@@ -1,38 +1,139 @@
 import cityResource from "../models/city_resource";
-import modelListener, { EventType as ModelEventType } from "../models/listener";
-import random from "../utils/random";
-import routeFinder from "../utils/route_finder";
-import stepper from "../utils/stepper";
-import ticker, { EventType as TickEventType } from "../utils/ticker";
-import transportFinder from "../utils/transport_finder";
-import createBackground from "./background";
-import createBonusPanel from "./bonus";
-import createBonusBranch from "./bonus_branch";
-import createBranchBuilder from "./branch_builder";
-import createBuilder from "./builder";
-import createRailBuildGuide from "./build_guide";
-import createCursor from "./cursor";
-import createMask from "./mask";
-import createModelViewer from "./model_viewer";
-import createScoreLabel from "./score";
-import createTickLabel from "./tick";
+import modelListener, {
+  EventType as ModelEventType,
+  Tracker,
+  TriggerContainer,
+} from "../models/listener";
+import random from "./random";
+import routeFinder from "./route_finder";
+import scorer from "./scorer";
+import stepper from "./stepper";
+import ticker, { EventType as TickEventType } from "./ticker";
+import transportFinder from "./transport_finder";
+
+/**
+ * ビューアの役割と描画順
+ */
+export enum ViewerType {
+  /**
+   * 背景
+   */
+  BACKGROUND,
+  /**
+   * モデルの描画先
+   */
+  MODEL,
+  /**
+   * 鉄道建設の仕方の説明
+   */
+  BUILD_GUIDE,
+  /**
+   * 鉄道建設の入力受付
+   */
+  BUILDER,
+  /**
+   * ボーナス画面のとき、モデルを影で隠す
+   */
+  SHADOW,
+  /**
+   * 支線ボーナスの入力受付
+   */
+  BRANCH_BUILDER,
+  /**
+   * ボーナス選択画面
+   */
+  BONUS,
+  /**
+   * 支線建設ボーナスボタン
+   */
+  BONUS_BRANCH,
+  /**
+   * 残り時間の表示
+   */
+  TICK,
+  /**
+   * 獲得点数の表示
+   */
+  SCORE,
+}
+
+export enum ViewerEvent {
+  /**
+   * エンティティをシーンに貼り付ける準備ができた
+   */
+  INITED,
+  /**
+   * 路線建設が完了した
+   */
+  BUILT,
+  /**
+   * 得点が発生した
+   */
+  SCORED,
+  /**
+   * ボーナスが発火した (要:前のボーナスが終了)
+   */
+  BONUS_STARTED,
+  /**
+   * 支線ボーナスが選ばれた (駅を探し中)
+   */
+  BRANCH_STARTED,
+  /**
+   * 支線の建設中
+   */
+  BRANCHING,
+  /**
+   * 支線の建設完了
+   */
+  BRANCHED,
+}
+
+/**
+ * ボーナスが発火されるボーダー点
+ */
+const BORDERS = [1000, 2000, 4000, 8000];
+
+type ViewerCreator = (scene: g.Scene) => g.E;
 
 type Controller = {
-  [index: string]: g.E | boolean | ((...args: any[]) => void);
   isBonusing: boolean;
-  background?: g.E;
-  model?: g.E;
-  guide?: g.E;
-  mask?: g.E;
-  tick?: g.E;
-  score?: g.E;
-  builder?: g.E;
-  branch_builder?: g.E;
-  cursor?: g.E;
-  bonusPanel?: g.E;
-  bonusBranch?: g.E;
+  borders: number[];
+  _listener: TriggerContainer<ViewerEvent, Controller>;
+  _trackers: { [key in ViewerEvent]?: Tracker<Controller> };
+  creators: { [key in ViewerType]?: ViewerCreator };
+  viewers: { [key in ViewerType]?: g.E };
+  /**
+   * ビューア作成関数を登録します
+   */
+  put: (key: ViewerType, creator: ViewerCreator) => void;
+  /**
+   * ビューアを作成し、シーンに貼り付けます
+   */
   init: (scene: g.Scene) => void;
+  /**
+   * イベントリスナを登録します
+   */
+  register: (key: ViewerEvent, listener: (_c: Controller) => void) => void;
+  /**
+   * イベントを発火します
+   */
+  fire: (ev: ViewerEvent) => void;
   reset: () => void;
+};
+
+/**
+ * ビューアの親子関係を返す
+ * @param _c
+ * @param key
+ * @param scene
+ */
+const parent = (_c: Controller, key: ViewerType, scene: g.Scene) => {
+  switch (key) {
+    case ViewerType.BONUS_BRANCH:
+      return _c.viewers[ViewerType.BONUS];
+    default:
+      return scene;
+  }
 };
 
 const initController = (width: number, height: number) => {
@@ -44,73 +145,121 @@ const initController = (width: number, height: number) => {
   ticker.triggers.find(TickEventType.TICKED).register(() => stepper.step());
 };
 
-type Handler = {
-  set: (e: g.E) => void;
-  gen: (scene: g.Scene) => g.E;
-  parent?: () => g.E;
-};
-
-const order = (_c: Controller): Handler[] => [
-  { set: (e) => (_c.background = e), gen: createBackground },
-  { set: (e) => (_c.model = e), gen: createModelViewer },
-  { set: (e) => (_c.guide = e), gen: createRailBuildGuide },
-  { set: (e) => (_c.mask = e), gen: createMask },
-  { set: (e) => (_c.tick = e), gen: createTickLabel },
-  { set: (e) => (_c.score = e), gen: createScoreLabel },
-  { set: (e) => (_c.builder = e), gen: createBuilder },
-  {
-    set: (e) => {
-      _c.branch_builder = e;
-    },
-    gen: (s) =>
-      createBranchBuilder(
-        s,
-        () => {
-          _c.mask.hide();
-        },
-        () => {
-          _c.isBonusing = false;
-        }
-      ),
-  },
-  { set: (e) => (_c.cursor = e), gen: createCursor },
-  {
-    set: (e) => (_c.bonusPanel = e),
-    gen: (s) =>
-      createBonusPanel(
-        s,
-        () => {
-          _c.isBonusing = true;
-          _c.mask.show();
-        },
-        () => _c.isBonusing
-      ),
-  },
-  {
-    set: (e) => (_c.bonusBranch = e),
-    gen: (s) =>
-      createBonusBranch(s, () => {
-        _c.bonusPanel.hide();
-        _c.branch_builder.show();
-      }),
-    parent: () => _c.bonusPanel,
-  },
-];
-
-const c: Controller = {
-  isBonusing: false,
-  init: (loadedScene: g.Scene) => {
-    order(c).forEach((hn) => {
-      const panel = hn.gen(loadedScene);
-      hn.set(panel);
-      const parent = hn.parent ? hn.parent() : loadedScene;
-      parent.append(panel);
+/**
+ * インスタンスを作成し、シーンに登録する
+ * @param _c
+ * @param scene
+ */
+const handleInited = (_c: Controller, scene: g.Scene) => {
+  Object.keys(ViewerType)
+    .map((v) => parseInt(v, 10))
+    .filter((v) => !isNaN(v))
+    .forEach((key: ViewerType) => {
+      _c.viewers[key] = _c.creators[key](scene);
+      parent(_c, key, scene).append(_c.viewers[key]);
     });
-    initController(c.builder.width, c.builder.height);
-  },
-  reset: () => (c.isBonusing = false),
+  scorer.register(() => _c.fire(ViewerEvent.SCORED));
+  initController(
+    _c.viewers[ViewerType.BUILDER].width,
+    _c.viewers[ViewerType.BUILDER].height
+  );
 };
 
-const controller = c;
+const handleBuilt = (_c: Controller) => {
+  _c.viewers[ViewerType.BUILDER].hide();
+};
 
-export default controller;
+/**
+ * 得点が入り、ボーダーを超えたならばボーナスを発火する、
+ * @param _c
+ */
+const handleScored = (_c: Controller) => {
+  if (
+    _c.borders.length > 0 &&
+    scorer.get() >= _c.borders[0] &&
+    !_c.isBonusing
+  ) {
+    _c.fire(ViewerEvent.BONUS_STARTED);
+  }
+};
+
+const handleBonusStarted = (_c: Controller) => {
+  _c.viewers[ViewerType.BONUS].show();
+  _c.viewers[ViewerType.SHADOW].show();
+  _c.borders.shift();
+  _c.isBonusing = true;
+};
+
+const handleBranchStarted = (_c: Controller) => {
+  _c.viewers[ViewerType.BONUS].hide();
+  _c.viewers[ViewerType.BRANCH_BUILDER].show();
+};
+
+const handleBranching = (_c: Controller) => {
+  _c.viewers[ViewerType.SHADOW].hide();
+};
+
+const handleBranchEnded = (_c: Controller) => {
+  _c.viewers[ViewerType.BRANCH_BUILDER].hide();
+  _c.isBonusing = false;
+};
+
+/**
+ * イベントの発火をキャプチャできるようにする
+ * @param _c
+ */
+const initListener = (_c: Controller, scene: g.Scene) => {
+  const list: { key: ViewerEvent; value: (__c: Controller) => void }[] = [
+    { key: ViewerEvent.INITED, value: (__c) => handleInited(__c, scene) },
+    { key: ViewerEvent.BUILT, value: handleBuilt },
+    { key: ViewerEvent.SCORED, value: handleScored },
+    { key: ViewerEvent.BONUS_STARTED, value: handleBonusStarted },
+    { key: ViewerEvent.BRANCH_STARTED, value: handleBranchStarted },
+    { key: ViewerEvent.BRANCHING, value: handleBranching },
+    { key: ViewerEvent.BRANCHED, value: handleBranchEnded },
+  ];
+  list.forEach((entry) => {
+    _c._trackers[entry.key] = new Tracker(_c);
+    _c._trackers[entry.key].register(entry.value);
+    _c._listener.find(entry.key).track(_c._trackers[entry.key]);
+  });
+};
+
+const viewer: Controller = {
+  isBonusing: false,
+  borders: [...BORDERS],
+  creators: {},
+  viewers: {},
+  _listener: new TriggerContainer<ViewerEvent, Controller>(),
+  _trackers: {},
+
+  put: (key: ViewerType, creator: ViewerCreator) => {
+    viewer.creators[key] = creator;
+  },
+
+  init: (loadedScene: g.Scene) => {
+    initListener(viewer, loadedScene);
+
+    viewer.fire(ViewerEvent.INITED);
+  },
+
+  register: (ev: ViewerEvent, listener: (_c: Controller) => void) => {
+    viewer._trackers[ev].register(listener);
+  },
+
+  fire: (ev: ViewerEvent) => {
+    viewer._listener.fire(ev, viewer);
+  },
+
+  reset: () => {
+    viewer.isBonusing = false;
+    viewer.borders = [...BORDERS];
+    viewer.creators = {};
+    viewer.viewers = {};
+    viewer._trackers = {};
+    viewer._listener.flush();
+    viewer._listener.unregisterAll();
+  },
+};
+
+export default viewer;
