@@ -39,6 +39,14 @@ const transport = (f: PathFinder) => {
   }
 };
 
+const addPtoGrelation = (f: PathFinder, g: Gate) => {
+  // all [G <=> P] for the goal
+  g.station.platforms.forEach((p) => {
+    f.edge(p, g, distance(g, p));
+    f.edge(g, p, distance(p, g));
+  });
+};
+
 const handler = {
   onCreated: {
     residence: (r: Residence) => {
@@ -73,10 +81,7 @@ const handler = {
         f.edge(g, c, distance(c, g));
 
         // all [G <=> P] for the goal
-        g.station.platforms.forEach((p) => {
-          f.edge(p, g, distance(g, p));
-          f.edge(g, p, distance(p, g));
-        });
+        addPtoGrelation(f, g);
       });
 
       lts.forEach((lt) => {
@@ -104,10 +109,7 @@ const handler = {
         f.edge(g, c, distance(g, c));
 
         // G <=> P for each goal
-        g.station.platforms.forEach((p) => {
-          f.edge(p, g, distance(g, p));
-          f.edge(g, p, distance(p, g));
-        });
+        addPtoGrelation(f, g);
       });
 
       gs.push(g);
