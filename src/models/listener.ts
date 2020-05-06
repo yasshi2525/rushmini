@@ -136,8 +136,15 @@ export class EventTrigger<S> {
   }
 }
 
+type Mapper<S> = { [index: number]: EventTrigger<S> };
+
+const each = <S>(mapper: Mapper<S>, fn: (t: EventTrigger<S>) => void) =>
+  Object.keys(mapper)
+    .map((key) => mapper[parseInt(key, 10)])
+    .forEach((t) => fn(t));
+
 export class TriggerContainer<T extends number, S> {
-  private readonly mapper: { [index: number]: EventTrigger<S> } = {};
+  private readonly mapper: Mapper<S> = {};
 
   /**
    * 指定されたイベントが発火されたとき動作するトリガを返します
@@ -188,18 +195,14 @@ export class TriggerContainer<T extends number, S> {
    * すべての監視対象を削除します
    */
   public flush() {
-    Object.keys(this.mapper).forEach((key) =>
-      this.mapper[parseInt(key, 10)].flush()
-    );
+    each(this.mapper, (t) => t.flush());
   }
 
   /**
    * すべてのイベントに登録されたイベントハンドラを削除します
    */
   public unregisterAll() {
-    Object.keys(this.mapper).forEach((key) =>
-      this.mapper[parseInt(key, 10)].unregisterAll()
-    );
+    each(this.mapper, (t) => t.unregisterAll());
   }
 }
 
