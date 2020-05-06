@@ -10,10 +10,10 @@ import createBonusPanel from "./bonus";
 import createBonusBranch from "./bonus_branch";
 import createBranchBuilder from "./branch_builder";
 import createBuilder from "./builder";
+import createRailBuildGuide from "./build_guide";
 import createCursor from "./cursor";
 import createMask from "./mask";
 import createModelViewer from "./model_viewer";
-import createRailBuildGuide from "./railbuild_guide";
 import createScoreLabel from "./score";
 import createTickLabel from "./tick";
 
@@ -62,7 +62,16 @@ const order = (_c: Controller): Handler[] => [
     set: (e) => {
       _c.branch_builder = e;
     },
-    gen: (s) => createBranchBuilder(s, () => (_c.isBonusing = false)),
+    gen: (s) =>
+      createBranchBuilder(
+        s,
+        () => {
+          _c.mask.hide();
+        },
+        () => {
+          _c.isBonusing = false;
+        }
+      ),
   },
   { set: (e) => (_c.cursor = e), gen: createCursor },
   {

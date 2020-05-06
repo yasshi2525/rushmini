@@ -14,8 +14,6 @@ export const createSquareSprite = (
     src: scene.assets[src],
     scaleX: scale,
     scaleY: scale,
-    anchorX: 0.5,
-    anchorY: 0.5,
   });
   return sprite;
 };

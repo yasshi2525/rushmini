@@ -14,11 +14,6 @@
 			"path": "script/entities/instraction.js",
 			"global": true
 		},
-		"railbuild_guide": {
-			"type": "script",
-			"path": "script/entities/railbuild_guide.js",
-			"global": true
-		},
 		"rail_edge_view": {
 			"type": "script",
 			"path": "script/entities/rail_edge_view.js",
@@ -379,6 +374,11 @@
 		"mask": {
 			"type": "script",
 			"path": "script/entities/mask.js",
+			"global": true
+		},
+		"build_guide": {
+			"type": "script",
+			"path": "script/entities/build_guide.js",
 			"global": true
 		}
 	},

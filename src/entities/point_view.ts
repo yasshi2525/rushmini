@@ -15,8 +15,8 @@ const createPointableView = (
 ) =>
   new g.E({
     scene,
-    x: p.loc().x,
-    y: p.loc().y,
+    x: p.loc().x - width / 2,
+    y: p.loc().y - height / 2,
     width,
     height,
   });

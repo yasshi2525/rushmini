@@ -79,16 +79,85 @@ describe("bonus_branch", () => {
     userResource.extend(50, 50);
     userResource.end();
 
-    expect(candidate.visible()).toEqual(false);
+    expect(candidate.visible()).toBeFalsy();
 
     scorer.add(scoreBorders[0]);
-    expect(candidate.visible()).toEqual(false);
+    expect(candidate.visible()).toBeFalsy();
 
     branch.pointUp.fire();
-    expect(candidate.visible()).toEqual(true);
+    expect(candidate.visible()).toBeTruthy();
 
-    expect(candidate.children.length).toEqual(2);
+    expect(candidate.children[0].children.length).toEqual(2);
+  });
 
-    candidate.children[0].children[0].pointUp.fire();
+  it("mask is hidden after candidate station is clicked", () => {
+    const branch = controller.bonusBranch;
+    const candidate = controller.branch_builder;
+    const mask = controller.mask;
+    userResource.start(0, 0);
+    userResource.extend(50, 50);
+    userResource.end();
+    scorer.add(scoreBorders[0]);
+    branch.pointUp.fire();
+    candidate.pointDown.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      priority: 2,
+      pointerId: 1,
+      target: candidate,
+      type: g.EventType.PointDown,
+    });
+    expect(mask.visible()).toBeFalsy();
+  });
+
+  it("isBonusing is false after station is branched", () => {
+    const branch = controller.bonusBranch;
+    const candidate = controller.branch_builder;
+    const mask = controller.mask;
+
+    userResource.start(0, 0);
+    userResource.extend(50, 50);
+    userResource.end();
+
+    expect(controller.isBonusing).toBeFalsy();
+
+    scorer.add(scoreBorders[0]);
+
+    expect(controller.isBonusing).toBeTruthy();
+
+    branch.pointUp.fire();
+
+    expect(controller.isBonusing).toBeTruthy();
+
+    candidate.pointDown.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      priority: 2,
+      pointerId: 1,
+      target: candidate,
+      type: g.EventType.PointDown,
+    });
+
+    expect(controller.isBonusing).toBeTruthy();
+
+    candidate.pointMove.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      prevDelta: { x: 0, y: 0 },
+      startDelta: { x: 0, y: 0 },
+      priority: 2,
+      pointerId: 1,
+      target: candidate,
+      type: g.EventType.PointDown,
+    });
+
+    expect(controller.isBonusing).toBeTruthy();
+
+    candidate.pointUp.fire();
+
+    expect(controller.isBonusing).toBeFalsy();
   });
 });

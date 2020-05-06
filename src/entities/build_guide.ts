@@ -3,7 +3,7 @@ import userResource from "../models/user_resource";
 /**
  * 画面に占める路線敷設ガイドの大きさ
  */
-const scale = 0.9;
+const scale = 0.8;
 
 const activeOpacity = 0.75;
 const inactiveOpacity = 0.25;
@@ -13,15 +13,15 @@ const fontSize = 20;
 /**
  * ガイドオブジェクトとガイド全体の余白
  */
-const padding = 20;
+const padding = 120;
 /**
  * 開始点・終了点の大きさ
  */
 const cursorSize = 30;
 
 const arrowHeight = 30;
-const arrowWidth = 450;
-const arrowAngle = 20;
+const arrowWidth = 300;
+const arrowAngle = 30;
 
 /**
  * 全体を乗せるコンテナを作成
@@ -45,10 +45,10 @@ const _appendInstraction = (parent: g.E) =>
   parent.append(
     new g.SystemLabel({
       scene: parent.scene,
-      text: "路線をマウスorタッチで敷こう",
+      text: "路線をドラッグ＆ドロップorスワイプで敷こう",
       fontSize,
       x: parent.width / 2,
-      y: padding,
+      y: fontSize * 2,
       textAlign: g.TextAlign.Center,
     })
   );
@@ -75,12 +75,13 @@ const _appendArrow = (parent: g.E) =>
   parent.append(
     new g.FilledRect({
       scene: parent.scene,
-      x: padding + cursorSize + padding,
+      x: (g.game.width - arrowWidth - padding) / 2,
       y: parent.height / 2,
       width: arrowWidth,
       height: arrowHeight,
       cssColor: "#aa5533",
       angle: arrowAngle,
+      anchorY: 0.5,
     })
   );
 
@@ -116,8 +117,11 @@ const createRailBuildGuide = (loadedScene: g.Scene) => {
 
   // 敷設開始点・終了点
   _appendBlock(panel, padding, padding);
-  const offset = padding - cursorSize;
-  _appendBlock(panel, panel.width - offset, panel.height - offset);
+  _appendBlock(
+    panel,
+    panel.width - padding - cursorSize,
+    panel.height - padding - cursorSize
+  );
 
   // 矢印
   _appendArrow(panel);

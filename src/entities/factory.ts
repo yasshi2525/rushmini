@@ -15,7 +15,7 @@ export type ViewObject<T> = {
 class ViewObjectFactory<T extends Pointable> {
   private readonly panel: g.E;
   private readonly creator: ViewCreator<T>;
-  private readonly children: ViewObject<T>[];
+  public readonly children: ViewObject<T>[];
   private readonly desc: boolean;
 
   /**

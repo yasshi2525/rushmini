@@ -1,5 +1,5 @@
-import { find } from "../utils/common";
 import modelListener, { EventType } from "./listener";
+import Platform from "./platform";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
 import Train from "./train";
@@ -164,6 +164,25 @@ export class UserResource {
         console.warn("try to end already fixed model");
         break;
     }
+  }
+
+  public branch(p: Platform) {
+    if (this.state !== ModelState.FIXED) {
+      console.warn("try to branch unfixed model");
+      return;
+    }
+    if (
+      this.primaryLine.filter((lt) => lt.departure().platform === p).length ===
+      0
+    ) {
+      console.warn("try to branch from unrelated platform");
+      return;
+    }
+
+    this.tailNode = p.on;
+
+    modelListener.fire(EventType.CREATED);
+    this.setState(ModelState.STARTED);
   }
 
   public reset() {

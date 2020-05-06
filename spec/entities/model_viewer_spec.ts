@@ -58,8 +58,8 @@ describe("model_viewer", () => {
     expect(panel.children.length).toEqual(1);
 
     const pos = panel.children[0];
-    expect(pos.x).toEqual(6);
-    expect(pos.y).toEqual(8);
+    expect(pos.x).toEqual(6 - pos.width / 2);
+    expect(pos.y).toEqual(8 - pos.height / 2);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
@@ -75,8 +75,8 @@ describe("model_viewer", () => {
     expect(panel.children.length).toEqual(1);
 
     const pos = panel.children[0];
-    expect(pos.x).toEqual(3);
-    expect(pos.y).toEqual(4);
+    expect(pos.x).toEqual(3 - pos.width / 2);
+    expect(pos.y).toEqual(4 - pos.height / 2);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
@@ -92,8 +92,8 @@ describe("model_viewer", () => {
     expect(panel.children.length).toEqual(1);
 
     const pos = panel.children[0];
-    expect(pos.x).toEqual(6);
-    expect(pos.y).toEqual(8);
+    expect(pos.x).toEqual(6 - pos.width / 2);
+    expect(pos.y).toEqual(8 - pos.height / 2);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
@@ -126,12 +126,13 @@ describe("model_viewer", () => {
     expect(panel.children.length).toEqual(2);
 
     const pos = panel.children[0];
-    expect(pos.x).toEqual(10);
-    expect(pos.y).toEqual(13);
+    expect(pos.x).toEqual(10 - pos.width / 2);
+    expect(pos.y).toEqual(13 - pos.height / 2);
     expect(pos.children.length).toEqual(1);
 
     const rect = pos.children[0];
-    expect(rect.y).toEqual(-2.5);
+    expect(rect.x).toEqual(0);
+    expect(rect.y).toEqual(0);
     expect(rect.width).toBeCloseTo(2 * Math.sqrt(2) + 2.5);
     expect(rect.height).toEqual(5);
     expect((rect as g.FilledRect).cssColor).toEqual("#aaaaaa");
@@ -143,8 +144,8 @@ describe("model_viewer", () => {
     expect(panel.children.length).toEqual(1);
 
     const pos = panel.children[0];
-    expect(pos.x).toEqual(9);
-    expect(pos.y).toEqual(12);
+    expect(pos.x).toEqual(9 - pos.width / 2);
+    expect(pos.y).toEqual(12 - pos.height / 2);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];
@@ -160,8 +161,8 @@ describe("model_viewer", () => {
     expect(panel.children.length).toEqual(1);
 
     const pos = panel.children[0];
-    expect(pos.x).toEqual(9);
-    expect(pos.y).toEqual(12);
+    expect(pos.x).toEqual(9 - pos.width / 2);
+    expect(pos.y).toEqual(12 - pos.height / 2);
     expect(pos.children.length).toEqual(1);
 
     const sprite = pos.children[0];

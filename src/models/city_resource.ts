@@ -7,6 +7,7 @@ export class CityResource {
    * この座標領域以内に初期住宅・会社を設立する
    */
   public static AREA: number = 50;
+  public static PADDING: number = 50;
 
   private width: number;
   private height: number;
@@ -20,13 +21,19 @@ export class CityResource {
     this.height = height;
     const c = new Company(
       1,
-      rand(width - CityResource.AREA, width),
-      rand(height - CityResource.AREA, height)
+      rand(
+        width - CityResource.AREA - CityResource.PADDING,
+        width - CityResource.PADDING
+      ),
+      rand(
+        height - CityResource.AREA - CityResource.PADDING,
+        height - CityResource.PADDING
+      )
     );
     const r = new Residence(
       [c],
-      rand(0, CityResource.AREA),
-      rand(0, CityResource.AREA)
+      rand(CityResource.PADDING, CityResource.AREA + CityResource.PADDING),
+      rand(CityResource.PADDING, CityResource.AREA + CityResource.PADDING)
     );
     modelListener.fire(EventType.CREATED);
   }

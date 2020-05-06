@@ -2,6 +2,7 @@ import DeptTask from "models/dept_task";
 import LineTask from "models/line_task";
 import modelListener, { EventType } from "models/listener";
 import RailLine from "models/rail_line";
+import RailNode from "models/rail_node";
 import Train from "models/train";
 import { ModelState, UserResource } from "models/user_resource";
 
@@ -273,6 +274,61 @@ describe("user_resource", () => {
       expect(startCounter).toEqual(1);
       expect(endCounter).toEqual(1);
       expect(resetCounter).toEqual(2);
+    });
+  });
+
+  describe("branch", () => {
+    let instance: UserResource;
+
+    beforeEach(() => {
+      instance = new UserResource();
+    });
+
+    it("branch is started after fix state", () => {
+      instance.start(0, 0);
+      instance.extend(3, 4);
+      instance.end();
+
+      const p1 = instance.getPrimaryLine().top.departure().platform;
+
+      instance.branch(p1);
+      expect(instance.getState()).toEqual(ModelState.STARTED);
+    });
+
+    it("branch can be fixed after end", () => {
+      instance.start(0, 0);
+      instance.extend(3, 4);
+      instance.end();
+
+      const p1 = instance.getPrimaryLine().top.departure().platform;
+
+      instance.branch(p1);
+      instance.extend(3, 0);
+      instance.end();
+      expect(instance.getState()).toEqual(ModelState.FIXED);
+    });
+
+    it("forbit to branch before fixed", () => {
+      const rn = new RailNode(0, 0);
+      const p = rn._buildStation();
+
+      instance.branch(p);
+      expect(instance.getState()).toEqual(ModelState.INITED);
+
+      instance.start(0, 0);
+      instance.branch(p);
+      expect(instance.getState()).toEqual(ModelState.STARTED);
+    });
+
+    it("forbit to branch from unrelated station", () => {
+      const rnX = new RailNode(0, 0);
+      const pX = rnX._buildStation();
+
+      instance.start(0, 0);
+      instance.end();
+
+      instance.branch(pX);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
     });
   });
 });

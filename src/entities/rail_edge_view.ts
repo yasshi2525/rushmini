@@ -12,8 +12,6 @@ creators.put(RailEdge, (scene, re) => {
     cssColor,
     angle: re.arrow.angleDegree(),
   });
-  rect.x -= rect.width / 2;
-  rect.y -= rect.height / 2;
   rect.modified();
   return rect;
 });

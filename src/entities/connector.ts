@@ -9,8 +9,8 @@ export type ModelModifier<T extends Pointable> = (vo: ViewObject<T>) => void;
  * @param vo
  */
 const positionModifier = <T extends Pointable>(vo: ViewObject<T>) => {
-  vo.viewer.x = vo.subject.loc().x;
-  vo.viewer.y = vo.subject.loc().y;
+  vo.viewer.x = vo.subject.loc().x - vo.viewer.width / 2;
+  vo.viewer.y = vo.subject.loc().y - vo.viewer.height / 2;
 };
 
 /**
