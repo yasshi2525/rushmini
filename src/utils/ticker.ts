@@ -29,6 +29,39 @@ const _triggers = new TriggerContainer<EventType, number>();
 
 const _scenes: { scene: g.Scene; fn: () => void }[] = [];
 
+const tick = () => {
+  _remainFrame--;
+  _triggers.add(EventType.TICKED, _remainFrame);
+  _triggers.fire(EventType.TICKED);
+};
+
+/**
+ * 残り秒数が変化した際、リスナに通知する
+ */
+const fireChangeSecond = (prev: number, current: number) => {
+  if (prev !== current) {
+    _triggers.add(EventType.SECOND, current);
+    _triggers.fire(EventType.SECOND);
+  }
+};
+
+/**
+ * ゲームオーバーになった場合、リスナに通知する
+ */
+const fireGameOver = () => {
+  if (_remainFrame === endingSec * _fps) {
+    _triggers.add(EventType.OVER, 0);
+    _triggers.fire(EventType.OVER);
+  }
+};
+
+const fireExpire = () => {
+  if (_remainFrame === 0) {
+    _triggers.add(EventType.EXIPRED, 0);
+    _triggers.fire(EventType.EXIPRED);
+  }
+};
+
 const ticker = {
   /**
    * ニコニコ新市場のゲーム時間を制限時間にする
@@ -48,25 +81,12 @@ const ticker = {
 
   step: () => {
     if (_remainFrame > 0) {
-      const oldGameTime = ticker.getRemainGameTime();
-      _remainFrame--;
-      _triggers.add(EventType.TICKED, _remainFrame);
-      _triggers.fire(EventType.TICKED);
-      const currentGameTime = ticker.getRemainGameTime();
-      // 残り秒数が変化した際、リスナに通知する
-      if (oldGameTime !== currentGameTime) {
-        _triggers.add(EventType.SECOND, currentGameTime);
-        _triggers.fire(EventType.SECOND);
-      }
-      // ゲームオーバーになった場合、リスナに通知する
-      if (_remainFrame === endingSec * _fps) {
-        _triggers.add(EventType.OVER, 0);
-        _triggers.fire(EventType.OVER);
-      }
-      if (_remainFrame === 0) {
-        _triggers.add(EventType.EXIPRED, 0);
-        _triggers.fire(EventType.EXIPRED);
-      }
+      const prev = ticker.getRemainGameTime();
+      tick();
+      const current = ticker.getRemainGameTime();
+      fireChangeSecond(prev, current);
+      fireGameOver();
+      fireExpire();
     }
   },
 
