@@ -10,6 +10,23 @@ export enum ModelState {
   FIXED,
 }
 
+type StateListener = {
+  onStarted?: (ev: UserResource) => void;
+  onFixed?: (ev: UserResource) => void;
+  onReset?: (ev: UserResource) => void;
+};
+
+const find = (state: ModelState, l: StateListener) => {
+  switch (state) {
+    case ModelState.INITED:
+      return l.onReset;
+    case ModelState.STARTED:
+      return l.onStarted;
+    case ModelState.FIXED:
+      return l.onFixed;
+  }
+};
+
 export class UserResource {
   public static STATION_INTERVAL: number = 50;
   public static TRAIN_INTERVAL: number = 100;
@@ -19,11 +36,7 @@ export class UserResource {
   private state: ModelState;
   private ts: Train[];
 
-  public readonly stateListeners: {
-    onStarted?: (ev: UserResource) => void;
-    onFixed?: (ev: UserResource) => void;
-    onReset?: (ev: UserResource) => void;
-  }[];
+  public readonly stateListeners: StateListener[];
 
   /**
    * 駅を一定間隔で設置するため、最後に駅を持ってからextendした回数を保持するカウンター
@@ -39,26 +52,11 @@ export class UserResource {
   }
 
   private setState(state: ModelState) {
-    switch (state) {
-      case ModelState.INITED:
-        this.state = ModelState.INITED;
-        this.stateListeners
-          .filter((l) => l.onReset)
-          .forEach((l) => l.onReset(this));
-        break;
-      case ModelState.STARTED:
-        this.state = ModelState.STARTED;
-        this.stateListeners
-          .filter((l) => l.onStarted)
-          .forEach((l) => l.onStarted(this));
-        break;
-      case ModelState.FIXED:
-        this.state = ModelState.FIXED;
-        this.stateListeners
-          .filter((l) => l.onFixed)
-          .forEach((l) => l.onFixed(this));
-        break;
-    }
+    this.state = state;
+    this.stateListeners
+      .map((l) => find(state, l))
+      .filter((fn) => fn)
+      .forEach((fn) => fn(this));
   }
 
   public getPrimaryLine() {
