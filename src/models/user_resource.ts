@@ -3,6 +3,7 @@ import Platform from "./platform";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
 import Train from "./train";
+import RailEdge from "./rail_edge";
 
 export enum ModelState {
   INITED,
@@ -93,6 +94,30 @@ export class UserResource {
   }
 
   /**
+   * 一定間隔で駅を作成する
+   */
+  private interviseStation(edge: RailEdge) {
+    this.railCounter++;
+    if (this.railCounter >= UserResource.STATION_INTERVAL) {
+      edge.to._buildStation();
+      this.railCounter = 0;
+    }
+  }
+
+  /**
+   * 一定間隔で電車を作成する
+   */
+  private interviseTrain() {
+    this.trainCounter++;
+    if (this.trainCounter >= UserResource.TRAIN_INTERVAL) {
+      this.primaryLine
+        .filter((lt) => lt.departure() === this.tailNode)
+        .forEach((lt) => this.ts.push(new Train(lt)));
+      this.trainCounter = 0;
+    }
+  }
+
+  /**
    * 指定された地点に線路を延伸。路線も延伸する
    * @param x
    * @param y
@@ -104,25 +129,12 @@ export class UserResource {
         break;
       case ModelState.STARTED:
         const edge = this.tailNode._extend(x, y);
-
-        // 一定間隔で駅を作成する
-        this.railCounter++;
-        if (this.railCounter >= UserResource.STATION_INTERVAL) {
-          edge.to._buildStation();
-          this.railCounter = 0;
-        }
+        this.interviseStation(edge);
 
         this.primaryLine._insertEdge(edge);
         this.tailNode = edge.to;
 
-        // 一定間隔で電車を作成する
-        this.trainCounter++;
-        if (this.trainCounter >= UserResource.TRAIN_INTERVAL) {
-          this.primaryLine
-            .filter((lt) => lt.departure() === this.tailNode)
-            .forEach((lt) => this.ts.push(new Train(lt)));
-          this.trainCounter = 0;
-        }
+        this.interviseTrain();
 
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
