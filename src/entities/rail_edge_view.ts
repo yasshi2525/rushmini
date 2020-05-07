@@ -2,15 +2,15 @@ import RailEdge from "../models/rail_edge";
 import { ModelModifier } from "./connector";
 import creators from "./creator";
 
-const BAND_SIZE = 5;
-const SLIDE = 20;
+const BAND_SIZE = 2;
+const SLIDE = 10;
 const cssColor = "#aaaaaa";
 
 const getWidth = (re: RailEdge, isForward: boolean) => {
   const rn = isForward ? re.to : re.from;
   const w =
     re.arrow.length() / 2 + (re.isOutbound ? rn.left(SLIDE) : rn.right(SLIDE));
-  return Math.max(w, 0);
+  return Math.max(w, 0) + BAND_SIZE / 2;
 };
 
 const _get = (
@@ -20,7 +20,8 @@ const _get = (
   isForward: boolean
 ) =>
   SLIDE * fn(re.arrow.angle() + Math.PI / 2) -
-  ((isForward ? 1 : -1) * (width * fn(re.arrow.angle()))) / 2;
+  ((isForward ? 1 : -1) * (width * fn(re.arrow.angle()))) / 2 -
+  BAND_SIZE / 4;
 
 const getX = (re: RailEdge, width: number, isForward: boolean) =>
   _get(re, Math.cos, width, isForward);

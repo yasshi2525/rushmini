@@ -98,7 +98,6 @@ const outerProduct = (to: Point, from: Point) => from.x * to.y - from.y * to.x;
  */
 export const angle = (to: Point, from: Point) => {
   if (to.isTooClose(from)) {
-    console.warn("could not calculate angle to 0-length vector");
     return NaN;
   }
   // 180°以下の角度を求める

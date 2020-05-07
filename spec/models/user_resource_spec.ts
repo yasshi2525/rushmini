@@ -87,8 +87,8 @@ describe("user_resource", () => {
     it("extend", () => {
       const X1 = 1;
       const Y1 = 2;
-      const X2 = 3;
-      const Y2 = 4;
+      const X2 = 23;
+      const Y2 = 24;
 
       instance.start(X1, Y1);
       instance.extend(X2, Y2);
@@ -109,11 +109,43 @@ describe("user_resource", () => {
       expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 
+    it("extend skip", () => {
+      const X1 = 1;
+      const Y1 = 2;
+      const X2 = 3;
+      const Y2 = 4;
+
+      instance.start(X1, Y1);
+      instance.extend(X2, Y2);
+
+      const dept1 = instance.getPrimaryLine().top;
+      expect(dept1.departure().loc()).toEqual({ x: X1, y: Y1 });
+      expect(dept1.destination().loc()).toEqual({ x: X1, y: Y1 });
+      expect(dept1.next).toEqual(dept1);
+
+      instance.end();
+
+      const outbound = instance.getPrimaryLine().top.next;
+      expect(outbound.departure().loc()).toEqual({ x: X1, y: Y1 });
+      expect(outbound.destination().loc()).toEqual({ x: X2, y: Y2 });
+
+      const dept2 = outbound.next;
+      expect(dept2.departure().loc()).toEqual({ x: X2, y: Y2 });
+      expect(dept2.destination().loc()).toEqual({ x: X2, y: Y2 });
+
+      const inbound = dept2.next;
+      expect(inbound.departure().loc()).toEqual({ x: X2, y: Y2 });
+      expect(inbound.destination().loc()).toEqual({ x: X1, y: Y1 });
+
+      expect(inbound.next).toEqual(dept1);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
+    });
+
     it("build station at regular interval", () => {
       instance.start(0, 0);
       let tail: LineTask = instance.getPrimaryLine().top;
       for (let i = 0; i < UserResource.STATION_INTERVAL - 1; i++) {
-        instance.extend(i, 0);
+        instance.extend((i + 1) * UserResource.DIST, 0);
         tail = tail.next;
         expect(tail.destination().platform).toBeUndefined();
       }
@@ -137,7 +169,7 @@ describe("user_resource", () => {
       expect(ts[0].loc()).toEqual(tail.departure().loc());
 
       for (let i = 0; i < UserResource.TRAIN_INTERVAL - 1; i++) {
-        instance.extend(i, 0);
+        instance.extend((i + 1) * UserResource.DIST, 0);
         tail = tail.next;
         if (tail.destination().platform) {
           tail = tail.next;
@@ -145,7 +177,7 @@ describe("user_resource", () => {
         expect(ts.length).toEqual(1);
       }
 
-      instance.extend(UserResource.TRAIN_INTERVAL - 1, 0);
+      instance.extend((UserResource.TRAIN_INTERVAL + 1) * UserResource.DIST, 0);
       tail = tail.next;
       tail = tail.next;
       expect(ts.length).toEqual(3);

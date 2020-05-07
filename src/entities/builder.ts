@@ -8,7 +8,7 @@ const SIZE = 0.8;
  * @param loadedScene
  */
 const createBuilder = (loadedScene: g.Scene) => {
-  const sensor = new g.E({
+  const builder = new g.E({
     scene: loadedScene,
     x: (g.game.width * (1 - SIZE)) / 2,
     y: (g.game.height * (1 - SIZE)) / 2,
@@ -18,12 +18,12 @@ const createBuilder = (loadedScene: g.Scene) => {
   });
 
   // カーソルが押下されたならば、路線建設を開始する
-  sensor.pointDown.add((ev) => {
+  builder.pointDown.add((ev) => {
     userResource.start(ev.point.x, ev.point.y);
   });
 
   // カーソルの地点まで線路を延伸する
-  sensor.pointMove.add((ev) => {
+  builder.pointMove.add((ev) => {
     userResource.extend(
       ev.point.x + ev.startDelta.x,
       ev.point.y + ev.startDelta.y
@@ -31,12 +31,12 @@ const createBuilder = (loadedScene: g.Scene) => {
   });
 
   // カーソルの地点を終点とする
-  sensor.pointUp.add(() => {
+  builder.pointUp.add(() => {
     userResource.end();
     viewer.fire(ViewerEvent.BUILT);
   });
 
-  return sensor;
+  return builder;
 };
 
 export default createBuilder;

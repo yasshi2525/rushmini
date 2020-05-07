@@ -4,12 +4,15 @@ import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
 import Train from "./train";
+import Point, { distance } from "./point";
 
 export enum ModelState {
   INITED,
   STARTED,
   FIXED,
 }
+
+const DELTA = 0.0001;
 
 type StateListener = {
   onStarted?: (ev: UserResource) => void;
@@ -37,6 +40,16 @@ export class UserResource {
   private state: ModelState;
   private ts: Train[];
 
+  /**
+   * 最低この距離離れないと、RailEdgeを作成しない (じぐざぐ防止)
+   */
+  public static DIST = 10;
+
+  /**
+   * end() 時に、このポイントまで伸ばす
+   */
+  private lastPos: Point;
+
   public readonly stateListeners: StateListener[];
 
   /**
@@ -50,6 +63,7 @@ export class UserResource {
     this.ts = [];
     this.state = ModelState.INITED;
     this.stateListeners = [];
+    this.lastPos = undefined;
   }
 
   private setState(state: ModelState) {
@@ -128,6 +142,14 @@ export class UserResource {
         console.warn("try to extend init model");
         break;
       case ModelState.STARTED:
+        // 近い距離でつくってしまうとじぐざぐするのでスキップする
+        this.lastPos = new Point(x, y);
+        if (
+          distance(this.tailNode.loc(), this.lastPos) <
+          UserResource.DIST - DELTA
+        ) {
+          return;
+        }
         const edge = this.tailNode._extend(x, y);
         this.interviseStation(edge);
 
@@ -154,6 +176,11 @@ export class UserResource {
         console.warn("try to extend init model");
         break;
       case ModelState.STARTED:
+        if (this.lastPos && distance(this.lastPos, this.tailNode.loc()) > 0) {
+          const edge = this.tailNode._extend(this.lastPos.x, this.lastPos.y);
+          this.primaryLine._insertEdge(edge);
+          this.tailNode = edge.to;
+        }
         if (!this.tailNode.platform) {
           const p = this.tailNode._buildStation();
           this.primaryLine._insertPlatform(p);
@@ -198,6 +225,7 @@ export class UserResource {
   public reset() {
     this.primaryLine = new RailLine();
     this.setState(ModelState.INITED);
+    this.lastPos = undefined;
   }
 }
 
