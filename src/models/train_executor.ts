@@ -15,28 +15,32 @@ const newTask = (train: Train, lt: LineTask, onComplete: () => void) =>
 
 class TrainExecutor implements Steppable, Pointable {
   private readonly train: Train;
-  private current: TrainTask;
+  private _current: TrainTask;
 
   constructor(train: Train, initialTask: LineTask) {
     this.train = train;
 
-    this.current = newTask(train, initialTask, () => this.next());
+    this._current = newTask(train, initialTask, () => this.next());
   }
 
   public loc() {
-    return this.current.loc();
+    return this._current.loc();
   }
 
   public _step() {
     let remain = 1 / ticker.fps();
     while (remain > 0) {
-      remain = this.current._execute(remain);
+      remain = this._current._execute(remain);
     }
   }
 
+  public current() {
+    return this._current;
+  }
+
   private next() {
-    const nxt = this.current._base().next;
-    this.current = newTask(this.train, nxt, () => this.next());
+    const nxt = this._current._base().next;
+    this._current = newTask(this.train, nxt, () => this.next());
   }
 }
 

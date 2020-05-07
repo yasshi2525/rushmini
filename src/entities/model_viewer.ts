@@ -9,14 +9,12 @@ import "./company_view";
 import connect, { ModelModifier } from "./connector";
 import creators from "./creator";
 import ViewObjectFactory from "./factory";
-import "./human_view";
 import { humanModifier } from "./human_view";
-import "./rail_edge_view";
 import { railEdgeModifier } from "./rail_edge_view";
 import { createFramedRect } from "./rectangle";
 import "./residence_view";
 import "./station_view";
-import "./train_view";
+import { trainModifer } from "./train_view";
 
 const SIZE = 0.8;
 const COLOR = "#ffffff";
@@ -34,7 +32,7 @@ const configs: Config<Pointable>[] = [
   { key: Human, desc: true, modifer: humanModifier },
   { key: RailEdge, modifer: railEdgeModifier },
   { key: Station },
-  { key: Train },
+  { key: Train, modifer: trainModifer },
 ];
 
 /**

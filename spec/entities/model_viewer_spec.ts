@@ -8,6 +8,7 @@ import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
 import Train from "models/train";
+import ticker from "utils/ticker";
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;
@@ -170,5 +171,25 @@ describe("model_viewer", () => {
     expect(sprite.y).toEqual(0);
     expect(sprite.scaleX).toEqual(1);
     expect(sprite.scaleY).toEqual(1);
+  });
+
+  it("train turn", () => {
+    const radius = 100;
+    let tail = new RailNode(radius, 0);
+    const p = tail._buildStation();
+    const l = new RailLine();
+    l._start(p);
+    const _t = new Train(l.top);
+    for (let i = 0; i < Math.PI * 2; i += 0.1) {
+      const e = tail._extend(radius * Math.cos(i), radius * Math.sin(i));
+      l._insertEdge(e);
+      tail = e.to;
+    }
+    modelListener.fire(EventType.CREATED);
+    for (let i = 0; i < ticker.fps() * Train.STAY_SEC; i++) _t._step();
+    for (let i = 0; i < Math.PI * 2; i += 0.1) {
+      _t._step();
+      modelListener.fire(EventType.MODIFIED);
+    }
   });
 });
