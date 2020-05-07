@@ -92,4 +92,45 @@ describe("rail_node", () => {
       expect(p1).toEqual(p2);
     });
   });
+
+  describe("left/right", () => {
+    const SLIDE = 1;
+
+    it("lonely point returns zero", () => {
+      const rn1 = new RailNode(0, 0);
+      expect(rn1.left(SLIDE)).toEqual(0);
+      expect(rn1.right(SLIDE)).toEqual(0);
+    });
+
+    it("dead end returns zero", () => {
+      const rn1 = new RailNode(0, 0);
+      const e12 = rn1._extend(1, 0);
+      expect(e12.from.left(SLIDE)).toEqual(0);
+      expect(e12.from.right(SLIDE)).toEqual(0);
+      expect(e12.to.left(SLIDE)).toEqual(0);
+      expect(e12.to.right(SLIDE)).toEqual(0);
+    });
+
+    it("straight returns zero", () => {
+      const rn1 = new RailNode(0, 0);
+      const e12 = rn1._extend(1, 0);
+      const rn2 = e12.to;
+      const e23 = rn2._extend(2, 0);
+      expect(rn2.in.length).toEqual(2);
+      expect(rn2.out.length).toEqual(2);
+      expect(rn2.left(SLIDE)).toEqual(0);
+      expect(rn2.right(SLIDE)).toEqual(0);
+    });
+
+    it("any value returns number", () => {
+      for (let i = 0; i < Math.PI * 2; i += 0.1) {
+        const rn1 = new RailNode(0, 0);
+        const e12 = rn1._extend(1, 0);
+        const rn2 = e12.to;
+        const e23 = rn2._extend(1 + Math.cos(i), Math.sin(i));
+        expect(rn2.left(1)).not.toBeNaN();
+        expect(rn2.right(1)).not.toBeNaN();
+      }
+    });
+  });
 });

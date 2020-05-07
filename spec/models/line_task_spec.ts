@@ -96,7 +96,7 @@ describe("line_task", () => {
       const dept = new DeptTask(l, p);
       const move = new EdgeTask(l, re, dept);
       expect(
-        move._angle(new RailEdge(new RailNode(0, 0), new RailNode(1, 1)))
+        move._angle(new RailEdge(new RailNode(0, 0), new RailNode(1, 1), true))
       ).toBeNaN();
     });
   });

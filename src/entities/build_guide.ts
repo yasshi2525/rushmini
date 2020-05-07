@@ -1,5 +1,4 @@
 import userResource from "../models/user_resource";
-import viewer, { ViewerType } from "../utils/viewer";
 
 /**
  * 画面に占める路線敷設ガイドの大きさ

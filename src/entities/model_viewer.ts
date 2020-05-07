@@ -10,7 +10,9 @@ import connect, { ModelModifier } from "./connector";
 import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import "./human_view";
+import { humanModifier } from "./human_view";
 import "./rail_edge_view";
+import { railEdgeModifier } from "./rail_edge_view";
 import { createFramedRect } from "./rectangle";
 import "./residence_view";
 import "./station_view";
@@ -26,23 +28,11 @@ type Config<T extends Pointable> = {
   modifer?: ModelModifier<T>;
 };
 
-const riderModifier: ModelModifier<Human> = (vo) => {
-  if (vo.subject.isOnTrain()) {
-    vo.viewer.hide();
-  } else if (!vo.viewer.visible()) {
-    vo.viewer.show();
-  }
-};
-
 const configs: Config<Pointable>[] = [
   { key: Residence },
   { key: Company },
-  {
-    key: Human,
-    desc: true,
-    modifer: riderModifier,
-  },
-  { key: RailEdge },
+  { key: Human, desc: true, modifer: humanModifier },
+  { key: RailEdge, modifer: railEdgeModifier },
   { key: Station },
   { key: Train },
 ];

@@ -124,6 +124,7 @@ describe("model_viewer", () => {
   it("layer 4. rail_edge", () => {
     const panel = base.children[3];
     modelListener.fire(EventType.CREATED);
+    modelListener.fire(EventType.MODIFIED);
     expect(panel.children.length).toEqual(2);
 
     const pos = panel.children[0];
@@ -134,9 +135,7 @@ describe("model_viewer", () => {
     const rect = pos.children[0];
     expect(rect.x).toEqual(0);
     expect(rect.y).toEqual(0);
-    expect(rect.width).toBeCloseTo(2 * Math.sqrt(2) + 2.5);
-    expect(rect.height).toEqual(5);
-    expect((rect as g.FilledRect).cssColor).toEqual("#aaaaaa");
+    expect((rect.children[0] as g.FilledRect).cssColor).toEqual("#aaaaaa");
   });
 
   it("layer 5. station", () => {
