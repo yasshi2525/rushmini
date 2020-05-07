@@ -1,10 +1,10 @@
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
+import Point, { distance } from "./point";
 import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
 import Train from "./train";
-import Point, { distance } from "./point";
 
 export enum ModelState {
   INITED,
@@ -43,7 +43,7 @@ export class UserResource {
   /**
    * 最低この距離離れないと、RailEdgeを作成しない (じぐざぐ防止)
    */
-  public static DIST = 10;
+  public static DIST: number = 10;
 
   /**
    * end() 時に、このポイントまで伸ばす
