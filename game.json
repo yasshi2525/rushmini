@@ -380,6 +380,16 @@
 			"type": "script",
 			"path": "script/entities/loader.js",
 			"global": true
+		},
+		"bonus_station": {
+			"type": "script",
+			"path": "script/entities/bonus_station.js",
+			"global": true
+		},
+		"station_builder": {
+			"type": "script",
+			"path": "script/entities/station_builder.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

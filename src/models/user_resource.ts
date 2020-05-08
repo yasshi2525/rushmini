@@ -227,6 +227,20 @@ export class UserResource {
     this.setState(ModelState.INITED);
     this.lastPos = undefined;
   }
+
+  public station(rn: RailNode) {
+    if (this.state !== ModelState.FIXED) {
+      console.warn("try to station unfixed model");
+      return;
+    }
+    if (this.primaryLine.filter((lt) => lt.departure() === rn).length === 0) {
+      console.warn("try to station from unrelated rail node");
+      return;
+    }
+    const p = rn._buildStation();
+    this.primaryLine._insertPlatform(p);
+    modelListener.fire(EventType.CREATED);
+  }
 }
 
 const userResource = new UserResource();

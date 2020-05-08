@@ -30,7 +30,7 @@ const configs: Config<Pointable>[] = [
   { key: Residence },
   { key: Company },
   { key: Human, desc: true, modifer: humanModifier },
-  { key: RailEdge, modifer: railEdgeModifier },
+  { key: RailEdge, modifer: railEdgeModifier({}) },
   { key: Station },
   { key: Train, modifer: trainModifer },
 ];

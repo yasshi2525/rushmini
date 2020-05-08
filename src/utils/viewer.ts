@@ -40,6 +40,10 @@ export enum ViewerType {
    */
   BRANCH_BUILDER,
   /**
+   * 新駅建設の入力受付
+   */
+  STATION_BUILDER,
+  /**
    * ボーナス選択画面
    */
   BONUS,
@@ -47,6 +51,10 @@ export enum ViewerType {
    * 支線建設ボーナスボタン
    */
   BONUS_BRANCH,
+  /**
+   * 新駅建設ボーナスボタン
+   */
+  BONUS_STATION,
   /**
    * 残り時間の表示
    */
@@ -86,6 +94,14 @@ export enum ViewerEvent {
    * 支線の建設完了
    */
   BRANCHED,
+  /**
+   * 新駅ボーナスが選ばれた（立地を探し中）
+   */
+  STATION_STARTED,
+  /**
+   * 新駅の建設完了
+   */
+  STATION_ENDED,
 }
 
 /**
@@ -130,6 +146,7 @@ type Controller = {
 const parent = (_c: Controller, key: ViewerType, scene: g.Scene) => {
   switch (key) {
     case ViewerType.BONUS_BRANCH:
+    case ViewerType.BONUS_STATION:
       return _c.viewers[ViewerType.BONUS];
     default:
       return scene;
@@ -204,6 +221,17 @@ const handleBranchEnded = (_c: Controller) => {
   _c.isBonusing = false;
 };
 
+const handleStationStarted = (_c: Controller) => {
+  _c.viewers[ViewerType.BONUS].hide();
+  _c.viewers[ViewerType.STATION_BUILDER].show();
+};
+
+const handleStationEnded = (_c: Controller) => {
+  _c.viewers[ViewerType.STATION_BUILDER].hide();
+  _c.viewers[ViewerType.SHADOW].hide();
+  _c.isBonusing = false;
+};
+
 /**
  * イベントの発火をキャプチャできるようにする
  * @param _c
@@ -217,6 +245,8 @@ const initListener = (_c: Controller, scene: g.Scene) => {
     { key: ViewerEvent.BRANCH_STARTED, value: handleBranchStarted },
     { key: ViewerEvent.BRANCHING, value: handleBranching },
     { key: ViewerEvent.BRANCHED, value: handleBranchEnded },
+    { key: ViewerEvent.STATION_STARTED, value: handleStationStarted },
+    { key: ViewerEvent.STATION_ENDED, value: handleStationEnded },
   ];
   list.forEach((entry) => {
     _c._trackers[entry.key] = new Tracker(_c);

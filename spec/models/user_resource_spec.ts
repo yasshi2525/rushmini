@@ -1,6 +1,7 @@
 import DeptTask from "models/dept_task";
 import LineTask from "models/line_task";
 import modelListener, { EventType } from "models/listener";
+import Platform from "models/platform";
 import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Train from "models/train";
@@ -361,6 +362,39 @@ describe("user_resource", () => {
 
       instance.branch(pX);
       expect(instance.getState()).toEqual(ModelState.FIXED);
+    });
+  });
+
+  describe("station", () => {
+    let ps: Platform[];
+    let instance: UserResource;
+
+    beforeEach(() => {
+      ps = [];
+      instance = new UserResource();
+      modelListener
+        .find(EventType.CREATED, Platform)
+        .register((p) => ps.push(p));
+    });
+
+    afterEach(() => {
+      modelListener.unregisterAll();
+      modelListener.flush();
+    });
+
+    it("forbit to create station on unfix staed", () => {
+      instance.start(0, 0);
+      instance.station(instance.getPrimaryLine().top.departure());
+      expect(instance.getState()).toEqual(ModelState.STARTED);
+      expect(ps.length).toEqual(1);
+    });
+
+    it("forbit to create station on unrelated rail node", () => {
+      instance.start(0, 0);
+      instance.end();
+      expect(ps.length).toEqual(1);
+      instance.station(new RailNode(0, 0));
+      expect(ps.length).toEqual(1);
     });
   });
 });
