@@ -190,9 +190,7 @@ class Human extends RoutableObject implements Steppable {
     // 会社についている場合、ダメージは喰らわない
     this.damageByStay(1 / ticker.fps());
     // 疲れ果てて死んだ
-    if (this.stamina < -DELTA && this._state !== HumanState.DIED) {
-      this.dead();
-    }
+    if (this.stamina < -DELTA && this._state !== HumanState.DIED) this.dead();
   }
 
   /**

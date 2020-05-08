@@ -8,7 +8,7 @@ import Residence from "models/residence";
 import Train from "models/train";
 import ticker from "utils/ticker";
 
-const oldSpeed = Human.SPEED;
+const oldS = Human.SPEED;
 const oldSTAMINA = Human.LIFE_SPAN;
 
 const FPS = 30;
@@ -27,6 +27,13 @@ afterAll(() => {
 });
 
 describe("human", () => {
+  beforeEach(() => {
+    Human.LIFE_SPAN = 10000;
+  });
+  afterEach(() => {
+    modelListener.flush();
+  });
+
   it("initialize", () => {
     const c = new Company(1, 1, 2);
     const r = new Residence([c], 3, 4);

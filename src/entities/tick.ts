@@ -1,6 +1,6 @@
 import ticker, { EventType } from "../utils/ticker";
 
-const toText = (sec: number) => `TIME: ${("00" + sec).slice(-2)}`;
+const toText = (sec: number) => `TIME: ${("000" + sec).slice(-3)}`;
 
 const createTickLabel = (loadedScene: g.Scene) => {
   const panel = new g.E({ scene: loadedScene });
