@@ -48,7 +48,7 @@ class Human extends RoutableObject implements Steppable {
    * 歩いていない状態（ホーム、電車の中にいるなど）の場合、
    * 歩く場合の何倍の体力を消費するか
    */
-  public static STAY_BUFF: number = 0.1;
+  public static STAY_BUFF: number = 0.25;
 
   public readonly departure: Residence;
   public readonly destination: Company;
