@@ -1,3 +1,4 @@
+import Human from "./human";
 import LineTask from "./line_task";
 import Point from "./point";
 import { Pointable } from "./pointable";
@@ -79,5 +80,7 @@ abstract class TrainTask implements Pointable {
    * 時間を消費したとき実行されるハンドラ
    */
   protected abstract handleOnConsumed(available: number): void;
+
+  public abstract _giveup(subject: Human): void;
 }
 export default TrainTask;

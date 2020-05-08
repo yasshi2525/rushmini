@@ -9,3 +9,14 @@ export const find = <T>(arr: T[], cond: (v: T) => boolean) => {
   }
   return undefined;
 };
+
+export const remove = <T>(arr: T[], subject: T) =>
+  arr.splice(arr.indexOf(subject), 1);
+
+export const removeIf = <T>(arr: T[], subject: T) => {
+  const idx = arr.indexOf(subject);
+  if (idx !== -1) {
+    return arr.splice(idx, 1);
+  }
+  return undefined;
+};

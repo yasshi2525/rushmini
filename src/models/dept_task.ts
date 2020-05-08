@@ -1,3 +1,4 @@
+import { remove, removeIf } from "../utils/common";
 import Human, { HumanState } from "./human";
 import LineTask from "./line_task";
 import { _createTask } from "./line_task_utils";
@@ -25,13 +26,21 @@ class DeptTaskRouter extends RoutableObject {
    * @param subject
    */
   public _fire(subject: Human) {
-    if (this.queue.some((h) => h === subject)) {
+    if (this.queue.indexOf(subject) !== -1) {
       return;
     }
     subject.state(HumanState.WAIT_TRAIN_ARRIVAL);
     const p = this.parent.stay;
-    p.inQueue.splice(p.inQueue.indexOf(subject), 1);
+    remove(p.inQueue, subject);
     this.queue.push(subject);
+  }
+
+  public _giveup(subject: Human) {
+    // ホームにおり、発車待機列に並ぶのを待っていた人を取り除く
+    // 次のframeで _fireがコールされる人が該当
+    removeIf(this.parent.stay.inQueue, subject);
+    // 電車の待機者を取り除く
+    removeIf(this.queue, subject);
   }
 }
 
@@ -116,6 +125,10 @@ export class DeptTask extends LineTask implements Routable {
 
   public _fire(subject: Human) {
     this.router._fire(subject);
+  }
+
+  public _giveup(subject: Human) {
+    this.router._giveup(subject);
   }
 
   public _setNext(

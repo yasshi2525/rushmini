@@ -8,6 +8,13 @@ import { distance } from "models/pointable";
 import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
+import ticker from "utils/ticker";
+
+const FPS = 15;
+
+beforeAll(() => {
+  ticker.init(FPS);
+});
 
 afterAll(() => {
   modelListener.flush();
@@ -51,5 +58,39 @@ describe("dept_task", () => {
     expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
     expect(p.inQueue.length).toEqual(0);
     expect(dept._queue()[0]).toEqual(h);
+  });
+
+  it("died human is removed on platform", () => {
+    // gate が通行を許可し、Platformに入れたtickに死んだ場合が該当
+    const h = new Human(r, c);
+    h._step();
+    for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS - 1; i++)
+      h._step();
+
+    g._step();
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    expect(p.inQueue.length).toEqual(0);
+    expect(dept._queue().length).toEqual(0);
+
+    h._step();
+    // 本来であれば WAIT_ENTER_DEPTQUEUE になっている
+    expect(h.state()).toEqual(HumanState.DIED);
+    expect(p.inQueue.length).toEqual(0);
+    expect(dept._queue().length).toEqual(0);
+  });
+
+  it("died human is removed from queue", () => {
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+    h._step();
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
+    expect(dept._queue()[0]).toEqual(h);
+    for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS; i++)
+      h._step();
+
+    expect(h.state()).toEqual(HumanState.DIED);
+    expect(dept._queue().length).toEqual(0);
   });
 });

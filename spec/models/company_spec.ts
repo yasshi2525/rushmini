@@ -44,4 +44,9 @@ describe("company", () => {
     for (let j = 0; j < FPS; j++) h._step();
     expect(h.state()).toEqual(HumanState.ARCHIVED);
   });
+
+  it("_giveup", () => {
+    const c = new Company(1, 1, 2);
+    c._giveup(undefined);
+  });
 });

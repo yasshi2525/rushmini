@@ -1,3 +1,4 @@
+import { remove, removeIf } from "../utils/common";
 import Human, { HumanState } from "./human";
 import modelListener, { EventType } from "./listener";
 import RailNode from "./rail_node";
@@ -44,10 +45,10 @@ class Platform extends RoutableObject {
 
     // 駅入場者をプラットフォーム上にならばせる。
     if (
-      gate._concourse.some((h) => h === subject) &&
+      gate._concourse.indexOf(subject) !== -1 &&
       this.inQueue.length < Platform.CAPACITY
     ) {
-      gate._concourse.splice(gate._concourse.indexOf(subject), 1);
+      remove(gate._concourse, subject);
       this.inQueue.push(subject);
       subject.state(HumanState.WAIT_ENTER_DEPTQUEUE);
       subject._complete();
@@ -55,13 +56,18 @@ class Platform extends RoutableObject {
     }
 
     // 到着した人を改札に向かわせる
-    if (this.outQueue.some((h) => h === subject)) {
-      this.outQueue.splice(this.outQueue.indexOf(subject), 1);
+    if (this.outQueue.indexOf(subject) !== -1) {
+      remove(this.outQueue, subject);
       subject.state(HumanState.WAIT_EXIT_GATE);
       gate.outQueue.push(subject);
       subject._complete();
       return;
     }
+  }
+
+  public _giveup(subject: Human) {
+    // コンコースからホームへの移動待ちの人を取り除く
+    removeIf(this.station.gate._concourse, subject);
   }
 }
 

@@ -29,6 +29,10 @@ class Company extends PointableObject {
       subject.state(HumanState.MOVE);
     }
   }
+
+  public _giveup(subject: Human) {
+    // do-nothing
+  }
 }
 
 export default Company;

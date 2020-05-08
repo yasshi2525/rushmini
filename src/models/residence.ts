@@ -54,6 +54,10 @@ class Residence extends PointableObject implements Steppable {
   public _fire(subject: Human) {
     console.warn("try to move human to residence");
   }
+
+  public _giveup(subject: Human) {
+    console.warn("try to give up from residence");
+  }
 }
 
 export default Residence;

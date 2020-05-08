@@ -39,10 +39,16 @@ export interface Routable {
   ): void;
 
   /**
-   * 自身を目的地とする移動者に対し、指定されたframe分、アクションさせます
+   * 自身を目的地とする移動者に対し、1フレーム分アクションさせます
    * @param subject
    */
   _fire(subject: Human): void;
+
+  /**
+   * 自身を目的地とする移動者を取り除きます
+   * @param subject
+   */
+  _giveup(subject: Human): void;
 }
 
 abstract class RoutableObject implements Routable {
@@ -77,6 +83,7 @@ abstract class RoutableObject implements Routable {
   }
 
   abstract _fire(subject: Human): void;
+  abstract _giveup(subject: Human): void;
 }
 
 export default RoutableObject;

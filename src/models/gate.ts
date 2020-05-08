@@ -1,3 +1,4 @@
+import { removeIf } from "../utils/common";
 import ticker from "../utils/ticker";
 import Human, { HumanState } from "./human";
 import modelListener, { EventType } from "./listener";
@@ -20,11 +21,17 @@ class Gate extends RoutableObject implements Pointable, Steppable {
    * 後、どれくらいのフレーム数経過すれば、人が1人通れるか
    */
   private waitFrame: number;
+  /**
+   * 改札内に入りたい人たち
+   */
   public readonly inQueue: Human[];
   /**
    * プラットフォームへの入場待機者
    */
   public readonly _concourse: Human[];
+  /**
+   * コンコースから改札外に出たい人達
+   */
   public readonly outQueue: Human[];
 
   constructor(st: Station) {
@@ -47,9 +54,8 @@ class Gate extends RoutableObject implements Pointable, Steppable {
    * 人を移動させた場合、ペナルティとして待機時間を増やします。
    */
   public _step() {
-    if (this.waitFrame > 0) {
-      this.waitFrame = Math.max(this.waitFrame - 1, 0);
-    } else {
+    this.waitFrame = Math.max(this.waitFrame - 1, 0);
+    if (this.waitFrame === 0) {
       if (this.outQueue.length > 0) {
         // 出場待ちを改札外に移動させる
         const h = this.outQueue.shift();
@@ -79,8 +85,8 @@ class Gate extends RoutableObject implements Pointable, Steppable {
   public _fire(subject: Human) {
     // 待機列にいるならば人を待たせる
     if (
-      this.outQueue.some((h) => h === subject) ||
-      this.inQueue.some((h) => h === subject)
+      this.outQueue.indexOf(subject) !== -1 ||
+      this.inQueue.indexOf(subject) !== -1
     ) {
       return;
     }
@@ -93,6 +99,13 @@ class Gate extends RoutableObject implements Pointable, Steppable {
     } else {
       subject.state(HumanState.MOVE);
     }
+  }
+
+  public _giveup(subject: Human) {
+    // 改札に入りたかった人を取り除く。改札へ移動中の人の場合何もしない
+    removeIf(this.inQueue, subject);
+    // 改札を出たかった人を取り除く
+    removeIf(this.outQueue, subject);
   }
 }
 

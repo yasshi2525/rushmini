@@ -1,3 +1,4 @@
+import { remove, removeIf } from "../utils/common";
 import DeptTask from "./dept_task";
 import Human, { HumanState } from "./human";
 import Train from "./train";
@@ -82,6 +83,7 @@ class StayTask extends TrainTask {
       .filter((h) => h._shuoldRide(this.base))
       .forEach((h) => {
         h.state(HumanState.WAIT_ENTER_TRAIN);
+        h.setTrain(this.train);
         this.inQueue.push(h);
       });
   }
@@ -101,8 +103,9 @@ class StayTask extends TrainTask {
         // 乗車している利用客をホームに移動させる
         const h = this.outQueue.shift();
         h.state(HumanState.WAIT_EXIT_PLATFORM);
+        h.setTrain();
         p.outQueue.push(h);
-        psngr.splice(psngr.indexOf(h), 1);
+        remove(psngr, h);
         this.waitSec += 1 / Train.MOBILITY_SEC;
       } else if (
         this.inQueue.length > 0 &&
@@ -112,11 +115,20 @@ class StayTask extends TrainTask {
         const h = this.inQueue.shift();
         h.state(HumanState.ON_TRAIN);
         h._complete();
-        dept._queue().splice(dept._queue().indexOf(h), 1);
+        remove(dept._queue(), h);
         this.train.passengers.push(h);
         this.waitSec += 1 / Train.MOBILITY_SEC;
       }
     }
+  }
+
+  public _giveup(subject: Human) {
+    // 乗車待ちの人を削除する
+    removeIf(this.inQueue, subject);
+    // 電車乗降中はpassengerにおらず、taskのqueueにいるためremoveifにしている
+    removeIf(this.train.passengers, subject);
+    // 後者待ちの人を削除する
+    removeIf(this.outQueue, subject);
   }
 
   public _base() {

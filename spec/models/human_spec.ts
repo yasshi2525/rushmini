@@ -9,18 +9,21 @@ import Train from "models/train";
 import ticker from "utils/ticker";
 
 const oldSpeed = Human.SPEED;
+const oldSTAMINA = Human.LIFE_SPAN;
 
 const FPS = 30;
 const defaultSpeed = 20;
 
 beforeAll(() => {
   ticker.init(FPS);
+  Human.LIFE_SPAN = 10000;
 });
 
 afterAll(() => {
   modelListener.flush();
   ticker.reset();
   Human.SPEED = defaultSpeed;
+  Human.LIFE_SPAN = oldSTAMINA;
 });
 
 describe("human", () => {
@@ -40,6 +43,14 @@ describe("human", () => {
     expect(h.state()).toEqual(HumanState.SPAWNED);
   });
 
+  it("_giveup", () => {
+    const c = new Company(1, 1, 2);
+    const r = new Residence([c], 3, 4);
+    const h = new Human(r, c);
+    h._giveup();
+    expect(h.state()).toEqual(HumanState.SPAWNED);
+  });
+
   describe("_step", () => {
     beforeEach(() => {
       ticker.init(FPS);
@@ -47,6 +58,7 @@ describe("human", () => {
     });
     afterEach(() => {
       modelListener.unregisterAll();
+      Human.LIFE_SPAN = 10000;
     });
 
     it("human walk one frame forward directory to company", () => {
@@ -101,6 +113,37 @@ describe("human", () => {
 
       h._step();
       expect(h.state()).toEqual(HumanState.ARCHIVED);
+    });
+
+    it("staying human is died after STAMINA * BUFF seconds", () => {
+      Human.SPEED = 1;
+      Human.LIFE_SPAN = 10;
+      const c = new Company(1, 1, 1);
+      const r = new Residence([c], 0, 0);
+
+      const h = new Human(r, c);
+      for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS; i++) {
+        h._step();
+        expect(h.state()).toEqual(HumanState.SPAWNED);
+      }
+      h._step();
+      expect(h.state()).toEqual(HumanState.DIED);
+    });
+
+    it("walking human is died after STAMINA seconds", () => {
+      Human.SPEED = 1;
+      Human.LIFE_SPAN = 10;
+      const c = new Company(1, 1000, 1000);
+      const r = new Residence([c], 0, 0);
+      r._setNext(c, c, distance(c, r));
+      const h = new Human(r, c);
+
+      for (let i = 0; i < Human.LIFE_SPAN * FPS; i++) {
+        h._step();
+        expect(h.state()).toEqual(HumanState.MOVE);
+      }
+      h._step();
+      expect(h.state()).toEqual(HumanState.DIED);
     });
   });
 

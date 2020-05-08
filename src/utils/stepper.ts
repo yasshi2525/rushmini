@@ -4,6 +4,7 @@ import listener, { EventType as Ev } from "../models/listener";
 import Residence from "../models/residence";
 import Train from "../models/train";
 import userResource, { ModelState } from "../models/user_resource";
+import { remove } from "./common";
 
 const rs: Residence[] = [];
 const gs: Gate[] = [];
@@ -16,9 +17,7 @@ const stepper = {
     listener.find(Ev.CREATED, Gate).register((g) => gs.push(g));
     listener.find(Ev.CREATED, Train).register((t) => ts.push(t));
     listener.find(Ev.CREATED, Human).register((h) => hs.push(h));
-    listener
-      .find(Ev.DELETED, Human)
-      .register((h) => hs.splice(hs.indexOf(h), 1));
+    listener.find(Ev.DELETED, Human).register((h) => remove(hs, h));
   },
 
   step: () => {

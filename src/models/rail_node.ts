@@ -72,6 +72,10 @@ class RailNode extends PointableObject {
     console.warn("try to handle by rail node");
   }
 
+  public _giveup() {
+    console.warn("try to give up from rail node");
+  }
+
   /**
    * この地点を目的地/出発地とする上りRailEdgeが引き伸ばす距離を返します
    */

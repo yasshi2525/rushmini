@@ -1,4 +1,6 @@
+import { remove } from "../utils/common";
 import EdgeTask from "./edge_task";
+import Human from "./human";
 import Point from "./point";
 import Train from "./train";
 import TrainTask from "./train_task";
@@ -49,7 +51,11 @@ class MoveTask extends TrainTask {
 
   protected handleOnConsumed() {
     const pos = this.loc();
-    this.train.passengers.forEach((h) => h._move(pos.x, pos.y));
+    this.train.passengers.forEach((h) => h._jump(pos.x, pos.y));
+  }
+
+  public _giveup(subject: Human) {
+    remove(this.train.passengers, subject);
   }
 }
 

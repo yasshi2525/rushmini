@@ -36,6 +36,12 @@ describe("residence", () => {
     r._fire(undefined);
   });
 
+  it("_giveup", () => {
+    const c = new Company(1, 1, 2);
+    const r = new Residence([c], 3, 4);
+    r._giveup(undefined);
+  });
+
   describe("_spawn", () => {
     let modifiedHuman: Human[];
     let newHumans: Human[];

@@ -19,6 +19,11 @@ describe("rail_node", () => {
     rn._fire();
   });
 
+  it("_giveup", () => {
+    const rn = new RailNode(0, 0);
+    rn._giveup();
+  });
+
   describe("_extend", () => {
     const X = 3;
     const Y = 4;

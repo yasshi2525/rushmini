@@ -1,3 +1,5 @@
+import { removeIf } from "../utils/common";
+
 export enum EventType {
   CREATED,
   MODIFIED,
@@ -105,10 +107,9 @@ export class EventTrigger<S> {
   public fire(target?: S) {
     if (target) {
       this.trackers.filter((t) => t.target === target).forEach((t) => t.fire());
-      const index = this.queue.indexOf(target);
-      if (index !== -1) {
+      const result = removeIf(this.queue, target);
+      if (result) {
         this.handlers.forEach((fn) => fn(target));
-        this.queue.splice(index, 1);
       }
     } else {
       let obj = this.queue.shift();

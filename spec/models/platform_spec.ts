@@ -4,6 +4,7 @@ import Human, { HumanState } from "models/human";
 import modelListener from "models/listener";
 import Platform from "models/platform";
 import { distance } from "models/pointable";
+import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
@@ -29,6 +30,7 @@ describe("platform", () => {
   let rn: RailNode;
   let st: Station;
   let g: Gate;
+  let l: RailLine;
 
   beforeEach(() => {
     c = new Company(1, 3, 4);
@@ -36,6 +38,7 @@ describe("platform", () => {
     rn = new RailNode(0, 0);
     st = new Station();
     g = st.gate;
+    l = new RailLine();
   });
 
   it("register reference on creation", () => {
@@ -91,5 +94,32 @@ describe("platform", () => {
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
     expect(p.outQueue.length).toEqual(0);
     expect(g.outQueue[0]).toEqual(h);
+  });
+
+  it("died human is removed on concourse", () => {
+    const p = new Platform(rn, st);
+    r._setNext(g, c, distance(c, r));
+    g._setNext(p, c, distance(c, g));
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+    expect(g._concourse[0]).toEqual(h);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+
+    // platform is crowded
+    expect(p.inQueue.length).toEqual(0);
+    for (let i = 0; i < Platform.CAPACITY; i++) p.inQueue.push(new Human(r, c));
+    expect(p.inQueue.length).toEqual(Platform.CAPACITY);
+
+    h._step();
+    expect(g._concourse[0]).toEqual(h);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+
+    for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS; i++)
+      h._step();
+    expect(h.state()).toEqual(HumanState.DIED);
+
+    expect(g._concourse.length).toEqual(0);
+    expect(p.inQueue.indexOf(h)).toEqual(-1);
   });
 });

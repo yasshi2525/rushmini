@@ -1,5 +1,6 @@
 import ticker from "../utils/ticker";
 import EdgeTask from "./edge_task";
+import Human from "./human";
 import LineTask from "./line_task";
 import MoveTask from "./move_task";
 import { Pointable } from "./pointable";
@@ -32,6 +33,10 @@ class TrainExecutor implements Steppable, Pointable {
     while (remain > 0) {
       remain = this._current._execute(remain);
     }
+  }
+
+  public _giveup(subject: Human) {
+    this._current._giveup(subject);
   }
 
   public current() {

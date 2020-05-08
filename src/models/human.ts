@@ -8,6 +8,7 @@ import { Pointable, substract } from "./pointable";
 import Residence from "./residence";
 import RoutableObject, { Routable } from "./routable";
 import { Steppable } from "./steppable";
+import Train from "./train";
 
 export enum HumanState {
   SPAWNED,
@@ -22,7 +23,10 @@ export enum HumanState {
   WAIT_EXIT_PLATFORM,
   WAIT_EXIT_GATE,
   ARCHIVED,
+  DIED,
 }
+
+const DELTA = 0.000001;
 
 class Human extends RoutableObject implements Steppable {
   private _state: HumanState;
@@ -35,8 +39,25 @@ class Human extends RoutableObject implements Steppable {
    * 会社に到着した際の加点
    */
   public static COMPLETE_SCORE: number = 0;
+
+  /**
+   * 何秒間歩き続けたらゲームから除外されるか
+   */
+  public static LIFE_SPAN: number = 8;
+  /**
+   * 歩いていない状態（ホーム、電車の中にいるなど）の場合、
+   * 歩く場合の何倍の体力を消費するか
+   */
+  public static STAY_BUFF: number = 0.1;
+
   public readonly departure: Residence;
   public readonly destination: Company;
+
+  /**
+   * 残り体力。0-1
+   */
+  private stamina: number;
+
   /**
    * 次に向かう経由点
    */
@@ -46,9 +67,12 @@ class Human extends RoutableObject implements Steppable {
    */
   private payment: number;
 
+  private train: Train;
+
   constructor(departure: Residence, destination: Company) {
     super();
     this._state = HumanState.SPAWNED;
+    this.stamina = 1;
     this.pos = new Point(departure.loc());
     this.departure = departure;
     this.destination = destination;
@@ -67,39 +91,66 @@ class Human extends RoutableObject implements Steppable {
     return this.pos;
   }
 
-  public _move(p: Pointable): void;
-  public _move(x: number, y: number): void;
+  public _jump(p: Pointable): number;
+  public _jump(x: number, y: number): number;
 
-  public _move(arg1: Pointable | number, arg2?: number) {
+  /**
+   * 指定した地点へワープする。戻り値は移動した距離
+   * @param arg1
+   * @param arg2
+   */
+  public _jump(arg1: Pointable | number, arg2?: number) {
     const prev = this.pos;
     if (typeof arg1 === "number") {
       this.pos = new Point(arg1, arg2);
     } else {
       this.pos = arg1.loc();
     }
-    if (distance(this.pos, prev) > 0) {
+    const result = distance(this.pos, prev);
+    if (result > 0) {
       modelListener.add(EventType.MODIFIED, this);
     }
+    return result;
   }
 
+  /**
+   * 指定した地点へ徒歩で移動する。戻り地は到達したかどうか
+   * @param goal
+   */
   public _seek(goal: Pointable) {
     const remain = substract(goal, this);
     const available = Human.SPEED / ticker.fps();
     if (available >= remain.length()) {
       // オーバーランを防ぐ
-      this._move(goal);
+      this.damageByWalk(this._jump(goal));
       return true;
     } else {
-      this._move(
-        this.pos.x + available * Math.cos(remain.angle()),
-        this.pos.y + available * Math.sin(remain.angle())
+      this.damageByWalk(
+        this._jump(
+          this.pos.x + available * Math.cos(remain.angle()),
+          this.pos.y + available * Math.sin(remain.angle())
+        )
       );
       return false;
     }
   }
 
+  private damageByWalk(dist: number) {
+    const time = dist / Human.SPEED;
+    // stay の分まで引かないようにする
+    this.stamina -= ((1 - Human.STAY_BUFF) * time) / Human.LIFE_SPAN;
+  }
+
+  private damageByStay(time: number) {
+    this.stamina -= (Human.STAY_BUFF * time) / Human.LIFE_SPAN;
+  }
+
   public _fire() {
     console.warn("try to handle human");
+  }
+
+  public _giveup() {
+    console.warn("try to give up from human");
   }
 
   /**
@@ -122,8 +173,36 @@ class Human extends RoutableObject implements Steppable {
     return this._state === HumanState.ON_TRAIN;
   }
 
+  /**
+   * 電車と紐付ける。死んだことを電車に通知するため。
+   * 電車乗車中は nextが Platformのため、電車側が分からない
+   * @param t
+   */
+  public setTrain(t?: Train) {
+    this.train = t;
+  }
+
   public _step() {
-    if (this.next) this.next._fire(this);
+    this.next?._fire(this);
+
+    // 会社についている場合、ダメージは喰らわない
+    this.damageByStay(1 / ticker.fps());
+    // 疲れ果てて死んだ
+    if (this.stamina < -DELTA && this._state !== HumanState.DIED) {
+      this.dead();
+    }
+  }
+
+  /**
+   * 死亡状態にし、関連タスクから自身を除外する。
+   */
+  private dead() {
+    this._state = HumanState.DIED;
+    this.next?._giveup(this);
+    this.train?._giveup(this);
+    // すぐRemvoveしないのはアニメーション表示するため
+    modelListener.add(EventType.MODIFIED, this);
+    modelListener.add(EventType.DELETED, this);
   }
 
   public _complete() {

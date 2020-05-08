@@ -48,6 +48,14 @@ class Train implements Pointable, Steppable {
     }
   }
 
+  /**
+   * 指定した人を電車から消去します (乗りかけ、降りかけ含む)
+   * @param subject
+   */
+  public _giveup(subject: Human) {
+    this.executor._giveup(subject);
+  }
+
   public loc() {
     return this.executor.loc();
   }

@@ -18,7 +18,7 @@ beforeAll(() => {
   ticker.init(FPS);
   Human.SPEED = 1;
   Gate.CAPACITY = 5;
-  Gate.MOBILITY_SEC = 1;
+  Gate.MOBILITY_SEC = 5;
 });
 
 afterAll(() => {
@@ -148,6 +148,12 @@ describe("gate", () => {
     g._step();
     expect(h1.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
     expect(h2.state()).toEqual(HumanState.WAIT_ENTER_GATE);
+    for (let i = 0; i < FPS / Gate.MOBILITY_SEC - 2; i++) {
+      g._step();
+      expect(h2.state()).toEqual(HumanState.WAIT_ENTER_GATE);
+    }
+    g._step();
+    expect(h2.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
   });
 
   it("crowed concourse refuses human enter it", () => {
@@ -243,5 +249,55 @@ describe("gate", () => {
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
+  });
+
+  it("died human is removed from waiting to enter gate", () => {
+    const rn = new RailNode(0, 0);
+    const st = new Station();
+    const g = st.gate;
+    const p = new Platform(rn, st);
+    r._setNext(g, c, distance(c, r));
+    const h = new Human(r, c);
+    // 改札まで移動
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.inQueue[0]).toEqual(h);
+    for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS; i++)
+      h._step();
+    expect(h.state()).toEqual(HumanState.DIED);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.inQueue.length).toEqual(0);
+  });
+
+  it("died human is removed from waiting to get out gate", () => {
+    const rn = new RailNode(0, 0);
+    const st = new Station();
+    const g = st.gate;
+    const p = new Platform(rn, st);
+
+    r._setNext(g, c, distance(c, r));
+    g._setNext(p, c, distance(c, g));
+    p._setNext(p, c, distance(c, p));
+
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+    h._step();
+
+    // 電車からおりる状況を再現
+    p._setNext(g, c, distance(c, p));
+    g._setNext(c, c, distance(c, g));
+    p.outQueue.push(h);
+
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(g.outQueue[0]).toEqual(h);
+
+    for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS; i++)
+      h._step();
+
+    expect(h.state()).toEqual(HumanState.DIED);
+    expect(g.outQueue.length).toEqual(0);
   });
 });
