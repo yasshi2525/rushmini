@@ -43,9 +43,9 @@ jobs:
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
       - run: npm run build
-      - run: akashic export html --output rushmini-latest.zip --atsumaru
+      - run: akashic export html --output rushmini-latest --atsumaru
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: rushmini-latest.zip
-          path: rushmini-latest.zip
+          name: rushmini-latest
+          path: rushmini-latest
