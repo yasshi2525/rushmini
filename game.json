@@ -390,6 +390,11 @@
 			"type": "script",
 			"path": "script/entities/station_builder.js",
 			"global": true
+		},
+		"human_despawner": {
+			"type": "script",
+			"path": "script/entities/human_despawner.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

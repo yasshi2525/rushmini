@@ -20,6 +20,13 @@ type CreatorMapper<T extends Pointable> = {
 
 const _storage: CreatorMapper<Pointable>[] = [];
 
+/**
+ * 指定されたエンティティをモデルの位置に移動させます。
+ * エンティティの中心はモデルの中心を差します
+ * @param scene
+ * @param subject
+ * @param core
+ */
 export const adjust = <T extends Pointable>(
   scene: g.Scene,
   subject: T,

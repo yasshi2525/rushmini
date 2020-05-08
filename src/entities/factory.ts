@@ -1,4 +1,5 @@
 import { Pointable } from "../models/pointable";
+import { insertTop } from "../utils/common";
 import { ViewCreator } from "./creator";
 
 /**
@@ -38,14 +39,11 @@ class ViewObjectFactory<T extends Pointable> {
   public createInstance(subject: T) {
     const viewer = this.creator(this.panel.scene, subject);
     const obj: ViewObject<T> = { subject, viewer };
-    this.panel.append(viewer);
+
     if (this.desc) {
-      [...this.panel.children]
-        .filter((e) => e !== viewer)
-        .forEach((e) => {
-          this.panel.remove(e);
-          this.panel.append(e);
-        });
+      insertTop(viewer, this.panel);
+    } else {
+      this.panel.append(viewer);
     }
     this.children.push(obj);
     return obj;

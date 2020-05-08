@@ -6,6 +6,7 @@ import createBonusStation from "./bonus_station";
 import createBranchBuilder from "./branch_builder";
 import createBuilder from "./builder";
 import createRailBuildGuide from "./build_guide";
+import createHumanDespawner from "./human_despawner";
 import createModelViewer from "./model_viewer";
 import createScoreLabel from "./score";
 import createShadow from "./shadow";
@@ -23,6 +24,7 @@ const preserveEntityCreator = () => {
   viewer.put(ViewerType.BRANCH_BUILDER, createBranchBuilder);
   viewer.put(ViewerType.BUILD_GUIDE, createRailBuildGuide);
   viewer.put(ViewerType.BUILDER, createBuilder);
+  viewer.put(ViewerType.DESPAWNER, createHumanDespawner);
   viewer.put(ViewerType.MODEL, createModelViewer);
   viewer.put(ViewerType.SCORE, createScoreLabel);
   viewer.put(ViewerType.STATION_BUILDER, createStationBuilder);

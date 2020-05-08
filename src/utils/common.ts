@@ -20,3 +20,18 @@ export const removeIf = <T>(arr: T[], subject: T) => {
   }
   return undefined;
 };
+
+/**
+ * 指定された要素を一番手前に挿入します
+ * @param p
+ * @param parent
+ */
+export const insertTop = (p: g.E, parent: g.E) => {
+  parent.append(p);
+  [...parent.children]
+    .filter((e) => e !== p)
+    .forEach((e) => {
+      parent.remove(e);
+      parent.append(e);
+    });
+};

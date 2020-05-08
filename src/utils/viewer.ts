@@ -24,6 +24,10 @@ export enum ViewerType {
    */
   MODEL,
   /**
+   * 力尽きた人間の表示
+   */
+  DESPAWNER,
+  /**
    * 鉄道建設の仕方の説明
    */
   BUILD_GUIDE,

@@ -1,5 +1,5 @@
 /**
- * 元画像の
+ *
  * @param scene
  * @param src
  * @param scale
