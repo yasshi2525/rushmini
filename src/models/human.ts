@@ -40,6 +40,8 @@ class Human extends RoutableObject implements Steppable {
    */
   public static COMPLETE_SCORE: number = 0;
 
+  public static DESPAWN_SCORE: number = -10;
+
   /**
    * 何秒間歩き続けたらゲームから除外されるか
    */
@@ -200,9 +202,8 @@ class Human extends RoutableObject implements Steppable {
     this._state = HumanState.DIED;
     this.next?._giveup(this);
     this.train?._giveup(this);
-    // すぐRemvoveしないのはアニメーション表示するため
-    modelListener.add(EventType.MODIFIED, this);
     modelListener.add(EventType.DELETED, this);
+    modelListener.add(EventType.SCORED, Human.DESPAWN_SCORE);
   }
 
   public _complete() {
