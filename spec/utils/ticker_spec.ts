@@ -3,7 +3,7 @@ import ticker, { EventType } from "utils/ticker";
 declare const recreateGame: () => Promise<void>;
 
 const FPS = 30;
-const DEFAULT_GAME = 60;
+const DEFAULT_GAME = 110;
 const GAME = 120;
 const ENDING = 10;
 

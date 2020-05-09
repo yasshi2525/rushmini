@@ -1,4 +1,3 @@
-import Residence from "./models/residence";
 import { GameMainParameterObject } from "./parameterObject";
 import createEndingScene, { EndingScene } from "./scenes/ending";
 import createGameScene, { GameScene } from "./scenes/game";
@@ -28,11 +27,11 @@ const init = (param: GameMainParameterObject) => {
   scorer.init(_gameState);
 };
 
-const createScenes = () => {
+const createScenes = (isAtsumaru: boolean) => {
   return {
     title: createTitleScene(),
     game: createGameScene(),
-    ending: createEndingScene(),
+    ending: createEndingScene(isAtsumaru),
   };
 };
 
@@ -48,7 +47,7 @@ const prepareScenes = (
 
 export const main = (param: GameMainParameterObject) => {
   init(param);
-  const scenes = createScenes();
+  const scenes = createScenes(param.isAtsumaru);
   prepareScenes(scenes.title, scenes.game, scenes.ending);
   g.game.pushScene(scenes.title.scene);
 };

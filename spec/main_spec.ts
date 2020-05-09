@@ -2,7 +2,7 @@ import { main } from "main";
 import ticker from "utils/ticker";
 
 declare const recreateGame: () => Promise<void>;
-const DEFAULT_GAME = 60;
+const DEFAULT_GAME = 110;
 const ENDING = 10;
 
 describe("main", () => {
