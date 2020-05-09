@@ -341,4 +341,18 @@ describe("train", () => {
     t._remove();
     expect(h.isOnTrain()).toBeFalsy();
   });
+
+  it("skip", () => {
+    const t = new Train(dept);
+    expect(dept.trains).toEqual([t]);
+    expect(t.current()._base()).toEqual(dept);
+    const inbound = dept.prev;
+    const outbound = dept.next;
+    inbound._shrink(outbound);
+    expect(t.current()._base()).toEqual(outbound);
+    for (let i = 0; i < (outbound.length() / Train.SPEED) * FPS; i++) {
+      t._step();
+    }
+    expect(t.current()._base()).toEqual(outbound.next);
+  });
 });

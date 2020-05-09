@@ -11,6 +11,7 @@ class MoveTask extends TrainTask {
   constructor(train: Train, base: EdgeTask, onCompleted: () => void) {
     super(train, onCompleted);
     this.base = base;
+    base.trains.push(train);
   }
 
   public loc() {

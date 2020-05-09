@@ -4,11 +4,13 @@ import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
 import RailNode from "./rail_node";
+import Train from "./train";
 
 abstract class LineTask {
   public readonly parent: RailLine;
   public prev?: LineTask;
   public next?: LineTask;
+  public readonly trains: Train[];
 
   constructor(parent: RailLine, prev?: LineTask) {
     this.parent = parent;
@@ -19,6 +21,7 @@ abstract class LineTask {
       this.prev = this;
       this.next = this;
     }
+    this.trains = [];
   }
   public abstract isDeptTask(): this is DeptTask;
   public abstract departure(): RailNode;
@@ -56,6 +59,7 @@ abstract class LineTask {
   public _shrink(to: LineTask) {
     let next = this.next;
     while (next !== to) {
+      next.trains.forEach((t) => t._skip(to));
       next._remove();
       next = next.next;
     }

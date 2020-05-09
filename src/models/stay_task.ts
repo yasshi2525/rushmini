@@ -30,6 +30,7 @@ class StayTask extends TrainTask {
     this.outQueue = [];
     this.inQueue = [];
     this.waitSec = 0;
+    base.trains.push(train);
   }
 
   public loc() {

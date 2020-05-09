@@ -48,6 +48,11 @@ class Train implements Pointable, Steppable {
     }
   }
 
+  public _skip(to: LineTask) {
+    this.executor.skip(to);
+    modelListener.add(EventType.MODIFIED, this);
+  }
+
   public _remove() {
     this.passengers.forEach((p) => {
       p.setTrain(undefined);

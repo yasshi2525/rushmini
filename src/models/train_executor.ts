@@ -8,6 +8,7 @@ import StayTask from "./stay_task";
 import { Steppable } from "./steppable";
 import Train from "./train";
 import TrainTask from "./train_task";
+import { remove } from "../utils/common";
 
 const newTask = (train: Train, lt: LineTask, onComplete: () => void) =>
   lt.isDeptTask()
@@ -43,7 +44,12 @@ class TrainExecutor implements Steppable, Pointable {
     return this._current;
   }
 
+  public skip(to: LineTask) {
+    this._current = newTask(this.train, to, () => this.next());
+  }
+
   private next() {
+    remove(this._current._base().trains, this.train);
     const nxt = this._current._base().next;
     this._current = newTask(this.train, nxt, () => this.next());
   }
