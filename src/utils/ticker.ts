@@ -1,6 +1,6 @@
 import { TriggerContainer } from "../models/listener";
 
-const defaultTotalSec = 70;
+const defaultTotalSec = 120;
 const endingSec = 10;
 
 let _fps = 30;
