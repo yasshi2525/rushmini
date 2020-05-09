@@ -5,6 +5,12 @@ import RailEdge from "models/rail_edge";
 import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 
+let oldWarn: (msg: string) => void;
+
+beforeAll(() => {
+  oldWarn = console.warn;
+});
+
 afterAll(() => {
   modelListener.flush();
 });
@@ -16,6 +22,10 @@ describe("rail_line", () => {
   });
 
   describe("_start", () => {
+    afterEach(() => {
+      console.warn = oldWarn;
+    });
+
     it("create dept task", () => {
       const l = new RailLine();
       const rn = new RailNode(0, 0);
@@ -28,6 +38,7 @@ describe("rail_line", () => {
     });
 
     it("forbit duplicated starting", () => {
+      console.warn = jest.fn();
       const l = new RailLine();
       const from = new RailNode(0, 0);
       const to = new RailNode(3, 4);
@@ -37,6 +48,7 @@ describe("rail_line", () => {
       l._start(p2);
 
       expect(l.top.departure().platform).toEqual(p1);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
@@ -83,10 +95,16 @@ describe("rail_line", () => {
       l = new RailLine();
     });
 
+    afterEach(() => {
+      console.warn = oldWarn;
+    });
+
     it("forbit to set edge to empty line", () => {
+      console.warn = jest.fn();
       const result = l._insertEdge(e12);
       expect(l.top).toBeUndefined();
       expect(result).toEqual([undefined, undefined]);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("extend EdgeTask", () => {
@@ -322,6 +340,7 @@ describe("rail_line", () => {
     });
 
     it("forbit to insert un-neighbored edge to initial rail line", () => {
+      console.warn = jest.fn();
       l._start(rn1.platform);
       const rnX = new RailNode(0, 0);
       const eX = rnX._extend(0, 0);
@@ -329,9 +348,11 @@ describe("rail_line", () => {
 
       expect(l.top.next).toEqual(l.top);
       expect(result).toEqual([undefined, undefined]);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit to insert un-neighbored edge", () => {
+      console.warn = jest.fn();
       l._start(rn1.platform);
       l._insertEdge(e12);
       const rnX = new RailNode(0, 0);
@@ -344,6 +365,7 @@ describe("rail_line", () => {
       expect(l.top.next.next.next.destination()).not.toEqual(rnX);
       expect(l.top.next.next.next.next.destination()).not.toEqual(rnX);
       expect(result).toEqual([undefined, undefined]);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("insert 0-length edge", () => {

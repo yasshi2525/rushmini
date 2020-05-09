@@ -238,7 +238,7 @@ export class UserResource {
       return;
     }
     this.action.buildStation(rn);
-    this.action.insertPlatform();
+    this.action.insertPlatform(rn.platform);
     modelListener.fire(EventType.CREATED);
   }
 

@@ -8,6 +8,7 @@ import Residence from "models/residence";
 import Train from "models/train";
 import ticker from "utils/ticker";
 
+let oldWarn: (msg: string) => void;
 const oldS = Human.SPEED;
 const oldSTAMINA = Human.LIFE_SPAN;
 
@@ -15,6 +16,7 @@ const FPS = 30;
 const defaultSpeed = 20;
 
 beforeAll(() => {
+  oldWarn = console.warn;
   ticker.init(FPS);
   Human.LIFE_SPAN = 10000;
 });
@@ -31,6 +33,7 @@ describe("human", () => {
     Human.LIFE_SPAN = 10000;
   });
   afterEach(() => {
+    console.warn = oldWarn;
     modelListener.flush();
   });
 
@@ -43,19 +46,23 @@ describe("human", () => {
   });
 
   it("_fire", () => {
+    console.warn = jest.fn();
     const c = new Company(1, 1, 2);
     const r = new Residence([c], 3, 4);
     const h = new Human(r, c);
     h._fire();
     expect(h.state()).toEqual(HumanState.SPAWNED);
+    expect(console.warn).toHaveBeenCalled();
   });
 
   it("_giveup", () => {
+    console.warn = jest.fn();
     const c = new Company(1, 1, 2);
     const r = new Residence([c], 3, 4);
     const h = new Human(r, c);
     h._giveup();
     expect(h.state()).toEqual(HumanState.SPAWNED);
+    expect(console.warn).toHaveBeenCalled();
   });
 
   describe("_step", () => {

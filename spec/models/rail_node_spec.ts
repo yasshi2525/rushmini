@@ -1,11 +1,21 @@
 import modelListener from "models/listener";
 import RailNode from "models/rail_node";
 
+let oldWarn: (msg: string) => void;
+
+beforeAll(() => {
+  oldWarn = console.warn;
+});
+
 afterAll(() => {
   modelListener.flush();
 });
 
 describe("rail_node", () => {
+  afterEach(() => {
+    console.warn = oldWarn;
+  });
+
   it("creation", () => {
     const X = 1;
     const Y = 2;
@@ -15,13 +25,17 @@ describe("rail_node", () => {
   });
 
   it("_fire", () => {
+    console.warn = jest.fn();
     const rn = new RailNode(0, 0);
     rn._fire();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   it("_giveup", () => {
+    console.warn = jest.fn();
     const rn = new RailNode(0, 0);
     rn._giveup();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   describe("_extend", () => {
@@ -81,6 +95,10 @@ describe("rail_node", () => {
   });
 
   describe("buildPlatform", () => {
+    afterEach(() => {
+      console.warn = oldWarn;
+    });
+
     it("platform", () => {
       const rn = new RailNode(0, 0);
       const p = rn._buildStation();
@@ -90,11 +108,13 @@ describe("rail_node", () => {
     });
 
     it("error when duplication building", () => {
+      console.warn = jest.fn();
       const rn = new RailNode(0, 0);
       const p1 = rn._buildStation();
       const p2 = rn._buildStation();
 
       expect(p1).toEqual(p2);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 

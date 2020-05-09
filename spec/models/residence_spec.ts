@@ -5,11 +5,13 @@ import { distance } from "models/pointable";
 import Residence from "models/residence";
 import ticker from "utils/ticker";
 
+let oldWarn: (msg: string) => void;
 const oldINTERVAL_SEC = Residence.INTERVAL_SEC;
 
 const FPS = 60;
 
 beforeAll(() => {
+  oldWarn = console.warn;
   ticker.init(FPS);
 });
 
@@ -24,6 +26,10 @@ describe("residence", () => {
     ticker.init(FPS);
   });
 
+  afterEach(() => {
+    console.warn = oldWarn;
+  });
+
   it("initialize", () => {
     const r = new Residence([], 1, 2);
     expect(r.loc().x).toEqual(1);
@@ -31,15 +37,19 @@ describe("residence", () => {
   });
 
   it("_fire", () => {
+    console.warn = jest.fn();
     const c = new Company(1, 1, 2);
     const r = new Residence([c], 3, 4);
     r._fire(undefined);
+    expect(console.warn).toHaveBeenCalled();
   });
 
   it("_giveup", () => {
+    console.warn = jest.fn();
     const c = new Company(1, 1, 2);
     const r = new Residence([c], 3, 4);
     r._giveup(undefined);
+    expect(console.warn).toHaveBeenCalled();
   });
 
   describe("_spawn", () => {
@@ -59,6 +69,7 @@ describe("residence", () => {
     });
 
     afterEach(() => {
+      console.warn = oldWarn;
       modelListener.flush();
       modelListener.unregisterAll();
     });
@@ -139,10 +150,12 @@ describe("residence", () => {
     });
 
     it("forbit to spawn human when no company registered", () => {
+      console.warn = jest.fn();
       const r = new Residence([], 0, 0);
       for (let j = 0; j < FPS; j++) r._step();
       modelListener.fire(EventType.CREATED);
       expect(newHumans.length).toEqual(0);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 });

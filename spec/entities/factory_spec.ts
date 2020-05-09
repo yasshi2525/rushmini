@@ -12,12 +12,14 @@ class Simple implements Pointable {
 }
 
 describe("factory", () => {
+  let oldWarn: (msg: string) => void;
   let loadedScene: g.Scene;
   let panel: g.E;
   let creator: ViewCreator<Simple>;
   let factory: ViewObjectFactory<Simple>;
 
   beforeEach(async () => {
+    oldWarn = console.warn;
     loadedScene = await createLoadedScene();
     panel = new g.E({ scene: loadedScene });
     creator = (scene, _) => new g.E({ scene });
@@ -26,6 +28,7 @@ describe("factory", () => {
 
   afterEach(async () => {
     await recreateGame();
+    console.warn = oldWarn;
   });
 
   it("createInstance adds entity to panel", () => {
@@ -44,11 +47,13 @@ describe("factory", () => {
   });
 
   it("removeSubject remains un-related object", () => {
+    console.warn = jest.fn();
     const s1 = new Simple();
     const s2 = new Simple();
     const o2 = factory.createInstance(s2);
     factory.removeInstance(s1);
     expect(panel.children.length).toEqual(1);
     expect(panel.children[0]).toEqual(o2.viewer);
+    expect(console.warn).toHaveBeenCalled();
   });
 });

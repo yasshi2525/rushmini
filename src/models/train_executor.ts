@@ -1,3 +1,4 @@
+import { remove } from "../utils/common";
 import ticker from "../utils/ticker";
 import EdgeTask from "./edge_task";
 import Human from "./human";
@@ -8,7 +9,6 @@ import StayTask from "./stay_task";
 import { Steppable } from "./steppable";
 import Train from "./train";
 import TrainTask from "./train_task";
-import { remove } from "../utils/common";
 
 const newTask = (train: Train, lt: LineTask, onComplete: () => void) =>
   lt.isDeptTask()

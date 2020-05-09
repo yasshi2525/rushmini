@@ -7,6 +7,12 @@ import RailEdge from "models/rail_edge";
 import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 
+let oldWarn: (msg: string) => void;
+
+beforeAll(() => {
+  oldWarn = console.warn;
+});
+
 afterAll(() => {
   modelListener.flush();
 });
@@ -29,6 +35,10 @@ describe("line_task", () => {
   });
 
   describe("_angle", () => {
+    afterEach(() => {
+      console.warn = oldWarn;
+    });
+
     it("ok", () => {
       const l = new RailLine();
       const rn = new RailNode(-1, 0);
@@ -55,6 +65,7 @@ describe("line_task", () => {
     });
 
     it("forbit to calculate angle with all zero-length edge tasks", () => {
+      console.warn = jest.fn();
       const l = new RailLine();
       const rn1 = new RailNode(0, 0);
       const p1 = rn1._buildStation();
@@ -67,18 +78,22 @@ describe("line_task", () => {
       dept1._insertEdge(e12);
 
       expect(dept1.next.next._angle(e23)).toBeNaN();
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("non-neighbor edge from dept task returns NaN", () => {
+      console.warn = jest.fn();
       const l = new RailLine();
       const rn = new RailNode(0, 0);
       const p = rn._buildStation();
       const dept = new DeptTask(l, p);
       const eX = new RailNode(0, 0)._extend(1, 1);
       expect(dept._angle(eX)).toBeNaN();
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("dept only task returns NaN", () => {
+      console.warn = jest.fn();
       const l = new RailLine();
       const rn = new RailNode(0, 0);
       const p = rn._buildStation();
@@ -86,9 +101,11 @@ describe("line_task", () => {
       const re = rn._extend(1, 1);
       expect(dept._isNeighbor(re)).toBe(true);
       expect(dept._angle(re)).toBeNaN();
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("non-neighbor edge from edge task returns NaN", () => {
+      console.warn = jest.fn();
       const l = new RailLine();
       const rn = new RailNode(0, 0);
       const p = rn._buildStation();
@@ -98,6 +115,7 @@ describe("line_task", () => {
       expect(
         move._angle(new RailEdge(new RailNode(0, 0), new RailNode(1, 1), true))
       ).toBeNaN();
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
@@ -345,6 +363,10 @@ describe("line_task", () => {
         dept2._insertEdge(e23);
       });
 
+      afterEach(() => {
+        console.warn = oldWarn;
+      });
+
       it("dept from 'rn1'", () => {
         const dept1 = l.top;
         expect(dept1).toBeInstanceOf(DeptTask);
@@ -382,6 +404,7 @@ describe("line_task", () => {
     });
 
     it("forbit to insert un-neighbored edge from dept task", () => {
+      console.warn = jest.fn();
       const rn1 = new RailNode(0, 0);
       rn1._extend(0, 0);
       const p1 = rn1._buildStation();
@@ -392,9 +415,11 @@ describe("line_task", () => {
       l._start(p1);
       l.top._insertEdge(e2);
       expect(l.top.next).toEqual(l.top);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit to insert un-neighbored edge from edge task", () => {
+      console.warn = jest.fn();
       const rn1 = new RailNode(0, 0);
       const e1 = rn1._extend(0, 0);
       const p1 = rn1._buildStation();
@@ -406,6 +431,7 @@ describe("line_task", () => {
       l._insertEdge(e1);
       l.top.next._insertEdge(e2);
       expect(l.top.next.next.next).toEqual(l.top);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
@@ -437,6 +463,10 @@ describe("line_task", () => {
       dept = outbound.next;
     });
 
+    afterEach(() => {
+      console.warn = oldWarn;
+    });
+
     it("ok", () => {
       expect(dept).toBeInstanceOf(DeptTask);
       expect(dept.parent).toEqual(l);
@@ -445,6 +475,7 @@ describe("line_task", () => {
     });
 
     it("forbit un-neighbored platform", () => {
+      console.warn = jest.fn();
       const rn = new RailNode(999, 999);
       const p = rn._buildStation();
 
@@ -452,9 +483,11 @@ describe("line_task", () => {
 
       outbound._insertPlatform(p);
       expect(outbound.next).toEqual(expectedNext);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit duplicated dept task", () => {
+      console.warn = jest.fn();
       const rn = new RailNode(999, 999);
       const p = rn._buildStation();
 
@@ -462,6 +495,7 @@ describe("line_task", () => {
 
       dept._insertPlatform(p);
       expect(dept.next).toEqual(expectedNext);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 });

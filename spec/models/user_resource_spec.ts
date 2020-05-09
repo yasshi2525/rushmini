@@ -12,6 +12,12 @@ import Train from "models/train";
 import userResource, { ModelState, UserResource } from "models/user_resource";
 import { remove } from "utils/common";
 
+let oldWarn: (msg: string) => void;
+
+beforeAll(() => {
+  oldWarn = console.warn;
+});
+
 afterAll(() => {
   modelListener.flush();
 });
@@ -32,6 +38,9 @@ describe("user_resource", () => {
     beforeEach(() => {
       instance = new UserResource();
     });
+    afterEach(() => {
+      console.warn = oldWarn;
+    });
 
     it("start when initial state", () => {
       const X = 1;
@@ -45,6 +54,7 @@ describe("user_resource", () => {
     });
 
     it("forbit start when started state", () => {
+      console.warn = jest.fn();
       const X = 1;
       const Y = 2;
 
@@ -57,9 +67,11 @@ describe("user_resource", () => {
       expect(dept.destination().loc()).toEqual({ x: X, y: Y });
       expect(dept.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelState.STARTED);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit start when fixed state", () => {
+      console.warn = jest.fn();
       const X = 1;
       const Y = 2;
 
@@ -73,6 +85,7 @@ describe("user_resource", () => {
       expect(dept.destination().loc()).toEqual({ x: X, y: Y });
       expect(dept.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelState.FIXED);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
@@ -87,6 +100,7 @@ describe("user_resource", () => {
     });
 
     afterEach(() => {
+      console.warn = oldWarn;
       modelListener.unregisterAll();
     });
 
@@ -196,18 +210,22 @@ describe("user_resource", () => {
     });
 
     it("forbit to extend when initial state", () => {
+      console.warn = jest.fn();
       instance.extend(3, 4);
       expect(instance.getPrimaryLine().top).toBeUndefined();
       expect(instance.getState()).toEqual(ModelState.INITED);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit to extend when fixed state", () => {
+      console.warn = jest.fn();
       instance.start(1, 2);
       instance.end();
       instance.extend(3, 4);
       const dept = instance.getPrimaryLine().top;
       expect(dept.next).toEqual(dept);
       expect(instance.getState()).toEqual(ModelState.FIXED);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
@@ -215,6 +233,10 @@ describe("user_resource", () => {
     let instance: UserResource;
     beforeEach(() => {
       instance = new UserResource();
+    });
+
+    afterEach(() => {
+      console.warn = oldWarn;
     });
 
     it("end with building station", () => {
@@ -228,18 +250,22 @@ describe("user_resource", () => {
     });
 
     it("forbit to end when state is 'INITED'", () => {
+      console.warn = jest.fn();
       instance.end();
       expect(instance.getPrimaryLine().top).toBeUndefined();
       expect(instance.getState()).toEqual(ModelState.INITED);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit to end when state is 'FIXED'", () => {
+      console.warn = jest.fn();
       instance.start(0, 0);
       instance.end();
       instance.end();
       expect(instance.getPrimaryLine().top).toBeInstanceOf(DeptTask);
       expect(instance.getPrimaryLine().top.next).toBeInstanceOf(DeptTask);
       expect(instance.getState()).toEqual(ModelState.FIXED);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
@@ -322,6 +348,10 @@ describe("user_resource", () => {
       instance = new UserResource();
     });
 
+    afterEach(() => {
+      console.warn = oldWarn;
+    });
+
     it("branch is started after fix state", () => {
       instance.start(0, 0);
       instance.extend(3, 4);
@@ -347,6 +377,7 @@ describe("user_resource", () => {
     });
 
     it("forbit to branch before fixed", () => {
+      console.warn = jest.fn();
       const rn = new RailNode(0, 0);
       const p = rn._buildStation();
 
@@ -356,9 +387,11 @@ describe("user_resource", () => {
       instance.start(0, 0);
       instance.branch(p);
       expect(instance.getState()).toEqual(ModelState.STARTED);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit to branch from unrelated station", () => {
+      console.warn = jest.fn();
       const rnX = new RailNode(0, 0);
       const pX = rnX._buildStation();
 
@@ -367,6 +400,7 @@ describe("user_resource", () => {
 
       instance.branch(pX);
       expect(instance.getState()).toEqual(ModelState.FIXED);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
@@ -383,23 +417,28 @@ describe("user_resource", () => {
     });
 
     afterEach(() => {
+      console.warn = oldWarn;
       modelListener.unregisterAll();
       modelListener.flush();
     });
 
     it("forbit to create station on unfix staed", () => {
+      console.warn = jest.fn();
       instance.start(0, 0);
       instance.station(instance.getPrimaryLine().top.departure());
       expect(instance.getState()).toEqual(ModelState.STARTED);
       expect(ps.length).toEqual(1);
+      expect(console.warn).toHaveBeenCalled();
     });
 
     it("forbit to create station on unrelated rail node", () => {
+      console.warn = jest.fn();
       instance.start(0, 0);
       instance.end();
       expect(ps.length).toEqual(1);
       instance.station(new RailNode(0, 0));
       expect(ps.length).toEqual(1);
+      expect(console.warn).toHaveBeenCalled();
     });
   });
 
