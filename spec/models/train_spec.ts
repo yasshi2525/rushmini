@@ -327,4 +327,18 @@ describe("train", () => {
     expect(t.passengers.length).toEqual(0);
     expect(p2.outQueue).toEqual([h]);
   });
+
+  it("remove human", () => {
+    h._step();
+    g1._step();
+    h._step();
+    h._step();
+
+    const t = new Train(l.top);
+    t._step();
+
+    expect(h.isOnTrain()).toBeTruthy();
+    t._remove();
+    expect(h.isOnTrain()).toBeFalsy();
+  });
 });

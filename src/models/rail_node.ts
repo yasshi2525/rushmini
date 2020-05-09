@@ -68,6 +68,10 @@ class RailNode extends PointableObject {
     return new Platform(this, new Station());
   }
 
+  public _remove() {
+    modelListener.add(EventType.DELETED, this);
+  }
+
   public _fire() {
     console.warn("try to handle by rail node");
   }

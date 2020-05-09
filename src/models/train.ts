@@ -1,4 +1,4 @@
-import Human from "./human";
+import Human, { HumanState } from "./human";
 import LineTask from "./line_task";
 import modelListener, { EventType } from "./listener";
 import { distance } from "./point";
@@ -46,6 +46,14 @@ class Train implements Pointable, Steppable {
     if (distance(prev, this.loc()) > 0) {
       modelListener.add(EventType.MODIFIED, this);
     }
+  }
+
+  public _remove() {
+    this.passengers.forEach((p) => {
+      p.setTrain(undefined);
+      p.state(HumanState.MOVE);
+    });
+    modelListener.add(EventType.DELETED, this);
   }
 
   /**

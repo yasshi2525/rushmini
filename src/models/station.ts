@@ -25,6 +25,10 @@ class Station implements Pointable {
     );
     return new Point(p.x, p.y);
   }
+
+  public _remove() {
+    modelListener.add(EventType.DELETED, this);
+  }
 }
 
 export default Station;

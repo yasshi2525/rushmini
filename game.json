@@ -395,6 +395,11 @@
 			"type": "script",
 			"path": "script/entities/human_despawner.js",
 			"global": true
+		},
+		"action": {
+			"type": "script",
+			"path": "script/models/action.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

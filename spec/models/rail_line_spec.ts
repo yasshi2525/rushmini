@@ -84,13 +84,14 @@ describe("rail_line", () => {
     });
 
     it("forbit to set edge to empty line", () => {
-      l._insertEdge(e12);
+      const result = l._insertEdge(e12);
       expect(l.top).toBeUndefined();
+      expect(result).toEqual([undefined, undefined]);
     });
 
     it("extend EdgeTask", () => {
       l._start(rn1.platform);
-      l._insertEdge(e12);
+      const result = l._insertEdge(e12);
       expect(l.top.next).toBeInstanceOf(EdgeTask);
       expect((l.top.next as EdgeTask).edge).toEqual(e12);
       expect(l.top.next.departure()).toEqual(rn1);
@@ -98,12 +99,13 @@ describe("rail_line", () => {
       expect(l.top.next.next).toBeInstanceOf(EdgeTask);
       expect((l.top.next.next as EdgeTask).edge).toEqual(e12.reverse);
       expect(l.top.next.next.next).toEqual(l.top);
+      expect(result).toEqual([l.top, l.top]);
     });
 
     it("re-rextend EdgeTask", () => {
       l._start(rn1.platform);
       l._insertEdge(e12);
-      l._insertEdge(e23);
+      const result = l._insertEdge(e23);
 
       const lt12 = l.top.next;
       expect(lt12.departure()).toEqual(rn1);
@@ -118,14 +120,17 @@ describe("rail_line", () => {
       expect(lt21.departure()).toEqual(rn2);
       expect(lt21.destination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
+
+      expect(result).toEqual([lt12, lt21]);
     });
 
     it("insert Edge on the left hand", () => {
-      // rn1 -> rn2 -> rnL -> rn3 -> rn2 -> rn1
+      // [before] rn1 -> rn2        -> rn3 -> rn2 -> rn1
+      // [after]  rn1 -> rn2 -> rnL -> rn3 -> rn2 -> rn1
       l._start(rn1.platform);
       l._insertEdge(e12);
       l._insertEdge(e23);
-      l._insertEdge(e2L);
+      const result = l._insertEdge(e2L);
 
       const lt12 = l.top.next;
       expect(lt12.departure()).toEqual(rn1);
@@ -149,14 +154,18 @@ describe("rail_line", () => {
       expect(lt21.departure()).toEqual(rn2);
       expect(lt21.destination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
+
+      expect(result).toEqual([lt12, lt23]);
     });
 
     it("insert Edge on the right hand", () => {
-      // rn1 -> rn2  -> rn3 -> rn2 -> rnR -> rn2 -> rn1
+      // [before] rn1 -> rn2  -> rn3 -> rn2               -> rn1
+      // [after]  rn1 -> rn2  -> rn3 -> rn2 -> rnR -> rn2 -> rn1
       l._start(rn1.platform);
       l._insertEdge(e12);
       l._insertEdge(e23);
-      l._insertEdge(e2R);
+      const result = l._insertEdge(e2R);
+
       const lt12 = l.top.next;
       expect(lt12.departure()).toEqual(rn1);
       expect(lt12.destination()).toEqual(rn2);
@@ -179,15 +188,18 @@ describe("rail_line", () => {
       expect(lt21.departure()).toEqual(rn2);
       expect(lt21.destination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
+
+      expect(result).toEqual([lt32, lt21]);
     });
 
     it("insert Edge on branch node", () => {
-      // rn1 -> rn2 -> rnL -> rn2 -> rnLN -> rn2 -> rn3 -> rn2 -> rn1
+      // [before] rn1 -> rn2 -> rnL -> rn2                -> rn3 -> rn2 -> rn1
+      // [after]  rn1 -> rn2 -> rnL -> rn2 -> rnLN -> rn2 -> rn3 -> rn2 -> rn1
       l._start(rn1.platform);
       l._insertEdge(e12);
       l._insertEdge(e23);
       l._insertEdge(e2L);
-      l._insertEdge(e2LN);
+      const result = l._insertEdge(e2LN);
 
       const lt12 = l.top.next;
       expect(lt12.departure()).toEqual(rn1);
@@ -218,6 +230,8 @@ describe("rail_line", () => {
       expect(lt21.departure()).toEqual(rn2);
       expect(lt21.destination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
+
+      expect(result).toEqual([ltL2, lt23]);
     });
 
     it("insert edge from station node", () => {
@@ -226,7 +240,7 @@ describe("rail_line", () => {
       l._start(rn1.platform);
       l._insertEdge(e12);
       l._insertEdge(e23);
-      l._insertEdge(e2R);
+      const result = l._insertEdge(e2R);
 
       const lt12 = l.top.next;
       expect(lt12.departure()).toEqual(rn1);
@@ -263,6 +277,12 @@ describe("rail_line", () => {
       expect(lt21.departure()).toEqual(rn2);
       expect(lt21.destination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
+
+      expect(result[0].departure()).toEqual(rn2);
+      expect(result[0].destination()).toEqual(rn2);
+      expect(result[1].departure()).toEqual(rn2);
+      expect(result[1].destination()).toEqual(rn1);
+      expect(result).toEqual([dept2R, lt21]);
     });
 
     it("skip length=0 move task to insert", () => {
@@ -272,7 +292,7 @@ describe("rail_line", () => {
       l._start(rn1.platform);
       l._insertEdge(e12);
       l._insertEdge(e2X);
-      l._insertEdge(e23);
+      const result = l._insertEdge(e23);
 
       const lt12 = l.top.next;
       expect(lt12.departure()).toEqual(rn1);
@@ -296,15 +316,19 @@ describe("rail_line", () => {
       expect(lt21.departure()).toEqual(rn2);
       expect(lt21.destination()).toEqual(rn1);
       expect(lt21.next).toEqual(l.top);
+
+      expect(result[0]).toEqual(lt12);
+      expect(result[1]).toEqual(lt2X);
     });
 
     it("forbit to insert un-neighbored edge to initial rail line", () => {
       l._start(rn1.platform);
       const rnX = new RailNode(0, 0);
       const eX = rnX._extend(0, 0);
-      l._insertEdge(eX);
+      const result = l._insertEdge(eX);
 
       expect(l.top.next).toEqual(l.top);
+      expect(result).toEqual([undefined, undefined]);
     });
 
     it("forbit to insert un-neighbored edge", () => {
@@ -312,13 +336,14 @@ describe("rail_line", () => {
       l._insertEdge(e12);
       const rnX = new RailNode(0, 0);
       const eX = rnX._extend(0, 0);
-      l._insertEdge(eX);
+      const result = l._insertEdge(eX);
 
       expect(l.top.destination()).not.toEqual(rnX);
       expect(l.top.next.destination()).not.toEqual(rnX);
       expect(l.top.next.next.destination()).not.toEqual(rnX);
       expect(l.top.next.next.next.destination()).not.toEqual(rnX);
       expect(l.top.next.next.next.next.destination()).not.toEqual(rnX);
+      expect(result).toEqual([undefined, undefined]);
     });
 
     it("insert 0-length edge", () => {
@@ -326,10 +351,12 @@ describe("rail_line", () => {
       rnX._buildStation();
       const eX = rnX._extend(0, 0);
       l._start(rnX.platform);
-      l._insertEdge(eX);
+      const result = l._insertEdge(eX);
 
       expect(l.top.next).toBeInstanceOf(EdgeTask);
       expect((l.top.next as EdgeTask).edge).toEqual(eX);
+      expect(result[0]).toEqual(l.top);
+      expect(result[1]).toEqual(l.top);
     });
 
     it("insert edge after 0-length edge", () => {
@@ -342,7 +369,7 @@ describe("rail_line", () => {
       const rnZ = eYZ.to;
       l._start(rnX.platform);
       l._insertEdge(eXY);
-      l._insertEdge(eYZ);
+      const result = l._insertEdge(eYZ);
 
       const ltXY = l.top.next;
       expect(ltXY).toBeInstanceOf(EdgeTask);
@@ -360,6 +387,9 @@ describe("rail_line", () => {
       expect(ltYX).toBeInstanceOf(EdgeTask);
       expect((ltYX as EdgeTask).edge).toEqual(eXY.reverse);
       expect(ltYX.next).toEqual(l.top);
+
+      expect(result[0]).toEqual(ltXY);
+      expect(result[1]).toEqual(ltYX);
     });
   });
 
@@ -418,6 +448,79 @@ describe("rail_line", () => {
     it("forbit to insert platform to empty line", () => {
       l._insertPlatform(rn1.platform);
       expect(l.top).toBeUndefined();
+    });
+  });
+
+  describe("shrink", () => {
+    let rn1: RailNode;
+    let e12: RailEdge;
+    let rn2: RailNode;
+    let rn3: RailNode;
+    let e23: RailEdge;
+    let rnL: RailNode;
+    let e2L: RailEdge;
+    let rnR: RailNode;
+    let e2R: RailEdge;
+
+    let rnLN: RailNode;
+    let e2LN: RailEdge;
+
+    let l: RailLine;
+
+    //     rnL rnLN
+    // rn1 rn2 rn3
+    //     rnR
+
+    beforeEach(() => {
+      rn1 = new RailNode(0, 0);
+      rn1._buildStation();
+      e12 = rn1._extend(1, 0);
+      rn2 = e12.to;
+      e23 = rn2._extend(2, 0);
+      rn3 = e23.to;
+      e2L = rn2._extend(1, -1);
+      rnL = e2L.to;
+      e2R = rn2._extend(1, 1);
+      rnR = e2R.to;
+
+      e2LN = rn2._extend(2, -1);
+      rnLN = e2LN.to;
+
+      l = new RailLine();
+    });
+
+    it("shrink edge from dept", () => {
+      l._start(rn1.platform);
+      const [from, to] = l._insertEdge(e12);
+      from._shrink(to);
+      expect(from.next).toEqual(to);
+      expect(to.prev).toEqual(from);
+      expect(l.top.next).toEqual(l.top);
+    });
+
+    it("shrink edge from edge", () => {
+      l._start(rn1.platform);
+      l._insertEdge(e12);
+      const [from, to] = l._insertEdge(e23);
+      from._shrink(to);
+      expect(from.next).toEqual(to);
+      expect(to.prev).toEqual(from);
+      expect(l.top.next).toEqual(from);
+      expect(l.top.prev).toEqual(to);
+    });
+
+    it("shrink branch", () => {
+      // [before] rn1 -> rn2        -> rn3 -> rn2 -> rn1
+      // [after]  rn1 -> rn2 -> rnL -> rn3 -> rn2 -> rn1
+      l._start(rn1.platform);
+      l._insertEdge(e12);
+      l._insertEdge(e23);
+      const [from, to] = l._insertEdge(e2L);
+      from._shrink(to);
+      expect(from.next).toEqual(to);
+      expect(to.prev).toEqual(from);
+      expect(l.top.next).toEqual(from);
+      expect(l.top.prev.prev.prev).toEqual(to);
     });
   });
 });

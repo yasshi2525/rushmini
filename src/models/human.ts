@@ -24,6 +24,7 @@ export enum HumanState {
   WAIT_EXIT_GATE,
   ARCHIVED,
   DIED,
+  WAIT_REROUTING,
 }
 
 const DELTA = 0.000001;

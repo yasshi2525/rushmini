@@ -112,16 +112,19 @@ class RailLine {
   }
 
   /**
-   * 指定された線路を自路線に組み込みます
+   * 指定された線路を自路線に組み込みます。
+   * ロールバックのため、延伸前の接続を返します
    * @param edge
    */
   public _insertEdge(edge: RailEdge) {
     const result = _findFarLeft(this, edge);
     if (!result) {
       console.warn("no insert candinate");
-      return;
+      return [undefined, undefined];
     }
+    const prevNext = result.next;
     result._insertEdge(edge);
+    return [result, prevNext];
   }
 
   /**

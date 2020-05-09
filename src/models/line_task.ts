@@ -1,4 +1,5 @@
 import DeptTask from "./dept_task";
+import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
 import RailLine from "./rail_line";
@@ -44,6 +45,25 @@ abstract class LineTask {
    */
   public abstract _insertEdge(edge: RailEdge): void;
   public abstract _insertPlatform(platform: Platform): void;
+  public _remove() {
+    modelListener.add(EventType.DELETED, this);
+  }
+  /**
+   * 現在のタスクの次を指定のタスクに設定します。
+   * 今ある中間タスクはすべて削除されます
+   * @param to
+   */
+  public _shrink(to: LineTask) {
+    let next = this.next;
+    while (next !== to) {
+      next._remove();
+      next = next.next;
+    }
+    this.next = to;
+    to.prev = this;
+    modelListener.add(EventType.MODIFIED, this);
+    modelListener.add(EventType.MODIFIED, to);
+  }
 }
 
 export default LineTask;

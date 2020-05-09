@@ -1,11 +1,16 @@
 import DeptTask from "models/dept_task";
+import EdgeTask from "models/edge_task";
+import Gate from "models/gate";
 import LineTask from "models/line_task";
 import modelListener, { EventType } from "models/listener";
 import Platform from "models/platform";
+import RailEdge from "models/rail_edge";
 import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
+import Station from "models/station";
 import Train from "models/train";
-import { ModelState, UserResource } from "models/user_resource";
+import userResource, { ModelState, UserResource } from "models/user_resource";
+import { remove } from "utils/common";
 
 afterAll(() => {
   modelListener.flush();
@@ -395,6 +400,122 @@ describe("user_resource", () => {
       expect(ps.length).toEqual(1);
       instance.station(new RailNode(0, 0));
       expect(ps.length).toEqual(1);
+    });
+  });
+
+  describe("rollback", () => {
+    let rns: RailNode[];
+    let res: RailEdge[];
+    let sts: Station[];
+    let ps: Platform[];
+    let gs: Gate[];
+    let ds: DeptTask[];
+    let es: EdgeTask[];
+    let ts: Train[];
+
+    beforeEach(() => {
+      rns = [];
+      res = [];
+      sts = [];
+      ps = [];
+      gs = [];
+      ds = [];
+      es = [];
+      ts = [];
+      modelListener
+        .find(EventType.CREATED, RailNode)
+        .register((rn) => rns.push(rn));
+      modelListener
+        .find(EventType.CREATED, RailEdge)
+        .register((re) => res.push(re));
+      modelListener
+        .find(EventType.CREATED, Station)
+        .register((st) => sts.push(st));
+      modelListener
+        .find(EventType.CREATED, Platform)
+        .register((p) => ps.push(p));
+      modelListener.find(EventType.CREATED, Gate).register((g) => gs.push(g));
+      modelListener
+        .find(EventType.CREATED, DeptTask)
+        .register((d) => ds.push(d));
+      modelListener
+        .find(EventType.CREATED, EdgeTask)
+        .register((e) => es.push(e));
+      modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
+
+      modelListener
+        .find(EventType.DELETED, RailNode)
+        .register((rn) => remove(rns, rn));
+      modelListener
+        .find(EventType.DELETED, RailEdge)
+        .register((re) => remove(res, re));
+      modelListener
+        .find(EventType.DELETED, Station)
+        .register((st) => remove(sts, st));
+      modelListener
+        .find(EventType.DELETED, Platform)
+        .register((p) => remove(ps, p));
+      modelListener
+        .find(EventType.DELETED, Gate)
+        .register((g) => remove(gs, g));
+      modelListener
+        .find(EventType.DELETED, DeptTask)
+        .register((d) => remove(ds, d));
+      modelListener
+        .find(EventType.DELETED, EdgeTask)
+        .register((e) => remove(es, e));
+      modelListener
+        .find(EventType.DELETED, Train)
+        .register((t) => remove(ts, t));
+    });
+
+    afterEach(() => {
+      userResource.reset();
+      modelListener.flush();
+      modelListener.unregisterAll();
+    });
+
+    it("rollback delete building", () => {
+      userResource.start(0, 0);
+      userResource.extend(3, 4);
+      userResource.end();
+
+      userResource.rollback();
+
+      expect(rns.length).toEqual(0);
+      expect(res.length).toEqual(0);
+      expect(sts.length).toEqual(0);
+      expect(ps.length).toEqual(0);
+      expect(gs.length).toEqual(0);
+      expect(ts.length).toEqual(0);
+    });
+
+    it("rollback delete branching", () => {
+      userResource.start(0, 0);
+      userResource.extend(3, 4);
+      userResource.end();
+
+      expect(rns.length).toEqual(2);
+      expect(res.length).toEqual(2);
+      expect(sts.length).toEqual(2);
+      expect(ps.length).toEqual(2);
+      expect(gs.length).toEqual(2);
+      expect(ts.length).toEqual(2);
+
+      userResource.commit();
+
+      userResource.branch(userResource.getPrimaryLine().top.stay);
+      userResource.extend(3, 0);
+      userResource.end();
+
+      userResource.rollback();
+
+      expect(rns.length).toEqual(2);
+      expect(res.length).toEqual(2);
+      expect(sts.length).toEqual(2);
+      expect(ps.length).toEqual(2);
+      expect(gs.length).toEqual(2);
+      expect(ts.length).toEqual(2);
     });
   });
 });

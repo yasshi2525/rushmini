@@ -34,6 +34,12 @@ class Platform extends RoutableObject {
     return this.on.loc();
   }
 
+  public _remove() {
+    this.on.platform = undefined;
+    modelListener.add(EventType.MODIFIED, this.on);
+    modelListener.add(EventType.DELETED, this);
+  }
+
   /**
    * 自身を目的地とされた場合、移動者に指示を出します。
    * コンコース上にいる場合は入場を許可します

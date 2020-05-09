@@ -48,6 +48,10 @@ class Gate extends RoutableObject implements Pointable, Steppable {
     return this.station.loc();
   }
 
+  public _remove() {
+    modelListener.add(EventType.DELETED, this);
+  }
+
   /**
    * 入出場待ちがいる場合、改札を通して移動させます。
    * プラットフォーム移動待ちが満杯の場合、入場規制します

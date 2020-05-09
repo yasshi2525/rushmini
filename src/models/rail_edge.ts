@@ -1,3 +1,4 @@
+import { remove } from "../utils/common";
 import modelListener, { EventType } from "./listener";
 import Point from "./point";
 import { center, Pointable, substract } from "./pointable";
@@ -31,6 +32,14 @@ class RailEdge implements Pointable {
 
   public loc() {
     return center(this.to, this.from);
+  }
+
+  public _remove() {
+    remove(this.from.out, this);
+    remove(this.to.in, this);
+    modelListener.add(EventType.MODIFIED, this.from);
+    modelListener.add(EventType.MODIFIED, this.to);
+    modelListener.add(EventType.DELETED, this);
   }
 }
 
