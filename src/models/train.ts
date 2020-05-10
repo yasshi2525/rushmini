@@ -3,12 +3,13 @@ import LineTask from "./line_task";
 import modelListener, { EventType } from "./listener";
 import { distance } from "./point";
 import { Pointable } from "./pointable";
+import RoutableObject, { Routable } from "./routable";
 import { Steppable } from "./steppable";
 import TrainExecutor from "./train_executor";
 
 const DELTA = 0.0001;
 
-class Train implements Pointable, Steppable {
+class Train extends RoutableObject implements Pointable, Steppable, Routable {
   /**
    * 1秒間に何pixcel進むか
    */
@@ -35,6 +36,7 @@ class Train implements Pointable, Steppable {
   private readonly executor: TrainExecutor;
 
   constructor(current: LineTask) {
+    super();
     this.passengers = [];
     this.executor = new TrainExecutor(this, current);
     modelListener.add(EventType.CREATED, this);
@@ -55,10 +57,14 @@ class Train implements Pointable, Steppable {
 
   public _remove() {
     this.passengers.forEach((p) => {
-      p.setTrain(undefined);
+      p._setTrain(undefined);
       p.state(HumanState.MOVE);
     });
     modelListener.add(EventType.DELETED, this);
+  }
+
+  public _fire() {
+    console.warn("try to handle train");
   }
 
   /**

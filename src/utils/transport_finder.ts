@@ -3,7 +3,9 @@ import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
 import RailLine from "../models/rail_line";
+import Train from "../models/train";
 import userResource from "../models/user_resource";
+import { remove } from "./common";
 
 /**
  * 徒歩に比べて鉄道の移動がどれほど優位か
@@ -18,6 +20,23 @@ const finders: PathFinder[] = [];
 const ls: RailLine[] = [];
 const lts: DeptTask[] = [];
 const ps: Platform[] = [];
+const ts: Train[] = [];
+
+/**
+ * 電車の現在地点から最寄り駅へのedgeを貼る。
+ * これにより、電車が到達可能な駅に対して距離を設定できる
+ * @param f
+ * @param t
+ */
+const trainRouting = (f: PathFinder, t: Train) => {
+  let current = t.current()._base();
+  let length = 0;
+  while (!current.isDeptTask()) {
+    length += current.length() * DIST_RATIO;
+    current = current.next;
+  }
+  f.edge(t, current, length, length * PAY_RATIO);
+};
 
 /**
  * 前の駅から次の駅までの距離をタスク距離合計とする
@@ -59,9 +78,30 @@ const handler = {
       finders.forEach((f) => f.node(lt));
       lts.push(lt);
     },
+    train: (t: Train) => {
+      finders.forEach((f) => f.node(t));
+      ts.push(t);
+    },
+  },
+  onDeleted: {
+    platform: (p: Platform) => {
+      finders.forEach((_f) => _f.unnode(p));
+      remove(finders, (f) => f.goal.origin === p);
+      remove(ps, p);
+    },
+    lineTask: (lt: DeptTask) => {
+      finders.forEach((f) => f.unnode(lt));
+      remove(lts, lt);
+    },
+    train: (t: Train) => {
+      finders.forEach((f) => f.unnode(t));
+      remove(ts, t);
+    },
   },
   onFixed: () => {
     finders.forEach((f) => {
+      f.unedgeAll();
+      ts.forEach((t) => trainRouting(f, t));
       ls.forEach((l) => scanRailLine(f, l));
       f.execute();
     });
@@ -74,6 +114,10 @@ const transportFinder = {
     listener.find(Ev.CREATED, Platform).register(handler.onCreated.platform);
     listener.find(Ev.CREATED, RailLine).register(handler.onCreated.railLine);
     listener.find(Ev.CREATED, DeptTask).register(handler.onCreated.lineTask);
+    listener.find(Ev.CREATED, Train).register(handler.onCreated.train);
+    listener.find(Ev.DELETED, Platform).register(handler.onDeleted.platform);
+    listener.find(Ev.DELETED, DeptTask).register(handler.onDeleted.lineTask);
+    listener.find(Ev.DELETED, Train).register(handler.onDeleted.train);
     userResource.stateListeners.push({
       onFixed: handler.onFixed,
     });

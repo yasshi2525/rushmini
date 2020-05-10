@@ -1,4 +1,5 @@
 import { remove, removeIf } from "../utils/common";
+import Gate from "./gate";
 import Human, { HumanState } from "./human";
 import modelListener, { EventType } from "./listener";
 import RailNode from "./rail_node";
@@ -48,6 +49,38 @@ class Platform extends RoutableObject {
    */
   public _fire(subject: Human) {
     const gate = this.station.gate;
+    // 乗車列にならんでいたが、経路再探索で別のホーム/改札への移動が決まった
+    if (subject._getDeptTask()) {
+      remove(subject._getDeptTask()._queue(), subject);
+      subject.state(HumanState.WAIT_EXIT_PLATFORM);
+      subject._setTrain(undefined);
+      subject._setDeptTask(undefined);
+      subject._setPlatform(this);
+      this.outQueue.push(subject);
+      return;
+    }
+
+    // ホームへ移動するときだったが、経路再探索で別のホーム/改札への移動が決まった
+    if (this.inQueue.indexOf(subject) !== -1) {
+      remove(this.inQueue, subject);
+      subject.state(HumanState.WAIT_EXIT_PLATFORM);
+      this.outQueue.push(subject);
+      return;
+    }
+
+    // 改札に向かっていたが経路再探索でホーム入場にかわった
+    if (gate.outQueue.indexOf(subject) !== -1) {
+      // コンコースに行きたいが満員で移動できない
+      if (gate._concourse.length >= Gate.CAPACITY) {
+        return;
+      }
+      remove(gate.outQueue, subject);
+      gate._concourse.push(subject);
+      subject.state(HumanState.WAIT_ENTER_PLATFORM);
+      subject._setPlatform(undefined);
+      subject._setGate(gate);
+      return;
+    }
 
     // 駅入場者をプラットフォーム上にならばせる。
     if (
@@ -55,18 +88,31 @@ class Platform extends RoutableObject {
       this.inQueue.length < Platform.CAPACITY
     ) {
       remove(gate._concourse, subject);
+      subject._setGate(undefined);
+      subject._complete();
       this.inQueue.push(subject);
       subject.state(HumanState.WAIT_ENTER_DEPTQUEUE);
-      subject._complete();
+      subject._setPlatform(this);
       return;
     }
 
-    // 到着した人を改札に向かわせる
     if (this.outQueue.indexOf(subject) !== -1) {
       remove(this.outQueue, subject);
-      subject.state(HumanState.WAIT_EXIT_GATE);
-      gate.outQueue.push(subject);
       subject._complete();
+
+      if (subject._getNext() === gate) {
+        // 到着した人を改札に向かわせる
+        subject.state(HumanState.WAIT_EXIT_GATE);
+
+        gate.outQueue.push(subject);
+      } else {
+        // 乗り換えの人をコンコースに向かわせる
+        subject.state(HumanState.WAIT_ENTER_PLATFORM);
+        gate._concourse.push(subject);
+      }
+      subject._setPlatform(undefined);
+      subject._setGate(gate);
+
       return;
     }
   }

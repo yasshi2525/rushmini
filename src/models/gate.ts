@@ -1,4 +1,4 @@
-import { removeIf } from "../utils/common";
+import { remove, removeIf } from "../utils/common";
 import ticker from "../utils/ticker";
 import Human, { HumanState } from "./human";
 import modelListener, { EventType } from "./listener";
@@ -27,6 +27,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
   public readonly inQueue: Human[];
   /**
    * プラットフォームへの入場待機者
+   * デッドロックを防ぐため、出場者はホームから容量無制限の outQueue に移動させる
    */
   public readonly _concourse: Human[];
   /**
@@ -53,6 +54,52 @@ class Gate extends RoutableObject implements Pointable, Steppable {
   }
 
   /**
+   * 入場待ちをプラットフォーム移動待ちにさせます
+   * 一人移動できたなら、trueを返します
+   */
+  private tryEnter() {
+    // 入場規制
+    if (this._concourse.length >= Gate.CAPACITY) {
+      return false;
+    }
+    while (this.inQueue.length > 0) {
+      const h = this.inQueue.shift();
+      // 途中で再経路探索され、目的地が変わった場合は無視
+      // => 必ず h.step()でコンコースに
+      if (h._getNext() === this && this.outQueue.indexOf(h) === -1) {
+        h._complete();
+        this._concourse.push(h);
+        h.state(HumanState.WAIT_ENTER_PLATFORM);
+        h._setGate(this);
+        this.waitFrame += ticker.fps() / Gate.MOBILITY_SEC;
+        return true;
+      } else {
+        h.state(HumanState.MOVE);
+      }
+    }
+    return false;
+  }
+
+  /**
+   * 出場待ちを改札外に移動させます。
+   * 一人移動できたなら、trueを返します
+   */
+  private tryExit() {
+    while (this.outQueue.length > 0) {
+      const h = this.outQueue.shift();
+      // 途中で再経路探索され、目的地が変わった場合は無視
+      if (h._getNext() === this) {
+        h._setGate(undefined);
+        h._complete();
+        h.state(HumanState.MOVE);
+        this.waitFrame += ticker.fps() / Gate.MOBILITY_SEC;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * 入出場待ちがいる場合、改札を通して移動させます。
    * プラットフォーム移動待ちが満杯の場合、入場規制します
    * 人を移動させた場合、ペナルティとして待機時間を増やします。
@@ -60,23 +107,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
   public _step() {
     this.waitFrame = Math.max(this.waitFrame - 1, 0);
     if (this.waitFrame === 0) {
-      if (this.outQueue.length > 0) {
-        // 出場待ちを改札外に移動させる
-        const h = this.outQueue.shift();
-        h.state(HumanState.MOVE);
-        h._complete();
-        this.waitFrame += ticker.fps() / Gate.MOBILITY_SEC;
-      } else if (
-        this.inQueue.length > 0 &&
-        this._concourse.length < Gate.CAPACITY // 入場規制
-      ) {
-        // 入場待ちをプラットフォーム移動待ちにする
-        const h = this.inQueue.shift();
-        this._concourse.push(h);
-        h.state(HumanState.WAIT_ENTER_PLATFORM);
-        h._complete();
-        this.waitFrame += ticker.fps() / Gate.MOBILITY_SEC;
-      }
+      if (!this.tryExit()) this.tryEnter();
     }
   }
 
@@ -87,6 +118,14 @@ class Gate extends RoutableObject implements Pointable, Steppable {
    * @param subject
    */
   public _fire(subject: Human) {
+    // コンコースに入ったが、目的地が変わり出場することになった
+    if (this._concourse.indexOf(subject) !== -1) {
+      remove(this._concourse, subject);
+      this.outQueue.push(subject);
+      subject.state(HumanState.WAIT_EXIT_GATE);
+      return;
+    }
+
     // 待機列にいるならば人を待たせる
     if (
       this.outQueue.indexOf(subject) !== -1 ||

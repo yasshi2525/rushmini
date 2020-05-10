@@ -108,10 +108,14 @@ describe("train", () => {
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
     expect(dept._queue()[0]).toEqual(h);
+    expect(h._getDeptTask()).toEqual(dept);
 
     const t = new Train(l.top);
     t._step();
     expect(h.state()).toEqual(HumanState.ON_TRAIN);
+    expect(h._getNext()).toEqual(p2);
+    expect(h._getDeptTask()).toBeUndefined();
+    expect(h._getTrain()).toEqual(t);
     expect(dept._queue().length).toEqual(0);
     expect(t.passengers[0]).toEqual(h);
     expect(h.loc()).toEqual(rn1.loc());
@@ -237,6 +241,122 @@ describe("train", () => {
       expect(t.loc()).toEqual(rn1.loc());
     }
     hs.forEach((_h) => expect(_h.state()).toEqual(HumanState.ON_TRAIN));
+  });
+
+  it("changing goal human on dept queue moves outQueue of platform", () => {
+    const h2 = new Human(r, c);
+    [h2, h].forEach((_h) => {
+      _h._step();
+      for (let i = 0; i < FPS / Gate.MOBILITY_SEC; i++) g1._step();
+      _h._step();
+      _h._step();
+      expect(_h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
+      expect(_h._getDeptTask()).toEqual(dept);
+    });
+    expect(dept._queue()).toEqual([h2, h]);
+
+    const t = new Train(l.top);
+    t._step();
+
+    expect(dept._queue()).toEqual([h]);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_TRAIN);
+    expect(h._getDeptTask()).toEqual(dept);
+
+    h._setNext(p1, c, distance(c, h));
+    h._reroute();
+
+    expect(h._getNext()).toEqual(p1);
+
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(h._getPlatform()).toEqual(p1);
+    expect(dept._queue().length).toEqual(0);
+    expect(h._getTrain()).toEqual(undefined);
+
+    t._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(h._getPlatform()).toEqual(p1);
+    expect(dept._queue().length).toEqual(0);
+    expect(h._getPlatform()).toEqual(p1);
+    expect(h._getTrain()).toBeUndefined();
+    expect(p1.outQueue).toEqual([h]);
+    expect(h._getTrain()).toEqual(undefined);
+  });
+
+  it("changing goal human keeps to ride", () => {
+    h._step();
+    g1._step();
+    h._step();
+    h._step();
+    const t = new Train(l.top);
+    for (let j = 0; j < FPS * STAY_SEC; j++) {
+      t._step();
+      expect(h.state()).toEqual(HumanState.ON_TRAIN);
+      expect(h._getTrain()).toEqual(t);
+      expect(h._getNext()).toEqual(p2);
+      expect(t.loc()).toEqual(rn1.loc());
+    }
+    t._step();
+    expect(t.loc()).not.toEqual(rn1.loc());
+
+    h._setNext(p1, c, distance(c, h));
+    h._reroute();
+
+    expect(h._getNext()).toEqual(p1);
+
+    for (let j = 0; j < FPS - 2; j++) {
+      t._step();
+      expect(t.loc()).not.toEqual(rn2.loc());
+    }
+
+    for (let j = 0; j < FPS * STAY_SEC; j++) {
+      t._step();
+      expect(h.state()).toEqual(HumanState.ON_TRAIN);
+      expect(h._getTrain()).toEqual(t);
+      expect(h._getNext()).toEqual(p1);
+      expect(t.loc()).toEqual(rn2.loc());
+    }
+  });
+
+  it("changing goal human on outQueue keeps to ride", () => {
+    const h2 = new Human(r, c);
+    [h, h2].forEach((_h) => {
+      _h._step();
+      for (let j = 0; j < FPS / Gate.MOBILITY_SEC; j++) g1._step();
+      _h._step();
+      _h._step();
+    });
+    const t = new Train(l.top);
+    for (let j = 0; j < FPS * STAY_SEC; j++) t._step();
+
+    [h, h2].forEach((_h) => {
+      expect(_h.state()).toEqual(HumanState.ON_TRAIN);
+      expect(_h._getTrain()).toEqual(t);
+      expect(_h._getNext()).toEqual(p2);
+    });
+    expect(t.loc()).toEqual(rn1.loc());
+
+    for (let j = 0; j < FPS - 1; j++) {
+      t._step();
+      expect(t.loc()).not.toEqual(rn1.loc());
+      expect(t.loc()).not.toEqual(rn2.loc());
+    }
+
+    t._step();
+    t._step();
+    expect(t.loc()).toEqual(rn2.loc());
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(h2.state()).toEqual(HumanState.WAIT_EXIT_TRAIN);
+
+    h2._setNext(p1, c, distance(c, h2));
+    h2._reroute();
+
+    h2._step();
+
+    t._step();
+    expect(h2.state()).toEqual(HumanState.ON_TRAIN);
+    expect(h2._getPlatform()).toBeUndefined();
+    expect(h2._getTrain()).toEqual(t);
   });
 
   it("died human is removed from entering queue", () => {

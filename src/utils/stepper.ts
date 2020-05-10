@@ -17,6 +17,8 @@ const stepper = {
     listener.find(Ev.CREATED, Gate).register((g) => gs.push(g));
     listener.find(Ev.CREATED, Train).register((t) => ts.push(t));
     listener.find(Ev.CREATED, Human).register((h) => hs.push(h));
+    listener.find(Ev.DELETED, Gate).register((g) => remove(gs, g));
+    listener.find(Ev.DELETED, Train).register((t) => remove(ts, t));
     listener.find(Ev.DELETED, Human).register((h) => remove(hs, h));
   },
 

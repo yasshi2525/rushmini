@@ -31,19 +31,22 @@ class StartRailAction implements Transactional {
 }
 
 class BuildStationAction implements Transactional {
-  private readonly tail: RailNode;
+  private readonly prevTail: RailNode;
+  private readonly rollbackFn: (rn: RailNode) => void;
   private p: Platform;
 
-  constructor(tail: RailNode) {
-    this.tail = tail;
+  constructor(tail: RailNode, rollbackFn: (prevTail: RailNode) => void) {
+    this.prevTail = tail;
+    this.rollbackFn = rollbackFn;
   }
 
   act(rn?: RailNode) {
-    this.p = rn ? rn._buildStation() : this.tail._buildStation();
+    this.p = rn ? rn._buildStation() : this.prevTail._buildStation();
     return this.p;
   }
 
   rollback() {
+    this.rollbackFn(this.prevTail);
     this.p.station.gate._remove();
     this.p.station._remove();
     this.p._remove();
@@ -153,8 +156,8 @@ class StartBranchAction {
     this.rollbackFn = rollbackFn;
   }
 
-  act() {
-    return this.prevTail;
+  act(p: Platform) {
+    return p.on;
   }
 
   rollback() {
@@ -202,8 +205,12 @@ class ActionProxy {
   }
 
   public buildStation(rn?: RailNode) {
-    const action = new BuildStationAction(this._tailNode);
-    const p = action.act(rn);
+    const action = new BuildStationAction(
+      this._tailNode,
+      (prevTail) => (this._tailNode = prevTail)
+    );
+    action.act(rn);
+    if (rn) this._tailNode = rn;
     this.actions.push(action);
   }
 
@@ -236,7 +243,7 @@ class ActionProxy {
       this._tailNode,
       (prevTail) => (this._tailNode = prevTail)
     );
-    this._tailNode = action.act();
+    this._tailNode = action.act(p);
     this.actions.push(action);
   }
 

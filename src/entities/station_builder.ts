@@ -4,6 +4,7 @@ import RailEdge from "../models/rail_edge";
 import RailNode from "../models/rail_node";
 import Station from "../models/station";
 import userResource from "../models/user_resource";
+import { remove } from "../utils/common";
 import viewer, { ViewerEvent } from "../utils/viewer";
 import connect from "./connector";
 import { adjust } from "./creator";
@@ -72,7 +73,12 @@ const createInstraction = (scene: g.Scene) =>
 
 const createStationBuilder = (loadedScene: g.Scene) => {
   const rns: RailNode[] = [];
-  modelListener.find(EventType.CREATED, RailNode).register((r) => rns.push(r));
+  modelListener
+    .find(EventType.CREATED, RailNode)
+    .register((rn) => rns.push(rn));
+  modelListener
+    .find(EventType.DELETED, RailNode)
+    .register((rn) => remove(rns, rn));
 
   const panel = new g.Pane({
     scene: loadedScene,

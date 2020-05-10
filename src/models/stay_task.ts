@@ -74,19 +74,70 @@ class StayTask extends TrainTask {
    */
   protected handleOnInited() {
     this.train.passengers
-      .filter((h) => h._shouldGetOff(this.base.stay))
+      .filter((h) => h._getNext() === this.base.stay)
       .forEach((h) => {
         h.state(HumanState.WAIT_EXIT_TRAIN);
         this.outQueue.push(h);
       });
     this.base
       ._queue()
-      .filter((h) => h._shuoldRide(this.base))
+      .filter((h) => h._getNext() === this.base)
       .forEach((h) => {
         h.state(HumanState.WAIT_ENTER_TRAIN);
-        h.setTrain(this.train);
+        h._setTrain(this.train); // ここで参照を貼らないと、乗車待ち時に死んだケースに気づけない
         this.inQueue.push(h);
       });
+  }
+
+  private tryRide() {
+    const dept = this.base;
+    const p = dept.stay;
+    // 満員
+    if (this.train.passengers.length >= Train.CAPACITY) {
+      return false;
+    }
+    while (this.inQueue.length > 0) {
+      const h = this.inQueue.shift();
+      if (h._getNext() === dept) {
+        // ホームの利用客を電車に乗せる
+        h._complete();
+        h.state(HumanState.ON_TRAIN);
+        remove(dept._queue(), h);
+        h._setDeptTask(undefined);
+        this.train.passengers.push(h);
+        this.waitSec += 1 / Train.MOBILITY_SEC;
+        return true;
+      }
+      // 上記が else になるのは、発車待ち時に経路が変わったとき。
+      // このとき Platform が Human#deptTask を参照しキューの入れ替えを行っている
+      // そのためここでは 何もしない
+    }
+    return false;
+  }
+
+  private tryGetOff() {
+    const dept = this.base;
+    const p = dept.stay;
+    const psngr = this.train.passengers;
+
+    while (this.outQueue.length > 0) {
+      // 乗車している利用客をホームに移動させる
+      const h = this.outQueue.shift();
+      if (h._getNext() === this.base.stay) {
+        h.state(HumanState.WAIT_EXIT_PLATFORM);
+        h._setTrain(undefined);
+        p.outQueue.push(h);
+        h._setPlatform(p);
+        remove(psngr, h);
+        this.waitSec += 1 / Train.MOBILITY_SEC;
+        return true;
+      } else {
+        // 降車待ち中に経路再探索がされ、目的地がかわり
+        // 引き続きの乗車が決まった場合
+        h.state(HumanState.ON_TRAIN);
+      }
+    }
+    return false;
   }
 
   /**
@@ -96,30 +147,7 @@ class StayTask extends TrainTask {
   protected handleOnConsumed(available: number) {
     this.waitSec = Math.max(this.waitSec - available, 0);
     if (this.waitSec < 1 / Train.MOBILITY_SEC + DELTA) {
-      const dept = this.base;
-      const p = dept.stay;
-      const psngr = this.train.passengers;
-      // 降車優先
-      if (this.outQueue.length > 0) {
-        // 乗車している利用客をホームに移動させる
-        const h = this.outQueue.shift();
-        h.state(HumanState.WAIT_EXIT_PLATFORM);
-        h.setTrain();
-        p.outQueue.push(h);
-        remove(psngr, h);
-        this.waitSec += 1 / Train.MOBILITY_SEC;
-      } else if (
-        this.inQueue.length > 0 &&
-        this.train.passengers.length < Train.CAPACITY
-      ) {
-        // ホームの利用客を電車に乗せる
-        const h = this.inQueue.shift();
-        h.state(HumanState.ON_TRAIN);
-        h._complete();
-        remove(dept._queue(), h);
-        this.train.passengers.push(h);
-        this.waitSec += 1 / Train.MOBILITY_SEC;
-      }
+      if (!this.tryGetOff()) this.tryRide();
     }
   }
 

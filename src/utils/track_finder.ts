@@ -3,6 +3,7 @@ import PathFinder from "../models/path_finder";
 import RailEdge from "../models/rail_edge";
 import RailNode from "../models/rail_node";
 import userResource from "../models/user_resource";
+import { remove } from "./common";
 
 // 路線の自動延伸時には使う。
 // 今は使っていない
@@ -37,6 +38,17 @@ const handler = {
       res.push(re);
     },
   },
+  onDeleted: {
+    railNode: (rn: RailNode) => {
+      finders.forEach((f) => f.unnode(rn));
+      remove(finders, (f) => f.goal.origin === rn);
+      remove(rns, rn);
+    },
+    railEdge: (re: RailEdge) => {
+      finders.forEach((f) => f.unedge(re.from, re.to));
+      remove(res, re);
+    },
+  },
 };
 
 const trackFinder = {
@@ -44,6 +56,8 @@ const trackFinder = {
   init: () => {
     listener.find(Ev.CREATED, RailNode).register(handler.onCreated.railNode);
     listener.find(Ev.CREATED, RailEdge).register(handler.onCreated.railEdge);
+    listener.find(Ev.DELETED, RailNode).register(handler.onDeleted.railNode);
+    listener.find(Ev.DELETED, RailEdge).register(handler.onDeleted.railEdge);
 
     userResource.stateListeners.push({
       onFixed: () => finders.forEach((f) => f.execute()),

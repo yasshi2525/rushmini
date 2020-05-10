@@ -1,4 +1,4 @@
-import { find } from "../utils/common";
+import { find, remove } from "../utils/common";
 import { Routable } from "./routable";
 
 class PathNode {
@@ -114,6 +114,15 @@ class PathFinder {
     return result;
   }
 
+  public unnode(node: Routable, cascade: boolean = false) {
+    const result = find(this.nodes, (n) => n.origin === node);
+    if (cascade) {
+      remove(this.edges, (e) => e.from === result);
+      remove(this.edges, (e) => e.to === result);
+    }
+    remove(this.nodes, result);
+  }
+
   /**
    * 指定されたオブジェクト同士の連結を登録します
    * @param from
@@ -134,6 +143,14 @@ class PathFinder {
       this.edges.push(e);
     }
     return result;
+  }
+
+  public unedge(from: Routable, to: Routable) {
+    remove(this.edges, (e) => e.from.origin === from && e.to.origin === to);
+  }
+
+  public unedgeAll() {
+    this.edges.length = 0;
   }
 
   public execute() {

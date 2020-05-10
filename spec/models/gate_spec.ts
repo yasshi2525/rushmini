@@ -38,6 +38,10 @@ describe("gate", () => {
     r = new Residence([c], 0, 0);
   });
 
+  afterEach(() => {
+    Gate.CAPACITY = oldCAPACITY;
+  });
+
   it("initial create", () => {
     const st = new Station();
     const g = st.gate;
@@ -55,11 +59,14 @@ describe("gate", () => {
     for (let i = 0; i < 5; i++) {
       for (let j = 0; j < FPS; j++) {
         h._step();
+        expect(h._getNext()).toEqual(g);
         if (i === 4 && j === FPS - 1) {
           expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
+          expect(h._getGate()).toBeUndefined();
           expect(g.inQueue[0]).toEqual(h);
         } else {
           expect(h.state()).toEqual(HumanState.MOVE);
+          expect(h._getGate()).toBeUndefined();
           expect(g.inQueue.length).toEqual(0);
         }
       }
@@ -73,15 +80,22 @@ describe("gate", () => {
     const g = st.gate;
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
+    g._setNext(p, c, distance(c, r));
     const h = new Human(r, c);
 
     h._step();
+    expect(h._getNext()).toEqual(g);
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
+    expect(h._getGate()).toBeUndefined();
     expect(g.inQueue[0]).toEqual(h);
+    expect(g._concourse.length).toEqual(0);
 
     g._step();
+    expect(h._getNext()).toEqual(p);
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    expect(h._getGate()).toEqual(g);
     expect(g.inQueue.length).toEqual(0);
+    expect(g._concourse[0]).toEqual(h);
   });
 
   it("move human on concourse to platform", () => {
@@ -95,11 +109,20 @@ describe("gate", () => {
 
     const h = new Human(r, c);
     h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
     g._step();
+    expect(h._getNext()).toEqual(p);
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    expect(h._getGate()).toEqual(g);
+    expect(h._getPlatform()).toBeUndefined();
+    expect(g._concourse[0]).toEqual(h);
+    expect(p.inQueue.length).toEqual(0);
     h._step();
+    expect(h._getNext()).toBeUndefined();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
+    expect(h._getGate()).toBeUndefined();
+    expect(h._getPlatform()).toEqual(p);
+    expect(g._concourse.length).toEqual(0);
+    expect(p.inQueue[0]).toEqual(h);
   });
 
   it("exit human on platform", () => {
@@ -116,15 +139,21 @@ describe("gate", () => {
     h._step();
     g._step();
     h._step();
+    expect(p.inQueue[0]).toEqual(h);
+    expect(h._getNext()).toEqual(p);
 
     for (let j = 0; j < FPS / Gate.MOBILITY_SEC; j++) g._step();
 
     // 電車からおりる状況を再現
     p._setNext(g, c, distance(c, p));
     g._setNext(c, c, distance(c, g));
-    p.outQueue.push(h);
 
+    expect(h._getNext()).toEqual(p);
     h._step();
+    expect(h._getNext()).toEqual(p);
+    h._step();
+    expect(h._getNext()).toEqual(g);
+
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
     expect(g.outQueue[0]).toEqual(h);
 
@@ -176,7 +205,7 @@ describe("gate", () => {
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
   });
 
-  it("waiting InQueue do nothing on fire", () => {
+  it("waiting inQueue do nothing on fire", () => {
     const rn = new RailNode(0, 0);
     const st = new Station();
     const g = st.gate;
@@ -215,7 +244,7 @@ describe("gate", () => {
     // 電車からおりる状況を再現
     p._setNext(g, c, distance(c, p));
     g._setNext(c, c, distance(c, g));
-    p.outQueue.push(h);
+    h._step();
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
     h._step();
@@ -249,6 +278,169 @@ describe("gate", () => {
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
+  });
+
+  it("changing goal human leaves from inQueue", () => {
+    const rn = new RailNode(0, 0);
+    const st = new Station();
+    const g = st.gate;
+    const p = new Platform(rn, st);
+    r._setNext(g, c, distance(c, r));
+
+    const h = new Human(r, c);
+
+    h._step();
+    expect(h._getNext()).toEqual(g);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
+    expect(g.inQueue[0]).toEqual(h);
+
+    h._setNext(c, c, distance(c, h));
+    h._reroute();
+    expect(h._getNext()).toEqual(c);
+
+    h._step();
+    expect(h._getNext()).toEqual(c);
+    expect(h.state()).toEqual(HumanState.MOVE);
+    expect(g.inQueue[0]).toEqual(h);
+
+    g._step();
+    expect(h._getNext()).toEqual(c);
+    expect(h.state()).toEqual(HumanState.MOVE);
+    expect(g.inQueue.length).toEqual(0);
+  });
+
+  it("changing goal human moves from concourse to outQueue", () => {
+    const rn = new RailNode(0, 0);
+    const st = new Station();
+    const g = st.gate;
+    const p = new Platform(rn, st);
+
+    r._setNext(g, c, distance(c, r));
+    g._setNext(p, c, distance(c, g));
+
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+    expect(h._getNext()).toEqual(p);
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    expect(h._getGate()).toEqual(g);
+    expect(h._getPlatform()).toBeUndefined();
+    expect(g._concourse[0]).toEqual(h);
+
+    h._setNext(g, c, distance(c, h));
+    g._setNext(c, c, distance(c, g));
+    h._reroute();
+
+    expect(h._getNext()).toEqual(g);
+
+    h._step();
+    expect(h._getNext()).toEqual(g);
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(h._getGate()).toEqual(g);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.outQueue[0]).toEqual(h);
+
+    for (let i = 0; i < FPS / Gate.MOBILITY_SEC; i++) g._step();
+    expect(h._getNext()).toEqual(c);
+    expect(h.state()).toEqual(HumanState.MOVE);
+    expect(h._getGate()).toEqual(undefined);
+    expect(g._concourse.length).toEqual(0);
+  });
+
+  it("changing goal human moves from outQueue to concourse", () => {
+    const rn = new RailNode(0, 0);
+    const st = new Station();
+    const g = st.gate;
+    const p = new Platform(rn, st);
+
+    r._setNext(g, c, distance(c, r));
+    g._setNext(p, c, distance(c, g));
+
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+
+    h._setNext(g, c, distance(c, h));
+    g._setNext(c, c, distance(c, g));
+    h._reroute();
+
+    h._step();
+
+    expect(h._getNext()).toEqual(g);
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(h._getGate()).toEqual(g);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.outQueue[0]).toEqual(h);
+
+    h._setNext(p, c, distance(c, h));
+    h._reroute();
+
+    expect(h._getNext()).toEqual(p);
+
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    expect(h._getGate()).toEqual(g);
+    expect(g._concourse[0]).toEqual(h);
+    expect(g.outQueue.length).toEqual(0);
+
+    g._step();
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    expect(h._getGate()).toEqual(g);
+    expect(g._concourse[0]).toEqual(h);
+    expect(g.outQueue.length).toEqual(0);
+  });
+
+  it("wait that changing goal human moves from outQueue to buzy concourse", () => {
+    const rn = new RailNode(0, 0);
+    const st = new Station();
+    const g = st.gate;
+    const p = new Platform(rn, st);
+
+    r._setNext(g, c, distance(c, r));
+    g._setNext(p, c, distance(c, g));
+
+    // 改札に入らせる
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+
+    // outQueueにいる状態を作る
+    h._setNext(g, c, distance(c, h));
+    g._setNext(c, c, distance(c, g));
+    h._reroute();
+    h._step();
+
+    expect(h._getNext()).toEqual(g);
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(h._getGate()).toEqual(g);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.outQueue[0]).toEqual(h);
+
+    // コンコースの空き容量を0にする
+    Gate.CAPACITY = 0;
+
+    // 再びホームに向かおうとする
+    h._setNext(p, c, distance(c, h));
+    h._reroute();
+
+    expect(h._getNext()).toEqual(p);
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.outQueue[0]).toEqual(h);
+
+    // コンコース満員のため入場できない
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(h._getGate()).toEqual(g);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.outQueue).toContain(h);
+
+    // 目的地が変わったので、outQueueにいても退場はさせられない
+    g._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(h._getGate()).toEqual(g);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.outQueue).toContain(h);
   });
 
   it("died human is removed from waiting to enter gate", () => {
@@ -288,8 +480,7 @@ describe("gate", () => {
     // 電車からおりる状況を再現
     p._setNext(g, c, distance(c, p));
     g._setNext(c, c, distance(c, g));
-    p.outQueue.push(h);
-
+    h._step();
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
     expect(g.outQueue[0]).toEqual(h);

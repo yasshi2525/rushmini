@@ -10,8 +10,13 @@ export const find = <T>(arr: T[], cond: (v: T) => boolean) => {
   return undefined;
 };
 
-export const remove = <T>(arr: T[], subject: T) =>
-  arr.splice(arr.indexOf(subject), 1);
+export const remove = <T>(arr: T[], subject: T | ((s: T) => boolean)) => {
+  if (subject instanceof Function) {
+    return arr.splice(arr.indexOf(find(arr, (s) => subject(s))), 1);
+  } else {
+    return arr.splice(arr.indexOf(subject), 1);
+  }
+};
 
 export const removeIf = <T>(arr: T[], subject: T) => {
   const idx = arr.indexOf(subject);

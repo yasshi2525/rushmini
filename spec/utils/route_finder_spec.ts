@@ -1,4 +1,5 @@
 import Company from "models/company";
+import Human from "models/human";
 import modelListener, { EventType } from "models/listener";
 import Residence from "models/residence";
 import userResource from "models/user_resource";
@@ -112,5 +113,31 @@ describe("route_finder", () => {
     expect(dept1.nextFor(c)).toEqual(p2);
     expect(p2.nextFor(c)).toEqual(g2);
     expect(g2.nextFor(c)).toEqual(c);
+  });
+
+  it("human who move to company seeks to gate", () => {
+    transportFinder.init();
+    routeFinder.init();
+
+    const c = new Company(1, 12, 15);
+    const r = new Residence([c], 0, 0);
+    modelListener.fire(EventType.CREATED);
+    const h = new Human(r, c);
+    modelListener.fire(EventType.CREATED);
+    expect(h.nextFor(c)).toBeUndefined();
+
+    userResource.start(3, 4);
+    userResource.extend(6, 8);
+    userResource.end();
+
+    const dept1 = userResource.getPrimaryLine().top;
+    const p1 = dept1.departure().platform;
+    const g1 = p1.station.gate;
+    const dept2 = dept1.next.next;
+    const p2 = dept2.departure().platform;
+    const g2 = p2.station.gate;
+
+    expect(r.nextFor(c)).toEqual(g1);
+    expect(h.nextFor(c)).toEqual(g1);
   });
 });

@@ -8,7 +8,7 @@ import Platform from "../models/platform";
 import { distance } from "../models/pointable";
 import Residence from "../models/residence";
 import userResource, { ModelState } from "../models/user_resource";
-import { find } from "./common";
+import { find, remove } from "./common";
 
 const finders: PathFinder[] = [];
 const rs: Residence[] = [];
@@ -24,19 +24,47 @@ const hs: Human[] = [];
  * @param f
  */
 const transport = (f: PathFinder) => {
-  if (userResource.getState() === ModelState.FIXED) {
-    lts.forEach((dept) =>
-      ps.forEach((dest) => {
-        if (dept.nextFor(dest))
-          f.edge(
-            dept,
-            dest,
-            dept.distanceFor(dest),
-            dept.stay.paymentFor(dest)
-          );
-      })
-    );
-  }
+  lts.forEach((dept) =>
+    ps.forEach((dest) => {
+      if (dept.nextFor(dest))
+        f.edge(dept, dest, dept.distanceFor(dest), dept.stay.paymentFor(dest));
+    })
+  );
+};
+
+/**
+ * 人の現在地から目的地までの行き方を求めます
+ * @param f
+ */
+const humanRouting = (f: PathFinder) => {
+  const c = f.goal.origin;
+  hs.filter((h) => h.destination === c).forEach((h) => {
+    f.unnode(h, true);
+    const g = h._getGate();
+    const p = h._getPlatform();
+    const dept = h._getDeptTask();
+    const t = h._getTrain();
+    if (g) {
+      // 改札内にいるため、改札(出場)かホームへのみ移動可能
+      f.edge(h, g, distance(g, h));
+      g.station.platforms.forEach((_p) => f.edge(h, p, distance(p, h)));
+    } else if (p) {
+      // ホーム内にいるため、ホームか、改札へのみ移動可能
+      f.edge(h, p, distance(p, h));
+      f.edge(h, g, distance(g, h));
+    } else if (dept) {
+      // 乗車列にいる場合、乗車列か改札へのみ移動可能
+      f.edge(h, dept, distance(p, h));
+      f.edge(h, p, distance(p, h));
+    } else if (t) {
+      // 車内にいる場合は、電車が経路探索結果を持っているため、それに接続する
+      f.edge(h, t, distance(t, h));
+    } else {
+      // 地面にいる場合、改札か会社に移動可能
+      gs.forEach((_g) => f.edge(h, _g, distance(_g, h)));
+      f.edge(h, c, distance(h.destination, h));
+    }
+  });
 };
 
 const addPtoGrelation = (f: PathFinder, g: Gate) => {
@@ -139,6 +167,45 @@ const handler = {
 
       lts.push(lt);
     },
+
+    human: (h: Human) => {
+      hs.push(h);
+    },
+  },
+  onDeleted: {
+    gate: (g: Gate) => {
+      finders.forEach((f) => {
+        rs.forEach((r) => f.unedge(r, g));
+        f.unedge(
+          g,
+          find(cs, (c) => f.goal.origin === c)
+        );
+        g.station.platforms.forEach((p) => {
+          f.unedge(p, g);
+          f.unedge(g, p);
+        });
+        f.unnode(g);
+      });
+      remove(gs, g);
+    },
+    platform: (p: Platform) => {
+      finders.forEach((f) => {
+        f.unedge(p, p.station.gate);
+        f.unedge(p.station.gate, p);
+        f.unnode(p);
+      });
+      remove(ps, p);
+    },
+    lineTask: (lt: DeptTask) => {
+      finders.forEach((f) => {
+        f.unedge(lt.stay, lt);
+        f.unnode(lt);
+      });
+      remove(lts, lt);
+    },
+    human: (h: Human) => {
+      remove(hs, h);
+    },
   },
 };
 
@@ -150,6 +217,11 @@ const routeFinder = {
     listener.find(Ev.CREATED, Gate).register(handler.onCreated.gate);
     listener.find(Ev.CREATED, Platform).register(handler.onCreated.platform);
     listener.find(Ev.CREATED, DeptTask).register(handler.onCreated.lineTask);
+    listener.find(Ev.CREATED, Human).register(handler.onCreated.human);
+    listener.find(Ev.DELETED, Gate).register(handler.onDeleted.gate);
+    listener.find(Ev.DELETED, Platform).register(handler.onDeleted.platform);
+    listener.find(Ev.DELETED, DeptTask).register(handler.onDeleted.lineTask);
+    listener.find(Ev.DELETED, Human).register(handler.onDeleted.human);
 
     userResource.stateListeners.push({
       onFixed: () => {
@@ -157,7 +229,9 @@ const routeFinder = {
         finders.forEach((f) => {
           // Lt => P
           transport(f);
+          humanRouting(f);
           f.execute();
+          hs.forEach((h) => h._reroute());
         });
       },
     });

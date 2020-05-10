@@ -1,6 +1,7 @@
 import ticker from "../utils/ticker";
 import Company from "./company";
 import DeptTask from "./dept_task";
+import Gate from "./gate";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import Point, { distance } from "./point";
@@ -70,6 +71,9 @@ class Human extends RoutableObject implements Steppable {
    */
   private payment: number;
 
+  private gate: Gate;
+  private platform: Platform;
+  private dept: DeptTask;
   private train: Train;
 
   constructor(departure: Residence, destination: Company) {
@@ -157,23 +161,38 @@ class Human extends RoutableObject implements Steppable {
   }
 
   /**
-   * 指定されたホームが目前にあった場合で、降車するか返します
-   * @param p
+   * 次に向かっている目的地を返します
    */
-  public _shouldGetOff(p: Platform) {
-    return this.next === p;
-  }
-
-  /**
-   * 指定された乗車タスクが目前にあった場合、乗車するか返します
-   * @param lt
-   */
-  public _shuoldRide(lt: DeptTask) {
-    return this.next === lt;
+  public _getNext() {
+    return this.next;
   }
 
   public isOnTrain() {
     return this._state === HumanState.ON_TRAIN;
+  }
+
+  public _setGate(g?: Gate) {
+    this.gate = g;
+  }
+
+  public _getGate() {
+    return this.gate;
+  }
+
+  public _setPlatform(p?: Platform) {
+    this.platform = p;
+  }
+
+  public _getPlatform() {
+    return this.platform;
+  }
+
+  public _setDeptTask(dept?: DeptTask) {
+    this.dept = dept;
+  }
+
+  public _getDeptTask() {
+    return this.dept;
   }
 
   /**
@@ -181,8 +200,16 @@ class Human extends RoutableObject implements Steppable {
    * 電車乗車中は nextが Platformのため、電車側が分からない
    * @param t
    */
-  public setTrain(t?: Train) {
+  public _setTrain(t?: Train) {
     this.train = t;
+  }
+
+  public _getTrain() {
+    return this.train;
+  }
+
+  public _reroute() {
+    this.next = this.nextFor(this.destination);
   }
 
   public _step() {

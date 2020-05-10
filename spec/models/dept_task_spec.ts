@@ -53,11 +53,37 @@ describe("dept_task", () => {
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
     expect(p.inQueue[0]).toEqual(h);
     expect(dept._queue().length).toEqual(0);
+    expect(h._getNext()).toEqual(dept);
+    expect(h._getPlatform()).toEqual(p);
+    expect(h._getDeptTask()).toBeUndefined();
 
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
     expect(p.inQueue.length).toEqual(0);
     expect(dept._queue()[0]).toEqual(h);
+    expect(h._getNext()).toEqual(dept);
+    expect(h._getPlatform()).toEqual(undefined);
+    expect(h._getDeptTask()).toEqual(dept);
+  });
+
+  it("changing goal human on dept queue moves outQueue of platform", () => {
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+    h._step();
+    h._step();
+
+    h._setNext(p, c, distance(c, h));
+    h._reroute();
+
+    expect(h._getNext()).toEqual(p);
+
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(h._getDeptTask()).toBeUndefined();
+    expect(h._getPlatform()).toEqual(p);
+    expect(p.outQueue[0]).toEqual(h);
+    expect(dept._queue().length).toEqual(0);
   });
 
   it("died human is removed on platform", () => {

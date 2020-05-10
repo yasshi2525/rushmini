@@ -69,6 +69,8 @@ describe("platform", () => {
     expect(g._concourse.length).toEqual(0);
     expect(p.inQueue[0]).toEqual(h);
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
+    expect(h._getGate()).toBeUndefined();
+    expect(h._getPlatform()).toEqual(p);
   });
 
   it("move human on platform to gate", () => {
@@ -85,15 +87,37 @@ describe("platform", () => {
     // 電車からおりる状況を再現
     p._setNext(g, c, distance(c, p));
     g._setNext(c, c, distance(c, g));
-    p.outQueue.push(h);
-
-    expect(p.outQueue[0]).toEqual(h);
-    expect(g.outQueue.length).toEqual(0);
-
+    h._step();
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
     expect(p.outQueue.length).toEqual(0);
     expect(g.outQueue[0]).toEqual(h);
+  });
+
+  it("changing goal human moves platform to other platform", () => {
+    const p = new Platform(rn, st);
+    r._setNext(g, c, distance(c, r));
+    g._setNext(p, c, distance(c, g));
+
+    const h = new Human(r, c);
+    h._step();
+    g._step();
+    h._step();
+
+    expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
+    expect(p.inQueue[0]).toEqual(h);
+    expect(p.outQueue.length).toEqual(0);
+
+    h._setNext(p, c, distance(c, p));
+    h._reroute();
+
+    expect(h._getNext()).toEqual(p);
+
+    h._step();
+
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(p.inQueue.length).toEqual(0);
+    expect(p.outQueue[0]).toEqual(h);
   });
 
   it("died human is removed on concourse", () => {

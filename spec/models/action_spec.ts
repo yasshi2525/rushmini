@@ -154,6 +154,31 @@ describe("action", () => {
       expect(sts.length).toEqual(0);
     });
 
+    it("rollback building specific station", () => {
+      const proxy = new ActionProxy();
+      proxy.startRail(3, 4);
+      proxy.extendRail(6, 8);
+      const rn2 = proxy.tail();
+      proxy.extendRail(9, 12);
+      const tail = proxy.tail();
+      proxy.commit();
+
+      proxy.buildStation(rn2);
+      modelListener.fire(EventType.CREATED);
+      modelListener.fire(EventType.MODIFIED);
+
+      expect(proxy.tail()).toEqual(rn2);
+
+      proxy.rollback();
+      modelListener.fire(EventType.MODIFIED);
+      modelListener.fire(EventType.DELETED);
+
+      expect(proxy.tail()).toEqual(tail);
+      expect(ps.length).toEqual(0);
+      expect(gs.length).toEqual(0);
+      expect(sts.length).toEqual(0);
+    });
+
     it("create line", () => {
       const proxy = new ActionProxy();
       proxy.startRail(3, 4);
@@ -313,6 +338,50 @@ describe("action", () => {
       expect(sts.length).toEqual(2);
       expect(depts.length).toEqual(1);
       expect(edges.length).toEqual(4);
+    });
+
+    it("rollback branch", () => {
+      const proxy = new ActionProxy();
+      proxy.startRail(3, 4);
+      proxy.buildStation();
+      proxy.startLine();
+
+      proxy.extendRail(6, 8);
+      proxy.buildStation();
+      proxy.insertEdge();
+
+      const p2 = proxy.tail().platform;
+      expect(p2.loc().x).toEqual(6);
+      expect(p2.loc().y).toEqual(8);
+
+      proxy.extendRail(9, 12);
+      proxy.buildStation();
+      proxy.insertEdge();
+
+      const tail = proxy.tail();
+
+      proxy.commit();
+
+      proxy.startBranch(p2);
+      proxy.extendRail(12, 16);
+      proxy.insertEdge();
+
+      modelListener.fire(EventType.CREATED);
+      modelListener.fire(EventType.MODIFIED);
+
+      expect(proxy.tail().loc().x).toEqual(12);
+      expect(proxy.tail().loc().y).toEqual(16);
+      expect(proxy.tail().in.length).toEqual(1);
+      expect(proxy.tail().in[0].to).toEqual(proxy.tail());
+      expect(proxy.tail().in[0].from.loc().x).toEqual(6);
+      expect(proxy.tail().in[0].from.loc().y).toEqual(8);
+      expect(proxy.tail().in[0].from).toEqual(p2.on);
+
+      proxy.rollback();
+      modelListener.fire(EventType.MODIFIED);
+      modelListener.fire(EventType.DELETED);
+
+      expect(proxy.tail()).toEqual(tail);
     });
   });
 });

@@ -30,6 +30,8 @@ class DeptTaskRouter extends RoutableObject {
       return;
     }
     subject.state(HumanState.WAIT_TRAIN_ARRIVAL);
+    subject._setPlatform(undefined);
+    subject._setDeptTask(this.parent);
     const p = this.parent.stay;
     remove(p.inQueue, subject);
     this.queue.push(subject);
