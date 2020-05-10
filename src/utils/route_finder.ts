@@ -38,8 +38,9 @@ const transport = (f: PathFinder) => {
  */
 const humanRouting = (f: PathFinder) => {
   const c = f.goal.origin;
-  hs.filter((h) => h.destination === c).forEach((h) => {
+  hs.filter((h) => h.destination === c).forEach((h, idx) => {
     f.unnode(h, true);
+    f.node(h);
     const g = h._getGate();
     const p = h._getPlatform();
     const dept = h._getDeptTask();
@@ -47,21 +48,23 @@ const humanRouting = (f: PathFinder) => {
     if (g) {
       // 改札内にいるため、改札(出場)かホームへのみ移動可能
       f.edge(h, g, distance(g, h));
-      g.station.platforms.forEach((_p) => f.edge(h, p, distance(p, h)));
+      g.station.platforms.forEach((_p) => f.edge(h, _p, distance(_p, h)));
     } else if (p) {
       // ホーム内にいるため、ホームか、改札へのみ移動可能
       f.edge(h, p, distance(p, h));
       f.edge(h, g, distance(g, h));
     } else if (dept) {
       // 乗車列にいる場合、乗車列か改札へのみ移動可能
-      f.edge(h, dept, distance(p, h));
-      f.edge(h, p, distance(p, h));
+      f.edge(h, dept, distance(dept.stay, h));
+      f.edge(h, dept.stay, distance(dept.stay, h));
     } else if (t) {
       // 車内にいる場合は、電車が経路探索結果を持っているため、それに接続する
       f.edge(h, t, distance(t, h));
     } else {
       // 地面にいる場合、改札か会社に移動可能
-      gs.forEach((_g) => f.edge(h, _g, distance(_g, h)));
+      gs.forEach((_g) => {
+        f.edge(h, _g, distance(_g, h));
+      });
       f.edge(h, c, distance(h.destination, h));
     }
   });

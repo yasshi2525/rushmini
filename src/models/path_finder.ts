@@ -116,6 +116,9 @@ class PathFinder {
 
   public unnode(node: Routable, cascade: boolean = false) {
     const result = find(this.nodes, (n) => n.origin === node);
+    if (result === undefined) {
+      return;
+    }
     if (cascade) {
       remove(this.edges, (e) => e.from === result);
       remove(this.edges, (e) => e.to === result);

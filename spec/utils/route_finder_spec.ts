@@ -137,7 +137,11 @@ describe("route_finder", () => {
     const p2 = dept2.departure().platform;
     const g2 = p2.station.gate;
 
-    expect(r.nextFor(c)).toEqual(g1);
     expect(h.nextFor(c)).toEqual(g1);
+    expect(h._getNext()).toEqual(g1);
+    const prev = h.loc();
+    h._step();
+    expect(h._getNext()).toEqual(g1);
+    expect(h.loc()).not.toEqual(prev);
   });
 });
