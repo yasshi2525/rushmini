@@ -9,21 +9,6 @@
 - node.js  
   動作確認 v.14
 
-- pango (一時的)  
-  node.js v.14 用のバイナリが用意されていないため ([#1557](https://github.com/Automattic/node-canvas/issues/1557)) 、ビルドするために下記をインストールしてください
-
-  Ubuntsu 系
-
-  ```
-  sudo apt-get install pkg-config libgif-dev libpango*
-  ```
-
-  CentOS 系
-
-  ```
-  sudo dnf install pango-devel libjpeg-turbo-devel
-  ```
-
 - Akashic Engine, Sandbox  
   以下のコマンドを実行して Akashic Engine, Sandbox をインストールしてください
 
@@ -36,7 +21,6 @@
 以下のコマンドを実行してできる `rushmini-latest.zip` をゲームとして登録してください
 
 ```
-npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
 npm install
 npm run build
 akashic export html --output rushmini-latest.zip --atsumaru
@@ -47,7 +31,6 @@ akashic export html --output rushmini-latest.zip --atsumaru
 Port 3000 を利用する Web アプリケーションとして実行できます。`http://localhost:3000/game/` にアクセスするとゲームが実行されます
 
 ```
-npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
 npm install
 npm run build
 npm start
