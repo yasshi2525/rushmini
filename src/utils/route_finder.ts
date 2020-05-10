@@ -41,23 +41,23 @@ const humanRouting = (f: PathFinder) => {
   hs.filter((h) => h.destination === c).forEach((h, idx) => {
     f.unnode(h, true);
     f.node(h);
-    const g = h._getGate();
-    const p = h._getPlatform();
-    const dept = h._getDeptTask();
-    const t = h._getTrain();
-    if (g) {
+    if (h._getGate()) {
+      const g = h._getGate();
       // 改札内にいるため、改札(出場)かホームへのみ移動可能
       f.edge(h, g, distance(g, h));
       g.station.platforms.forEach((_p) => f.edge(h, _p, distance(_p, h)));
-    } else if (p) {
+    } else if (h._getPlatform()) {
+      const p = h._getPlatform();
       // ホーム内にいるため、ホームか、改札へのみ移動可能
       f.edge(h, p, distance(p, h));
-      f.edge(h, g, distance(g, h));
-    } else if (dept) {
+      f.edge(h, p.station.gate, distance(h, p.station.gate));
+    } else if (h._getDeptTask()) {
+      const dept = h._getDeptTask();
       // 乗車列にいる場合、乗車列か改札へのみ移動可能
       f.edge(h, dept, distance(dept.stay, h));
       f.edge(h, dept.stay, distance(dept.stay, h));
-    } else if (t) {
+    } else if (h._getTrain()) {
+      const t = h._getTrain();
       // 車内にいる場合は、電車が経路探索結果を持っているため、それに接続する
       f.edge(h, t, distance(t, h));
     } else {
