@@ -18,13 +18,13 @@ const ratio = (degree: number) => {
   let result = 3.35;
 
   if (degree <= 10) result = 0.44;
-  if (degree <= 15) result = div(0.44, 0.48, (degree - 10) / 5);
-  if (degree <= 30) result = div(0.48, 0.52, (degree - 15) / 15);
-  if (degree <= 45) result = div(0.52, 0.57, (degree - 30) / 15);
-  if (degree <= 60) result = div(0.57, 0.66, (degree - 45) / 15);
-  if (degree <= 90) result = div(0.66, 1.0, (degree - 60) / 30);
-  if (degree <= 120) result = div(1.0, 2.0, (degree - 90) / 30);
-  if (degree <= 135) result = div(2.0, 3.35, (degree - 120) / 45);
+  else if (degree <= 15) result = div(0.44, 0.48, (degree - 10) / 5);
+  else if (degree <= 30) result = div(0.48, 0.52, (degree - 15) / 15);
+  else if (degree <= 45) result = div(0.52, 0.57, (degree - 30) / 15);
+  else if (degree <= 60) result = div(0.57, 0.66, (degree - 45) / 15);
+  else if (degree <= 90) result = div(0.66, 1.0, (degree - 60) / 30);
+  else if (degree <= 120) result = div(1.0, 2.0, (degree - 90) / 30);
+  else if (degree <= 135) result = div(2.0, 3.35, (degree - 120) / 45);
   return result;
 };
 
