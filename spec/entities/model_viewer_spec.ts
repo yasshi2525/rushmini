@@ -9,6 +9,7 @@ import Residence from "models/residence";
 import Station from "models/station";
 import Train from "models/train";
 import ticker from "utils/ticker";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;

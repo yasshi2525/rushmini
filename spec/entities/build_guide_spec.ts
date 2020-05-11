@@ -1,6 +1,7 @@
 import createRailBuildGuide from "entities/build_guide";
 import modelListener from "models/listener";
 import userResource from "models/user_resource";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;

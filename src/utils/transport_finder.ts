@@ -3,10 +3,10 @@ import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
 import RailLine from "../models/rail_line";
+import { Routable } from "../models/routable";
 import Train from "../models/train";
 import userResource from "../models/user_resource";
 import { remove } from "./common";
-import { Routable } from "../models/routable";
 
 /**
  * 徒歩に比べて鉄道の移動がどれほど優位か

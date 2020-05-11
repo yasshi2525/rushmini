@@ -7,9 +7,9 @@ import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
 import { distance } from "../models/pointable";
 import Residence from "../models/residence";
+import Train from "../models/train";
 import userResource, { ModelState } from "../models/user_resource";
 import { find, remove } from "./common";
-import Train from "../models/train";
 
 const finders: PathFinder[] = [];
 const rs: Residence[] = [];

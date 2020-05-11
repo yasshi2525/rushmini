@@ -1,4 +1,5 @@
 import { createSquareSprite } from "entities/sprite";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;

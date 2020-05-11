@@ -10,8 +10,8 @@ import connect from "./connector";
 import { adjust } from "./creator";
 import ViewObjectFactory from "./factory";
 import {
-  createRailEdgeCandidate,
   RailEdgeCandidateOption,
+  createRailEdgeCandidate,
   railEdgeModifier,
 } from "./rail_edge_view";
 import { createSquareSprite } from "./sprite";

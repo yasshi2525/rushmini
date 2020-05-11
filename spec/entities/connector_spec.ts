@@ -3,6 +3,7 @@ import ViewObjectFactory from "entities/factory";
 import modelListener, { EventType } from "models/listener";
 import { ZeroPoint } from "models/point";
 import { Pointable } from "models/pointable";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;

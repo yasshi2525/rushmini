@@ -2,6 +2,7 @@ import { ViewCreator } from "entities/creator";
 import ViewObjectFactory from "entities/factory";
 import { ZeroPoint } from "models/point";
 import { Pointable } from "models/pointable";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;

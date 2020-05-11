@@ -1,3 +1,7 @@
+import "./company_view";
+import "./residence_view";
+import "./station_view";
+
 import Company from "../models/company";
 import Human from "../models/human";
 import { Pointable } from "../models/pointable";
@@ -5,15 +9,12 @@ import RailEdge from "../models/rail_edge";
 import Residence from "../models/residence";
 import Station from "../models/station";
 import Train from "../models/train";
-import "./company_view";
 import connect, { ModelModifier } from "./connector";
 import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import { humanModifier } from "./human_view";
 import { railEdgeModifier } from "./rail_edge_view";
 import { createFramedRect } from "./rectangle";
-import "./residence_view";
-import "./station_view";
 import { trainModifer } from "./train_view";
 
 const SIZE = 0.8;

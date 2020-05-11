@@ -5,6 +5,7 @@ import modelListener, { EventType } from "models/listener";
 import { distance } from "models/pointable";
 import Residence from "models/residence";
 import ticker from "utils/ticker";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;

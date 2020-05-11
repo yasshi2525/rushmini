@@ -26,13 +26,22 @@
     "btoa": "^1.2.1",
     "canvas": "^2.6.1",
     "fs": "0.0.1-security",
+    "import-sort-style-eslint": "^6.0.0",
+    "import-sort-style-module": "^6.0.0",
     "jest": "^26.0.1",
     "prettier": "2.0.5",
+    "prettier-plugin-import-sort": "0.0.4",
     "rimraf": "^3.0.2",
     "ts-jest": "^25.5.1",
     "typescript": "^3.8.3"
   },
   "dependencies": {
     "@akashic/amflow": "^1.0.0"
+  },
+  "importSort": {
+    ".ts": {
+      "style": "module",
+      "parser": "typescript"
+    }
   }
 }

@@ -2,6 +2,7 @@ import preserveEntityCreator from "entities/loader";
 import random from "utils/random";
 import scorer from "utils/scorer";
 import viewer, { ViewerType } from "utils/viewer";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;

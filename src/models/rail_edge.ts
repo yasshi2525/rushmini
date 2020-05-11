@@ -1,7 +1,7 @@
 import { remove } from "../utils/common";
 import modelListener, { EventType } from "./listener";
 import Point from "./point";
-import { center, Pointable, substract } from "./pointable";
+import { Pointable, center, substract } from "./pointable";
 import RailNode from "./rail_node";
 
 class RailEdge implements Pointable {

@@ -1,5 +1,6 @@
 import createScoreLabel from "entities/score";
 import scorer from "utils/scorer";
+
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;
