@@ -6,6 +6,7 @@ import transportFinder from "utils/transport_finder";
 describe("transport_finder", () => {
   afterEach(() => {
     userResource.reset();
+    modelListener.flush();
     modelListener.unregisterAll();
     transportFinder.reset();
   });

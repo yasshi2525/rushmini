@@ -36,7 +36,6 @@ export class UserResource {
   private action: ActionProxy;
 
   private state: ModelState;
-  private ts: Train[];
 
   /**
    * 最低この距離離れないと、RailEdgeを作成しない (じぐざぐ防止)
@@ -57,7 +56,6 @@ export class UserResource {
   private trainCounter: number = 0;
 
   constructor() {
-    this.ts = [];
     this.state = ModelState.INITED;
     this.stateListeners = [];
     this.lastPos = undefined;
@@ -157,6 +155,7 @@ export class UserResource {
 
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
+        modelListener.fire(EventType.MODIFIED);
         break;
       case ModelState.FIXED:
         console.warn("try to extend already fixed model");
@@ -196,6 +195,7 @@ export class UserResource {
         this.insertTerminal();
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
+        modelListener.fire(EventType.MODIFIED);
         this.setState(ModelState.FIXED);
         break;
       case ModelState.FIXED:
@@ -249,6 +249,7 @@ export class UserResource {
     this.action.rollback();
     modelListener.fire(EventType.MODIFIED);
     modelListener.fire(EventType.DELETED);
+    this.setState(ModelState.FIXED);
   }
 }
 

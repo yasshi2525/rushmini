@@ -9,6 +9,7 @@ import { distance } from "../models/pointable";
 import Residence from "../models/residence";
 import userResource, { ModelState } from "../models/user_resource";
 import { find, remove } from "./common";
+import Train from "../models/train";
 
 const finders: PathFinder[] = [];
 const rs: Residence[] = [];
@@ -87,7 +88,10 @@ const _tryLinkDeptTask = (f: PathFinder, h: Human) => {
 const _tryLinkTrain = (f: PathFinder, h: Human) => {
   if (h._getTrain()) {
     const t = h._getTrain();
-    f.edge(h, t, distance(t, h));
+    ps.forEach((dest) => {
+      if (t.nextFor(dest))
+        f.edge(h, dest, t.distanceFor(dest), t.paymentFor(dest));
+    });
     return true;
   }
   return false;
@@ -223,10 +227,7 @@ const handler = {
 
       lts.push(lt);
     },
-
-    human: (h: Human) => {
-      hs.push(h);
-    },
+    human: (h: Human) => hs.push(h),
   },
   onDeleted: {
     gate: (g: Gate) => {
@@ -259,14 +260,13 @@ const handler = {
       });
       remove(lts, lt);
     },
-    human: (h: Human) => {
-      remove(hs, h);
-    },
+    human: (h: Human) => remove(hs, h),
   },
 };
 
 const routeFinder = {
-  reset: () => [finders, rs, cs, ps, gs, lts].forEach((l) => (l.length = 0)),
+  reset: () =>
+    [finders, rs, cs, ps, gs, lts, hs].forEach((l) => (l.length = 0)),
   init: () => {
     listener.find(Ev.CREATED, Residence).register(handler.onCreated.residence);
     listener.find(Ev.CREATED, Company).register(handler.onCreated.company);

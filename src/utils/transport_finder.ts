@@ -36,7 +36,7 @@ const trainRouting = (f: PathFinder, t: Train) => {
     length += current.length() * DIST_RATIO;
     current = current.next;
   }
-  f.edge(t, current, length, length * PAY_RATIO);
+  f.edge(t, current.stay, length, length * PAY_RATIO);
 };
 
 /**
@@ -94,6 +94,7 @@ const handler = {
       remove(finders, (f) => f.goal.origin === p);
       remove(ps, p);
     },
+    railLine: (l: RailLine) => remove(ls, l),
     lineTask: (lt: DeptTask) => _remove(lt, lts),
     train: (t: Train) => _remove(t, ts),
   },
@@ -108,12 +109,13 @@ const handler = {
 };
 
 const transportFinder = {
-  reset: () => [finders, ls, ps].forEach((l) => (l.length = 0)),
+  reset: () => [finders, ls, ps, lts, ts].forEach((l) => (l.length = 0)),
   init: () => {
     listener.find(Ev.CREATED, Platform).register(handler.onCreated.platform);
     listener.find(Ev.CREATED, RailLine).register(handler.onCreated.railLine);
     listener.find(Ev.CREATED, DeptTask).register(handler.onCreated.lineTask);
     listener.find(Ev.CREATED, Train).register(handler.onCreated.train);
+    listener.find(Ev.DELETED, RailLine).register(handler.onDeleted.railLine);
     listener.find(Ev.DELETED, Platform).register(handler.onDeleted.platform);
     listener.find(Ev.DELETED, DeptTask).register(handler.onDeleted.lineTask);
     listener.find(Ev.DELETED, Train).register(handler.onDeleted.train);
