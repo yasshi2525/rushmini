@@ -16,10 +16,11 @@ const edge = (t: Train) => {
   return (e as EdgeTask).edge;
 };
 
-const getX = (re: RailEdge) =>
-  re ? SLIDE * Math.cos(re.arrow.angle() + Math.PI / 2) : 0;
-const getY = (re: RailEdge) =>
-  re ? SLIDE * Math.sin(re.arrow.angle() + Math.PI / 2) : 0;
+const _get = (re: RailEdge, fn: (n: number) => number) =>
+  re ? SLIDE * fn(re.arrow.angle() + Math.PI / 2) : 0;
+const getX = (re: RailEdge) => _get(re, Math.cos);
+const getY = (re: RailEdge) => _get(re, Math.sin);
+
 const getAngle = (re: RailEdge) => {
   if (re) {
     let angle = re.arrow.angleDegree();

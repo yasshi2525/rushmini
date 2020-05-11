@@ -15,15 +15,17 @@ const div = (from: number, to: number, r: number) => from * (1 - r) + to * r;
 const ratio = (degree: number) => {
   if (degree > 180) degree = 360 - degree;
 
-  if (degree <= 10) return 0.44;
-  if (degree <= 15) return div(0.44, 0.48, (degree - 10) / 5);
-  if (degree <= 30) return div(0.48, 0.52, (degree - 15) / 15);
-  if (degree <= 45) return div(0.52, 0.57, (degree - 30) / 15);
-  if (degree <= 60) return div(0.57, 0.66, (degree - 45) / 15);
-  if (degree <= 90) return div(0.66, 1.0, (degree - 60) / 30);
-  if (degree <= 120) return div(1.0, 2.0, (degree - 90) / 30);
-  if (degree <= 135) return div(2.0, 3.35, (degree - 120) / 45);
-  return 3.35;
+  let result = 3.35;
+
+  if (degree <= 10) result = 0.44;
+  if (degree <= 15) result = div(0.44, 0.48, (degree - 10) / 5);
+  if (degree <= 30) result = div(0.48, 0.52, (degree - 15) / 15);
+  if (degree <= 45) result = div(0.52, 0.57, (degree - 30) / 15);
+  if (degree <= 60) result = div(0.57, 0.66, (degree - 45) / 15);
+  if (degree <= 90) result = div(0.66, 1.0, (degree - 60) / 30);
+  if (degree <= 120) result = div(1.0, 2.0, (degree - 90) / 30);
+  if (degree <= 135) result = div(2.0, 3.35, (degree - 120) / 45);
+  return result;
 };
 
 const dist = (prev: RailEdge, next: RailEdge, slide: number) => {

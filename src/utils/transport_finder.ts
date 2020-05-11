@@ -6,6 +6,7 @@ import RailLine from "../models/rail_line";
 import Train from "../models/train";
 import userResource from "../models/user_resource";
 import { remove } from "./common";
+import { Routable } from "../models/routable";
 
 /**
  * 徒歩に比べて鉄道の移動がどれほど優位か
@@ -65,6 +66,16 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
   f.edge(prevDept, current.departure().platform, length, length * PAY_RATIO);
 };
 
+const _append = (e: Routable, to: Routable[]) => {
+  finders.forEach((f) => f.node(e));
+  to.push(e);
+};
+
+const _remove = (e: Routable, from: Routable[]) => {
+  finders.forEach((f) => f.unnode(e));
+  remove(from, e);
+};
+
 const handler = {
   onCreated: {
     platform: (p: Platform) => {
@@ -74,14 +85,8 @@ const handler = {
       ps.push(p);
     },
     railLine: (l: RailLine) => ls.push(l),
-    lineTask: (lt: DeptTask) => {
-      finders.forEach((f) => f.node(lt));
-      lts.push(lt);
-    },
-    train: (t: Train) => {
-      finders.forEach((f) => f.node(t));
-      ts.push(t);
-    },
+    lineTask: (lt: DeptTask) => _append(lt, lts),
+    train: (t: Train) => _append(t, ts),
   },
   onDeleted: {
     platform: (p: Platform) => {
@@ -89,14 +94,8 @@ const handler = {
       remove(finders, (f) => f.goal.origin === p);
       remove(ps, p);
     },
-    lineTask: (lt: DeptTask) => {
-      finders.forEach((f) => f.unnode(lt));
-      remove(lts, lt);
-    },
-    train: (t: Train) => {
-      finders.forEach((f) => f.unnode(t));
-      remove(ts, t);
-    },
+    lineTask: (lt: DeptTask) => _remove(lt, lts),
+    train: (t: Train) => _remove(t, ts),
   },
   onFixed: () => {
     finders.forEach((f) => {

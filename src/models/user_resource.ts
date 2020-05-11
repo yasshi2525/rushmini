@@ -164,6 +164,26 @@ export class UserResource {
     }
   }
 
+  private insertTerminal() {
+    // 建設抑止していた場合、最後にクリックした地点まで延伸する
+    if (this.lastPos && distance(this.lastPos, this.action.tail().loc()) > 0) {
+      this.action.extendRail(this.lastPos.x, this.lastPos.y);
+      this.action.insertEdge();
+    }
+    // 終点に駅をつくる
+    if (!this.action.tail().platform) {
+      this.action.buildStation();
+      this.action.insertPlatform();
+      this.action.deployTrain(
+        this.action
+          .line()
+          .filter(
+            (lt) => lt.isDeptTask() && lt.stay === this.action.tail().platform
+          )[0]
+      );
+    }
+  }
+
   /**
    * 終点に駅を作成して終了する
    */
@@ -173,28 +193,7 @@ export class UserResource {
         console.warn("try to extend init model");
         break;
       case ModelState.STARTED:
-        // 建設抑止していた場合、最後にクリックした地点まで延伸する
-        if (
-          this.lastPos &&
-          distance(this.lastPos, this.action.tail().loc()) > 0
-        ) {
-          this.action.extendRail(this.lastPos.x, this.lastPos.y);
-          this.action.insertEdge();
-        }
-        // 終点に駅をつくる
-        if (!this.action.tail().platform) {
-          this.action.buildStation();
-          this.action.insertPlatform();
-          this.action.deployTrain(
-            this.action
-              .line()
-              .filter(
-                (lt) =>
-                  lt.isDeptTask() && lt.stay === this.action.tail().platform
-              )[0]
-          );
-        }
-
+        this.insertTerminal();
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
         this.setState(ModelState.FIXED);

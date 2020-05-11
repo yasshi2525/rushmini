@@ -33,40 +33,93 @@ const transport = (f: PathFinder) => {
 };
 
 /**
+ * 改札内にいるため、改札(出場)かホームへのみ移動可能
+ * @param f
+ * @param h
+ */
+const _tryLinkGate = (f: PathFinder, h: Human) => {
+  if (h._getGate()) {
+    const g = h._getGate();
+    f.edge(h, g, distance(g, h));
+    g.station.platforms.forEach((p) => f.edge(h, p, distance(p, h)));
+    return true;
+  }
+  return false;
+};
+
+/**
+ * ホーム内にいるため、ホームか、改札へのみ移動可能
+ * @param f
+ * @param h
+ */
+const _tryLinkPlatform = (f: PathFinder, h: Human) => {
+  if (h._getPlatform()) {
+    const p = h._getPlatform();
+    const g = p.station.gate;
+    f.edge(h, p, distance(p, h));
+    f.edge(h, g, distance(h, g));
+    return true;
+  }
+  return false;
+};
+
+/**
+ * 乗車列にいる場合、乗車列か改札へのみ移動可能
+ * @param f
+ * @param h
+ */
+const _tryLinkDeptTask = (f: PathFinder, h: Human) => {
+  if (h._getDeptTask()) {
+    const dept = h._getDeptTask();
+
+    f.edge(h, dept, distance(dept.stay, h));
+    f.edge(h, dept.stay, distance(dept.stay, h));
+    return true;
+  }
+  return false;
+};
+
+/**
+ * 車内にいる場合は、電車が経路探索結果を持っているため、それに接続する
+ * @param f
+ * @param h
+ */
+const _tryLinkTrain = (f: PathFinder, h: Human) => {
+  if (h._getTrain()) {
+    const t = h._getTrain();
+    f.edge(h, t, distance(t, h));
+    return true;
+  }
+  return false;
+};
+
+/**
+ * 地面にいる場合、改札か会社に移動可能
+ * @param f
+ * @param h
+ */
+const _tryLinkGround = (f: PathFinder, h: Human) => {
+  const c = f.goal.origin;
+  gs.forEach((_g) => {
+    f.edge(h, _g, distance(_g, h));
+  });
+  f.edge(h, c, distance(h.destination, h));
+  return true;
+};
+
+/**
  * 人の現在地から目的地までの行き方を求めます
  * @param f
  */
 const humanRouting = (f: PathFinder) => {
-  const c = f.goal.origin;
-  hs.filter((h) => h.destination === c).forEach((h, idx) => {
+  hs.filter((h) => h.destination === f.goal.origin).forEach((h, idx) => {
     f.unnode(h, true);
     f.node(h);
-    if (h._getGate()) {
-      const g = h._getGate();
-      // 改札内にいるため、改札(出場)かホームへのみ移動可能
-      f.edge(h, g, distance(g, h));
-      g.station.platforms.forEach((_p) => f.edge(h, _p, distance(_p, h)));
-    } else if (h._getPlatform()) {
-      const p = h._getPlatform();
-      // ホーム内にいるため、ホームか、改札へのみ移動可能
-      f.edge(h, p, distance(p, h));
-      f.edge(h, p.station.gate, distance(h, p.station.gate));
-    } else if (h._getDeptTask()) {
-      const dept = h._getDeptTask();
-      // 乗車列にいる場合、乗車列か改札へのみ移動可能
-      f.edge(h, dept, distance(dept.stay, h));
-      f.edge(h, dept.stay, distance(dept.stay, h));
-    } else if (h._getTrain()) {
-      const t = h._getTrain();
-      // 車内にいる場合は、電車が経路探索結果を持っているため、それに接続する
-      f.edge(h, t, distance(t, h));
-    } else {
-      // 地面にいる場合、改札か会社に移動可能
-      gs.forEach((_g) => {
-        f.edge(h, _g, distance(_g, h));
-      });
-      f.edge(h, c, distance(h.destination, h));
-    }
+
+    if (!_tryLinkGate(f, h))
+      if (!_tryLinkPlatform(f, h))
+        if (!_tryLinkDeptTask(f, h))
+          if (!_tryLinkTrain(f, h)) _tryLinkGround(f, h);
   });
 };
 

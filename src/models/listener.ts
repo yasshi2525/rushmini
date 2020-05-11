@@ -92,6 +92,10 @@ export class EventTrigger<S> {
     this.trackers.push(tracker);
   }
 
+  private _fireToTracker(target: S) {
+    this.trackers.filter((t) => t.target === target).forEach((t) => t.fire());
+  }
+
   /**
    * キューに溜まったオブジェクトに対してイベントを発火させ、ハンドラを実行します.
    * 追跡対象のトラッカーハンドラも実行されます
@@ -106,7 +110,7 @@ export class EventTrigger<S> {
 
   public fire(target?: S) {
     if (target) {
-      this.trackers.filter((t) => t.target === target).forEach((t) => t.fire());
+      this._fireToTracker(target);
       const result = removeIf(this.queue, target);
       if (result) {
         this.handlers.forEach((fn) => fn(target));
@@ -115,7 +119,7 @@ export class EventTrigger<S> {
       let obj = this.queue.shift();
       while (obj !== undefined) {
         this.handlers.forEach((fn) => fn(obj));
-        this.trackers.filter((t) => t.target === obj).forEach((t) => t.fire());
+        this._fireToTracker(obj);
         obj = this.queue.shift();
       }
     }
@@ -266,18 +270,22 @@ export class ModelListener<T extends number> {
       );
   }
 
+  private foreach(fn: (t: TriggerContainer<T, any>) => void) {
+    Object.keys(this.mapper).forEach((key) => fn(this.mapper[key]));
+  }
+
   /**
    * 登録されているイベントハンドラをすべて削除します
    */
   public unregisterAll() {
-    Object.keys(this.mapper).forEach((key) => this.mapper[key].unregisterAll());
+    this.foreach((t) => t.unregisterAll());
   }
 
   /**
    * 監視対象のオブジェクトをすべて監視対象外にします
    */
   public flush() {
-    Object.keys(this.mapper).forEach((key) => this.mapper[key].flush());
+    this.foreach((t) => t.flush());
   }
 }
 

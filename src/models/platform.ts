@@ -42,14 +42,10 @@ class Platform extends RoutableObject {
   }
 
   /**
-   * 自身を目的地とされた場合、移動者に指示を出します。
-   * コンコース上にいる場合は入場を許可します
-   * プラットフォーム上にいる場合は出場を許可します
+   * 乗車列にならんでいたが、経路再探索で別のホーム/改札への移動が決まった
    * @param subject
    */
-  public _fire(subject: Human) {
-    const gate = this.station.gate;
-    // 乗車列にならんでいたが、経路再探索で別のホーム/改札への移動が決まった
+  private tryLeaveDeptQueue(subject: Human) {
     if (subject._getDeptTask()) {
       remove(subject._getDeptTask()._queue(), subject);
       subject.state(HumanState.WAIT_EXIT_PLATFORM);
@@ -57,32 +53,52 @@ class Platform extends RoutableObject {
       subject._setDeptTask(undefined);
       subject._setPlatform(this);
       this.outQueue.push(subject);
-      return;
+      return true;
     }
+    return false;
+  }
 
-    // ホームへ移動するときだったが、経路再探索で別のホーム/改札への移動が決まった
+  /**
+   * ホームへ移動するときだったが、経路再探索で別のホーム/改札への移動が決まった
+   * @param subject
+   */
+  private tryLeaveInQueue(subject: Human) {
     if (this.inQueue.indexOf(subject) !== -1) {
       remove(this.inQueue, subject);
       subject.state(HumanState.WAIT_EXIT_PLATFORM);
       this.outQueue.push(subject);
-      return;
+      return true;
     }
+    return false;
+  }
 
-    // 改札に向かっていたが経路再探索でホーム入場にかわった
+  /**
+   *  改札に向かっていたが経路再探索でホーム入場にかわった
+   * @param subject
+   */
+  private tryLeaveOutQueue(subject: Human) {
+    const gate = this.station.gate;
     if (gate.outQueue.indexOf(subject) !== -1) {
       // コンコースに行きたいが満員で移動できない
       if (gate._concourse.length >= Gate.CAPACITY) {
-        return;
+        return true;
       }
       remove(gate.outQueue, subject);
       gate._concourse.push(subject);
       subject.state(HumanState.WAIT_ENTER_PLATFORM);
       subject._setPlatform(undefined);
       subject._setGate(gate);
-      return;
+      return true;
     }
+    return false;
+  }
 
-    // 駅入場者をプラットフォーム上にならばせる。
+  /**
+   * 駅入場者をプラットフォーム上にならばせる。
+   * @param subject
+   */
+  private tryInQueue(subject: Human) {
+    const gate = this.station.gate;
     if (
       gate._concourse.indexOf(subject) !== -1 &&
       this.inQueue.length < Platform.CAPACITY
@@ -93,9 +109,17 @@ class Platform extends RoutableObject {
       this.inQueue.push(subject);
       subject.state(HumanState.WAIT_ENTER_DEPTQUEUE);
       subject._setPlatform(this);
-      return;
+      return true;
     }
+    return false;
+  }
 
+  /**
+   * 到着した人を改札/コンコースに向かわせる
+   * @param subject
+   */
+  private tryOutQueue(subject: Human) {
+    const gate = this.station.gate;
     if (this.outQueue.indexOf(subject) !== -1) {
       remove(this.outQueue, subject);
       subject._complete();
@@ -113,8 +137,22 @@ class Platform extends RoutableObject {
       subject._setPlatform(undefined);
       subject._setGate(gate);
 
-      return;
+      return true;
     }
+    return false;
+  }
+
+  /**
+   * 自身を目的地とされた場合、移動者に指示を出します。
+   * コンコース上にいる場合は入場を許可します
+   * プラットフォーム上にいる場合は出場を許可します
+   * @param subject
+   */
+  public _fire(subject: Human) {
+    if (!this.tryLeaveDeptQueue(subject))
+      if (!this.tryLeaveInQueue(subject))
+        if (!this.tryLeaveOutQueue(subject))
+          if (!this.tryInQueue(subject)) this.tryOutQueue(subject);
   }
 
   public _giveup(subject: Human) {
