@@ -377,13 +377,13 @@ describe("gate", () => {
 
     expect(h._getNext()).toEqual(p);
 
-    h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
+    for (let i = 0; i < FPS * Gate.MOBILITY_SEC; i++) g._step();
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
     expect(h._getGate()).toEqual(g);
-    expect(g._concourse[0]).toEqual(h);
-    expect(g.outQueue.length).toEqual(0);
+    expect(g._concourse.length).toEqual(0);
+    expect(g.outQueue[0]).toEqual(h);
 
-    g._step();
+    h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
     expect(h._getGate()).toEqual(g);
     expect(g._concourse[0]).toEqual(h);

@@ -85,15 +85,21 @@ class Gate extends RoutableObject implements Pointable, Steppable {
    * 一人移動できたなら、trueを返します
    */
   private tryExit() {
-    while (this.outQueue.length > 0) {
+    let ignoreCnt = 0;
+    while (this.outQueue.length > 0 && this.outQueue.length > ignoreCnt) {
       const h = this.outQueue.shift();
-      // 途中で再経路探索され、目的地が変わった場合は無視
+
       if (h._getNext() === this) {
+        this.outQueue.shift();
         h._setGate(undefined);
         h._complete();
         h.state(HumanState.MOVE);
         this.waitFrame += ticker.fps() / Gate.MOBILITY_SEC;
         return true;
+      } else {
+        // 途中で再経路探索され、目的地が変わった場合は無視
+        this.outQueue.push(h);
+        ignoreCnt++;
       }
     }
     return false;
