@@ -25,7 +25,16 @@ class StayTask extends TrainTask {
   private waitSec: number;
 
   constructor(train: Train, base: DeptTask, onCompleted: () => void) {
-    super(train, onCompleted);
+    const wrapOnCompleted = () => {
+      // 積み残しがあるまま発車
+      this.inQueue.forEach((h) => {
+        h.state(HumanState.WAIT_TRAIN_ARRIVAL);
+        h._setTrain(undefined);
+      });
+      onCompleted();
+    };
+
+    super(train, wrapOnCompleted);
     this.base = base;
     this.outQueue = [];
     this.inQueue = [];
@@ -42,7 +51,10 @@ class StayTask extends TrainTask {
    * 残っている間は発車できない
    */
   protected isHumanRemained() {
-    return this.inQueue.length + this.outQueue.length > 0;
+    return (
+      this.train.passengers.length < Train.CAPACITY &&
+      this.inQueue.length + this.outQueue.length > 0
+    );
   }
 
   protected isCompleted() {

@@ -105,8 +105,8 @@ const _tryLinkTrain = (f: PathFinder, h: Human) => {
   if (h._getTrain()) {
     const t = h._getTrain();
     ps.forEach((dest) => {
-      if (t.nextFor(dest))
-        f.edge(h, dest, t.distanceFor(dest), t.paymentFor(dest));
+      // 単一路線のため、電車は全駅に必ず到達可能
+      f.edge(h, dest, t.distanceFor(dest), t.paymentFor(dest));
     });
     return true;
   }

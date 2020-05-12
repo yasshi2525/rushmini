@@ -111,6 +111,15 @@ describe("transport_finder", () => {
       expect(t.paymentFor(p1)).toEqual(1);
       expect(t.paymentFor(p2)).toEqual(0.5);
     });
+
+    it("reset", () => {
+      transportFinder.init();
+
+      userResource.start(0, 0);
+      userResource.extend(3, 4);
+      userResource.end();
+      userResource.reset();
+    });
   });
 
   /**

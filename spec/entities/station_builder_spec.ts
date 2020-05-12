@@ -91,4 +91,11 @@ describe("station_builder", () => {
     expect(ps.length).toEqual(2);
     expect(panel.visible()).toBeTruthy();
   });
+
+  it("remove", () => {
+    userResource.start(0, 0);
+    userResource.extend(200, 200);
+    userResource.end();
+    userResource.rollback();
+  });
 });

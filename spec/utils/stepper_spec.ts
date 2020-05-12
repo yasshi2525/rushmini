@@ -95,4 +95,11 @@ describe("stepper", () => {
     stepper.step();
     expect(moveCount).toEqual(2);
   });
+
+  it("remove", () => {
+    userResource.start(0, 0);
+    userResource.extend(3, 4);
+    userResource.end();
+    userResource.rollback();
+  });
 });

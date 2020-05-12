@@ -16,20 +16,26 @@ import ticker from "utils/ticker";
 const FPS = 15;
 const STAY_SEC = 1;
 const SPEED = 5;
+const CAPACITY = 100;
 const oldSPEED = Train.SPEED;
 const oldSTAY = Train.STAY_SEC;
+const oldCAPACITY = Train.CAPACITY;
+const oldWarn = console.warn;
 
 beforeAll(() => {
   ticker.init(FPS);
   Train.SPEED = SPEED;
   Train.STAY_SEC = STAY_SEC;
+  Train.CAPACITY = CAPACITY;
 });
 
 afterAll(() => {
   ticker.reset();
   Train.SPEED = oldSPEED;
   Train.STAY_SEC = oldSTAY;
+  Train.CAPACITY = oldCAPACITY;
   modelListener.flush();
+  console.warn = oldWarn;
 });
 
 describe("train", () => {
@@ -72,8 +78,10 @@ describe("train", () => {
   });
 
   afterEach(() => {
+    console.warn = oldWarn;
     Train.SPEED = oldSPEED;
     Train.STAY_SEC = oldSTAY;
+    Train.CAPACITY = oldCAPACITY;
   });
 
   it("deploy", () => {
@@ -135,6 +143,25 @@ describe("train", () => {
     t._step();
     expect(h.state()).toEqual(HumanState.ON_TRAIN);
     expect(h2.state()).toEqual(HumanState.WAIT_ENTER_TRAIN);
+  });
+
+  it("forbit to ride crowded train", () => {
+    Train.CAPACITY = 0;
+    h._step();
+    g1._step();
+    h._step();
+    h._step();
+    const t = new Train(l.top);
+    for (let j = 0; j < FPS * Train.STAY_SEC - 1; j++) {
+      t._step();
+      expect(h.state()).toEqual(HumanState.WAIT_ENTER_TRAIN);
+      expect(t.current()._base()).toEqual(dept);
+      expect(h._getTrain()).toEqual(t);
+    }
+    t._step();
+    expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
+    expect(h._getTrain()).toBeUndefined();
+    expect(t.current()._base()).not.toEqual(dept);
   });
 
   it("human pass the station", () => {
@@ -474,5 +501,12 @@ describe("train", () => {
       t._step();
     }
     expect(t.current()._base()).toEqual(outbound.next);
+  });
+
+  it("fire", () => {
+    console.warn = jest.fn();
+    const t = new Train(dept);
+    t._fire();
+    expect(console.warn).toHaveBeenCalled();
   });
 });

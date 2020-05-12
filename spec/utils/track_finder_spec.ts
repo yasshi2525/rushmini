@@ -39,4 +39,17 @@ describe("track_finder", () => {
     expect(rn2.nextFor(rn3)).toEqual(rn3);
     expect(rn2.distanceFor(rn3)).toEqual(5);
   });
+
+  it("remove", () => {
+    trackFinder.init();
+
+    userResource.start(0, 0);
+    userResource.extend(30, 40);
+    userResource.end();
+    userResource.commit();
+    userResource.branch(userResource.getPrimaryLine().top.stay);
+    userResource.extend(60, 80);
+    userResource.end();
+    userResource.rollback();
+  });
 });

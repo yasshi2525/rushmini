@@ -96,7 +96,6 @@ const handler = {
       remove(finders, (f) => f.goal.origin === p);
       remove(ps, p);
     },
-    railLine: (l: RailLine) => remove(ls, l),
     lineTask: (lt: DeptTask) => _remove(lt, lts),
     train: (t: Train) => _remove(t, ts),
   },
@@ -117,9 +116,9 @@ const transportFinder = {
     listener.find(Ev.CREATED, RailLine).register(handler.onCreated.railLine);
     listener.find(Ev.CREATED, DeptTask).register(handler.onCreated.lineTask);
     listener.find(Ev.CREATED, Train).register(handler.onCreated.train);
-    listener.find(Ev.DELETED, RailLine).register(handler.onDeleted.railLine);
     listener.find(Ev.DELETED, Platform).register(handler.onDeleted.platform);
     listener.find(Ev.DELETED, DeptTask).register(handler.onDeleted.lineTask);
+    // RailLineの削除は reset (イベント発火なし) のときのみ
     listener.find(Ev.DELETED, Train).register(handler.onDeleted.train);
     userResource.stateListeners.push({
       onFixed: handler.onFixed,

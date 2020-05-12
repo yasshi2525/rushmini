@@ -3,7 +3,10 @@ import Company from "models/company";
 import Human, { HumanState } from "models/human";
 import modelListener, { EventType } from "models/listener";
 import { distance } from "models/pointable";
+import RailLine from "models/rail_line";
+import RailNode from "models/rail_node";
 import Residence from "models/residence";
+import Train from "models/train";
 import ticker from "utils/ticker";
 
 import { createLoadedScene } from "../_helper/scene";
@@ -87,6 +90,21 @@ describe("human_despawner", () => {
     for (let i = 0; i < FPS * ANIMATION_SEC - 1; i++) {
       g.game.tick(true);
       expect(panel.children[0].y).toEqual(y);
+    }
+  });
+
+  it("panel move with train", () => {
+    const panel = createHumanDespawner(scene);
+    const h = new Human(r, c);
+    const p = new RailNode(0, 0)._buildStation();
+    const l = new RailLine();
+    l._start(p);
+    const t = new Train(l.top);
+    h._setTrain(t);
+    for (let i = 0; i < FPS * LIFE_SPAN + 1; i++) h._step();
+    modelListener.fire(EventType.DELETED);
+    for (let i = 0; i < FPS * ANIMATION_SEC - 1; i++) {
+      g.game.tick(true);
     }
   });
 });
