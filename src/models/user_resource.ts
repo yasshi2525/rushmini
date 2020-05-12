@@ -1,4 +1,5 @@
 import ActionProxy from "./action";
+import DeptTask from "./dept_task";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import Point, { distance } from "./point";
@@ -242,6 +243,12 @@ export class UserResource {
     modelListener.fire(EventType.CREATED);
     modelListener.fire(EventType.MODIFIED);
     this.setState(ModelState.FIXED);
+  }
+
+  public train() {
+    this.action.increaseTrain();
+    modelListener.fire(EventType.CREATED);
+    modelListener.fire(EventType.MODIFIED);
   }
 
   public commit() {

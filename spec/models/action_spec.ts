@@ -383,5 +383,75 @@ describe("action", () => {
 
       expect(proxy.tail()).toEqual(tail);
     });
+
+    it("train", () => {
+      const proxy = new ActionProxy();
+      proxy.startRail(0, 0);
+      proxy.buildStation();
+      proxy.startLine();
+      const rn1 = proxy.tail();
+      const p1 = rn1.platform;
+      const dept1 = proxy.line().top;
+      expect(rn1.loc().x).toEqual(0);
+      expect(rn1.loc().y).toEqual(0);
+      expect(dept1.stay).toEqual(p1);
+
+      proxy.extendRail(100, 0);
+      proxy.buildStation();
+      proxy.insertEdge();
+      const rn2 = proxy.tail();
+      const p2 = rn2.platform;
+      const dept2 = dept1.next.next as DeptTask;
+      expect(rn2.loc().x).toEqual(100);
+      expect(rn2.loc().y).toEqual(0);
+      expect(dept2.stay).toEqual(p2);
+
+      proxy.extendRail(150, 0);
+      proxy.insertEdge();
+      const rnX = proxy.tail();
+      expect(rnX.loc().x).toEqual(150);
+      expect(rnX.loc().y).toEqual(0);
+
+      proxy.extendRail(200, 0);
+      proxy.buildStation();
+      proxy.insertEdge();
+      const rn3 = proxy.tail();
+      const p3 = rn3.platform;
+      const dept3 = dept2.next.next.next as DeptTask;
+      expect(rn3.loc().x).toEqual(200);
+      expect(rn3.loc().y).toEqual(0);
+      expect(dept3.stay).toEqual(p3);
+
+      proxy.deployTrain(dept3);
+
+      modelListener.fire(EventType.CREATED);
+      modelListener.fire(EventType.MODIFIED);
+
+      expect(ts.length).toEqual(1);
+      expect(ts[0].loc()).toEqual(rn3.loc());
+
+      proxy.commit();
+      proxy.increaseTrain();
+      modelListener.fire(EventType.CREATED);
+      modelListener.fire(EventType.MODIFIED);
+
+      expect(ts.length).toEqual(3);
+
+      expect(ts[1].loc()).toEqual(rn1.loc());
+      // skip p3
+      expect(ts[2].loc()).not.toEqual(rn3.loc());
+      expect(ts[2].loc().x).toBeLessThan(rn3.loc().x);
+      expect(ts[2].loc().x).toBeGreaterThan(rn2.loc().x);
+      expect(ts[2].loc()).toEqual(rnX.loc());
+
+      // rollback
+      proxy.rollback();
+      modelListener.fire(EventType.MODIFIED);
+      modelListener.fire(EventType.DELETED);
+
+      expect(ts.length).toEqual(1);
+      expect(dept1.trains.length).toEqual(0);
+      expect(dept3.trains).toEqual([ts[0]]);
+    });
   });
 });

@@ -1,3 +1,4 @@
+import DeptTask from "./dept_task";
 import LineTask from "./line_task";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
@@ -147,7 +148,7 @@ class DeployTrainAction implements Transactional {
   }
 }
 
-class StartBranchAction {
+class StartBranchAction implements Transactional {
   private readonly prevTail: RailNode;
   private readonly rollbackFn: (rn: RailNode) => void;
 
@@ -162,6 +163,55 @@ class StartBranchAction {
 
   rollback() {
     this.rollbackFn(this.prevTail);
+  }
+}
+
+class IncreaseTrain implements Transactional {
+  private readonly ts: Train[];
+  static INTERVAL: number = 2;
+  constructor() {
+    this.ts = [];
+  }
+
+  act(l: RailLine) {
+    // あいていれば駅に、そうでなければ駅間に電車を作成する
+    let dept: LineTask = l.top;
+    let count = 0;
+    do {
+      if (dept.isDeptTask()) {
+        if (count === 0) {
+          if (dept.trains.length === 0) {
+            const t = new Train(dept);
+            this.ts.push(t);
+          } else {
+            let next: LineTask = dept;
+            let dist = 0;
+            do {
+              dist += next.length();
+              next = next.next;
+            } while (!next.isDeptTask());
+
+            next = dept;
+            let d = 0;
+            do {
+              d += next.length();
+              next = next.next;
+            } while (d < dist / 2);
+            const t = new Train(next);
+            this.ts.push(t);
+          }
+        }
+        count++;
+        if (count >= IncreaseTrain.INTERVAL) {
+          count = 0;
+        }
+      }
+      dept = dept.next;
+    } while (dept !== l.top);
+  }
+
+  rollback() {
+    this.ts.forEach((t) => t._remove());
   }
 }
 
@@ -244,6 +294,12 @@ class ActionProxy {
       (prevTail) => (this._tailNode = prevTail)
     );
     this._tailNode = action.act(p);
+    this.actions.push(action);
+  }
+
+  public increaseTrain() {
+    const action = new IncreaseTrain();
+    action.act(this._line);
     this.actions.push(action);
   }
 

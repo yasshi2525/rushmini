@@ -400,6 +400,11 @@
 			"type": "script",
 			"path": "script/models/action.js",
 			"global": true
+		},
+		"bonus_train": {
+			"type": "script",
+			"path": "script/entities/bonus_train.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

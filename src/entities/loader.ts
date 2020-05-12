@@ -3,6 +3,7 @@ import createBackground from "./background";
 import createBonusPanel from "./bonus";
 import createBonusBranch from "./bonus_branch";
 import createBonusStation from "./bonus_station";
+import createBonusTrain from "./bonus_train";
 import createBranchBuilder from "./branch_builder";
 import createRailBuildGuide from "./build_guide";
 import createBuilder from "./builder";
@@ -20,6 +21,7 @@ const preserveEntityCreator = () => {
   viewer.put(ViewerType.BACKGROUND, createBackground);
   viewer.put(ViewerType.BONUS_BRANCH, createBonusBranch);
   viewer.put(ViewerType.BONUS_STATION, createBonusStation);
+  viewer.put(ViewerType.BONUS_TRAIN, createBonusTrain);
   viewer.put(ViewerType.BONUS, createBonusPanel);
   viewer.put(ViewerType.BRANCH_BUILDER, createBranchBuilder);
   viewer.put(ViewerType.BUILD_GUIDE, createRailBuildGuide);

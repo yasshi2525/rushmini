@@ -1,3 +1,4 @@
+import { remove } from "../utils/common";
 import Human, { HumanState } from "./human";
 import LineTask from "./line_task";
 import modelListener, { EventType } from "./listener";
@@ -60,6 +61,7 @@ class Train extends RoutableObject implements Pointable, Steppable, Routable {
       p._setTrain(undefined);
       p.state(HumanState.MOVE);
     });
+    remove(this.current()._base().trains, this);
     modelListener.add(EventType.DELETED, this);
   }
 
