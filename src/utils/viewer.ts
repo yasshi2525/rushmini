@@ -4,6 +4,7 @@ import modelListener, {
   Tracker,
   TriggerContainer,
 } from "../models/listener";
+import userResource from "../models/user_resource";
 import random from "./random";
 import routeFinder from "./route_finder";
 import scorer from "./scorer";
@@ -161,6 +162,7 @@ const initController = (width: number, height: number) => {
   transportFinder.init();
   routeFinder.init();
   stepper.init();
+  userResource.init();
   cityResource.init(width, height, (min, max) => random.random().get(min, max));
   modelListener.fire(ModelEventType.CREATED);
   ticker.triggers.find(TickEventType.TICKED).register(() => stepper.step());

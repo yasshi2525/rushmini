@@ -26,6 +26,7 @@ describe("user_resource", () => {
   describe("initialize", () => {
     it("have empty primary line", () => {
       const instance = new UserResource();
+      instance.init();
       expect(instance.getPrimaryLine()).toBeInstanceOf(RailLine);
       expect(instance.getPrimaryLine().top).toBeUndefined();
       expect(instance.getState()).toEqual(ModelState.INITED);
@@ -37,6 +38,7 @@ describe("user_resource", () => {
 
     beforeEach(() => {
       instance = new UserResource();
+      instance.init();
     });
     afterEach(() => {
       console.warn = oldWarn;
@@ -95,6 +97,7 @@ describe("user_resource", () => {
 
     beforeEach(() => {
       instance = new UserResource();
+      instance.init();
       ts = [];
       modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
     });
@@ -233,6 +236,7 @@ describe("user_resource", () => {
     let instance: UserResource;
     beforeEach(() => {
       instance = new UserResource();
+      instance.init();
     });
 
     afterEach(() => {
@@ -282,6 +286,7 @@ describe("user_resource", () => {
 
     beforeEach(() => {
       instance = new UserResource();
+      instance.init();
       startCounter = 1;
       endCounter = 1;
       resetCounter = 1;
@@ -337,7 +342,7 @@ describe("user_resource", () => {
 
       expect(startCounter).toEqual(1);
       expect(endCounter).toEqual(1);
-      expect(resetCounter).toEqual(2);
+      expect(resetCounter).toEqual(1); // reset でカウンタも外されるため
     });
   });
 
@@ -346,6 +351,7 @@ describe("user_resource", () => {
 
     beforeEach(() => {
       instance = new UserResource();
+      instance.init();
     });
 
     afterEach(() => {
@@ -411,6 +417,7 @@ describe("user_resource", () => {
     beforeEach(() => {
       ps = [];
       instance = new UserResource();
+      instance.init();
       modelListener
         .find(EventType.CREATED, Platform)
         .register((p) => ps.push(p));
@@ -453,6 +460,7 @@ describe("user_resource", () => {
     let ts: Train[];
 
     beforeEach(() => {
+      userResource.init();
       rns = [];
       res = [];
       sts = [];

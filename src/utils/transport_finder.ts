@@ -1,4 +1,5 @@
 import DeptTask from "../models/dept_task";
+import LineTask from "../models/line_task";
 import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
@@ -24,19 +25,21 @@ const ps: Platform[] = [];
 const ts: Train[] = [];
 
 /**
- * 電車の現在地点から最寄り駅へのedgeを貼る。
+ * 電車の現在地点から各駅へのedgeを貼る。
  * これにより、電車が到達可能な駅に対して距離を設定できる
  * @param f
  * @param t
  */
 const trainRouting = (f: PathFinder, t: Train) => {
   let current = t.current()._base();
-  let length = 0;
-  while (!current.isDeptTask()) {
-    length += current.length() * DIST_RATIO;
+  let length = current.length() * DIST_RATIO;
+  do {
+    if (current.isDeptTask())
+      f.edge(t, current.stay, length, length * PAY_RATIO);
+
     current = current.next;
-  }
-  f.edge(t, current.stay, length, length * PAY_RATIO);
+    length += current.length() * DIST_RATIO;
+  } while (t.current()._base() !== current);
 };
 
 /**
@@ -44,26 +47,25 @@ const trainRouting = (f: PathFinder, t: Train) => {
  * 乗車プラットフォーム => 発車タスク => 到着プラットフォームとする
  */
 const scanRailLine = (f: PathFinder, l: RailLine) => {
-  let prevDept = l.top;
-  let length = 0;
-  let current = prevDept.next;
+  // 各発車タスクを始発とし、電車で到達可能なプラットフォームを登録する
+  l.filter((lt) => lt.isDeptTask()).forEach((dept: DeptTask) => {
+    // 乗車タスクとホームは相互移動可能
+    f.edge(dept, dept.stay, 0, 0);
+    f.edge(dept.stay, dept, 0, 0);
 
-  while (current !== l.top) {
-    if (current.isDeptTask()) {
-      // プラットフォームから乗車タスクをつなぐ
-      f.edge(prevDept.stay, prevDept, 0);
-      // 乗車タスクを経由してプラットフォーム間を紐付ける
-      f.edge(prevDept, current.stay, length, length * PAY_RATIO);
-      prevDept = current;
-      length = 0;
-    } else {
+    let current: LineTask = dept;
+    let length = current.length();
+
+    do {
+      current = current.next;
       length += current.length() * DIST_RATIO;
-    }
-    current = current.next;
-  }
-
-  f.edge(prevDept.departure().platform, prevDept, 0);
-  f.edge(prevDept, current.departure().platform, length, length * PAY_RATIO);
+      if (current.isDeptTask()) {
+        // Dept -> P のみ登録する
+        // P -> P 接続にしてしまうと乗り換えが必要かどうか分からなくなるため
+        f.edge(dept, current.stay, length, length * PAY_RATIO);
+      }
+    } while (dept !== current);
+  });
 };
 
 const _append = (e: Routable, to: Routable[]) => {

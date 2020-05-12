@@ -56,9 +56,12 @@ export class UserResource {
   private trainCounter: number = 0;
 
   constructor() {
-    this.state = ModelState.INITED;
     this.stateListeners = [];
+  }
+
+  public init() {
     this.lastPos = undefined;
+    this.setState(ModelState.INITED);
     this.action = new ActionProxy();
   }
 
@@ -222,9 +225,7 @@ export class UserResource {
   }
 
   public reset() {
-    this.action = new ActionProxy();
-    this.lastPos = undefined;
-    this.setState(ModelState.INITED);
+    this.stateListeners.length = 0;
   }
 
   public station(rn: RailNode) {
@@ -239,6 +240,8 @@ export class UserResource {
     this.action.buildStation(rn);
     this.action.insertPlatform(rn.platform);
     modelListener.fire(EventType.CREATED);
+    modelListener.fire(EventType.MODIFIED);
+    this.setState(ModelState.FIXED);
   }
 
   public commit() {

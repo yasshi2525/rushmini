@@ -29,6 +29,7 @@ describe("stepper", () => {
   beforeEach(() => {
     Residence.INTERVAL_SEC = 1;
     stepper.init();
+    userResource.init();
     const c = new Company(1, 3, 4);
     const r = new Residence([c], 0, 0);
     const rn = new RailNode(0, 0);

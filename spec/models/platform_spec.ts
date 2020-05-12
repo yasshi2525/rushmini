@@ -1,4 +1,5 @@
 import Company from "models/company";
+import DeptTask from "models/dept_task";
 import Gate from "models/gate";
 import Human, { HumanState } from "models/human";
 import modelListener from "models/listener";
@@ -8,6 +9,7 @@ import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
+import Train from "models/train";
 import ticker from "utils/ticker";
 
 const FPS = 15;
@@ -75,23 +77,47 @@ describe("platform", () => {
 
   it("move human on platform to gate", () => {
     const p = new Platform(rn, st);
+    l._start(p);
+    const dept = l.top;
+    const t = new Train(dept);
+
     r._setNext(g, c, distance(c, r));
     g._setNext(p, c, distance(c, g));
-    p._setNext(p, c, distance(c, p));
+    p._setNext(dept, c, distance(c, p));
+    dept._setNext(p, c, distance(c, p));
 
     const h = new Human(r, c);
     h._step();
     g._step();
     h._step();
+    h._step();
+    expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
 
-    // 電車からおりる状況を再現
+    for (let i = 0; i < FPS * Train.STAY_SEC - 1; i++) {
+      t._step();
+      expect(t.current()._base()).toEqual(dept);
+      expect(h.state()).toEqual(HumanState.ON_TRAIN);
+      expect(h._getNext()).toEqual(p);
+    }
+
+    // 改札へ降りる
     p._setNext(g, c, distance(c, p));
     g._setNext(c, c, distance(c, g));
+
+    t._step();
+    expect(t.current()._base()).toEqual(dept);
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
+    expect(p.outQueue[0]).toEqual(h);
+    expect(g.outQueue.length).toEqual(0);
+    expect(h._getNext()).toEqual(p);
+
     h._step();
-    h._step();
-    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
+    expect(h._getNext()).toEqual(g);
     expect(p.outQueue.length).toEqual(0);
     expect(g.outQueue[0]).toEqual(h);
+    expect(h._getNext()).toEqual(g);
+
+    expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
   });
 
   it("changing goal human moves platform to other platform", () => {

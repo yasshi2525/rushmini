@@ -3,7 +3,9 @@ import modelListener, { EventType } from "models/listener";
 import Platform from "models/platform";
 import userResource from "models/user_resource";
 import random from "utils/random";
+import routeFinder from "utils/route_finder";
 import scorer from "utils/scorer";
+import transportFinder from "utils/transport_finder";
 import viewer, { ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
@@ -32,6 +34,8 @@ describe("station_builder", () => {
   afterEach(async () => {
     viewer.reset();
     userResource.reset();
+    transportFinder.reset();
+    routeFinder.reset();
     modelListener.flush();
     modelListener.unregisterAll();
     await recreateGame();

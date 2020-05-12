@@ -3,6 +3,9 @@ import userResource from "models/user_resource";
 import trackFinder from "utils/track_finder";
 
 describe("track_finder", () => {
+  beforeEach(() => {
+    userResource.init();
+  });
   afterEach(() => {
     modelListener.unregisterAll();
     userResource.reset();

@@ -73,7 +73,7 @@ class Platform extends RoutableObject {
   }
 
   /**
-   *  改札に向かっていたが経路再探索でホーム入場にかわった
+   * 改札に向かっていたが経路再探索でホーム入場にかわった
    * @param subject
    */
   private tryLeaveOutQueue(subject: Human) {
@@ -122,15 +122,14 @@ class Platform extends RoutableObject {
     const gate = this.station.gate;
     if (this.outQueue.indexOf(subject) !== -1) {
       remove(this.outQueue, subject);
-      subject._complete();
-
-      if (subject._getNext() === gate) {
+      if (subject._getNext().nextFor(subject.destination) === gate) {
         // 到着した人を改札に向かわせる
+        subject._complete();
         subject.state(HumanState.WAIT_EXIT_GATE);
 
         gate.outQueue.push(subject);
       } else {
-        // 乗り換えの人をコンコースに向かわせる
+        // 乗り換えの場合、次の次がDeptTask
         subject.state(HumanState.WAIT_ENTER_PLATFORM);
         gate._concourse.push(subject);
       }

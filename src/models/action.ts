@@ -167,7 +167,7 @@ class StartBranchAction {
 
 class ActionProxy {
   private readonly actions: Transactional[];
-  private _line: RailLine;
+  private readonly _line: RailLine;
   private _tailNode: RailNode;
   private _tailEdge: RailEdge;
 

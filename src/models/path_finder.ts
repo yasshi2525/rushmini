@@ -1,4 +1,6 @@
 import { find, remove } from "../utils/common";
+import DeptTask from "./dept_task";
+import { Pointable } from "./pointable";
 import { Routable } from "./routable";
 
 class PathNode {
@@ -120,14 +122,19 @@ class PathFinder {
       return;
     }
     if (cascade) {
-      remove(this.edges, (e) => e.from === result);
-      remove(this.edges, (e) => e.to === result);
+      this.edges
+        .filter((e) => e.from === result)
+        .forEach((e) => remove(e.to._in, e));
+      this.edges
+        .filter((e) => e.to === result)
+        .forEach((e) => remove(e.from._out, e));
+      remove(this.edges, (e) => e.from === result || e.to === result);
     }
     remove(this.nodes, result);
   }
 
   /**
-   * 指定されたオブジェクト同士の連結を登録します
+   * 指定されたオブジェクト同士の連結を登録します。長いパスの場合登録しません
    * @param from
    * @param to
    * @param cost
@@ -139,13 +146,18 @@ class PathFinder {
       (e) => e.from.origin === from && e.to.origin === to
     );
     if (result) {
-      result.cost = cost;
-      result.payment = payment;
+      if (result.cost >= cost) {
+        result.cost = cost;
+        result.payment = payment;
+        return result;
+      } else {
+        return undefined;
+      }
     } else {
       const e = new PathEdge(this.node(from), this.node(to), cost, payment);
       this.edges.push(e);
+      return e;
     }
-    return result;
   }
 
   public unedge(from: Routable, to: Routable) {
@@ -153,6 +165,10 @@ class PathFinder {
   }
 
   public unedgeAll() {
+    this.edges.forEach((e) => {
+      remove(e.from._out, e);
+      remove(e.to._in, e);
+    });
     this.edges.length = 0;
   }
 

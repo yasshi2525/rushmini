@@ -5,8 +5,9 @@ import Human from "../models/human";
 import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
-import { distance } from "../models/pointable";
+import { Pointable, distance } from "../models/pointable";
 import Residence from "../models/residence";
+import { Routable } from "../models/routable";
 import Train from "../models/train";
 import userResource, { ModelState } from "../models/user_resource";
 import { find, remove } from "./common";
@@ -25,12 +26,27 @@ const hs: Human[] = [];
  * @param f
  */
 const transport = (f: PathFinder) => {
-  lts.forEach((dept) =>
-    ps.forEach((dest) => {
-      if (dept.nextFor(dest))
-        f.edge(dept, dest, dept.distanceFor(dest), dept.stay.paymentFor(dest));
-    })
-  );
+  // 以前の経路探索結果 Dept <=> P を削除
+  lts.forEach((dept) => {
+    f.unnode(dept, true);
+    f.node(dept);
+    f.edge(dept.stay, dept, 0);
+  });
+  ps.forEach((dest) => {
+    lts.forEach((dept) => {
+      let prev: Routable = dept;
+      do {
+        const next = prev.nextFor(dest);
+        if (next) {
+          const cost = isNaN(prev.distanceFor(next))
+            ? 0
+            : prev.distanceFor(next);
+          f.edge(prev, next, cost, prev.paymentFor(next));
+        }
+        prev = next;
+      } while (prev && prev !== dest);
+    });
+  });
 };
 
 /**
@@ -217,13 +233,7 @@ const handler = {
     },
 
     lineTask: (lt: DeptTask) => {
-      finders.forEach((f) => {
-        f.node(lt);
-
-        // P => lt for each goal
-        const p = lt.stay;
-        f.edge(p, lt, 0);
-      });
+      finders.forEach((f) => f.node(lt));
 
       lts.push(lt);
     },
@@ -285,6 +295,7 @@ const routeFinder = {
         finders.forEach((f) => {
           // Lt => P
           transport(f);
+          const n = f.node(lts[0]);
           humanRouting(f);
           f.execute();
           hs.forEach((h) => h._reroute());

@@ -15,6 +15,7 @@ describe("railbuild_guide", () => {
   beforeEach(async () => {
     scene = await createLoadedScene();
     panel = createRailBuildGuide(scene);
+    userResource.init();
   });
 
   afterEach(async () => {
@@ -32,6 +33,6 @@ describe("railbuild_guide", () => {
     userResource.end();
     expect(panel.visible()).toBeFalsy();
     userResource.reset();
-    expect(panel.visible()).toBeTruthy();
+    expect(panel.visible()).toBeFalsy(); // state listener削除
   });
 });
