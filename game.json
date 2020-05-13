@@ -405,6 +405,16 @@
 			"type": "script",
 			"path": "script/entities/bonus_train.js",
 			"global": true
+		},
+		"bonus_residence": {
+			"type": "script",
+			"path": "script/entities/bonus_residence.js",
+			"global": true
+		},
+		"residence_builder": {
+			"type": "script",
+			"path": "script/entities/residence_builder.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

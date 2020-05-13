@@ -49,6 +49,10 @@ export enum ViewerType {
    */
   STATION_BUILDER,
   /**
+   * 住宅開発の入力受付
+   */
+  RESIDENCE_BUILDER,
+  /**
    * ボーナス選択画面
    */
   BONUS,
@@ -64,6 +68,10 @@ export enum ViewerType {
    * 電車増発ボーナスボタン
    */
   BONUS_TRAIN,
+  /**
+   * 宅地開発ボーナスボタン
+   */
+  BONUS_RESIDENCE,
   /**
    * 残り時間の表示
    */
@@ -88,9 +96,13 @@ export enum ViewerEvent {
    */
   SCORED,
   /**
+   * 自動建造ボーナスが発火した
+   */
+  AUTOBUILD_BONUSED,
+  /**
    * ボーナスが発火した (要:前のボーナスが終了)
    */
-  BONUS_STARTED,
+  USER_BONUS_STARTED,
   /**
    * 支線ボーナスが選ばれた (駅を探し中)
    */
@@ -115,18 +127,32 @@ export enum ViewerEvent {
    * 列車の増発完了
    */
   TRAIN_ENDED,
+  /**
+   * 宅地開発ボーナスが選ばれた（立地を探し中）
+   */
+  RESIDENCE_STARTED,
+  /**
+   * 住宅の建設完了
+   */
+  RESIDENCE_ENDED,
 }
 
 /**
  * ボーナスが発火されるボーダー点
  */
-const BORDERS = [1000, 3000, 7000, 15000];
+const USER_BONUSES = [1000, 3000, 7000, 15000];
+
+/**
+ * 住宅自動増加ボーナスが発火されるボーダー点
+ */
+const AUTOBUILD_BONUSES = [500, 2000, 5000, 11000];
 
 type ViewerCreator = (scene: g.Scene) => g.E;
 
 type Controller = {
   isBonusing: boolean;
-  borders: number[];
+  userBonuses: number[];
+  autoBldBonuses: number[];
   _listener: TriggerContainer<ViewerEvent, Controller>;
   _trackers: { [key in ViewerEvent]?: Tracker<Controller> };
   creators: { [key in ViewerType]?: ViewerCreator };
@@ -161,6 +187,7 @@ const parent = (_c: Controller, key: ViewerType, scene: g.Scene) => {
     case ViewerType.BONUS_BRANCH:
     case ViewerType.BONUS_STATION:
     case ViewerType.BONUS_TRAIN:
+    case ViewerType.BONUS_RESIDENCE:
       return _c.viewers[ViewerType.BONUS];
     default:
       return scene;
@@ -206,19 +233,27 @@ const handleBuilt = (_c: Controller) => {
  * @param _c
  */
 const handleScored = (_c: Controller) => {
+  if (_c.autoBldBonuses.length > 0 && scorer.get() >= _c.autoBldBonuses[0]) {
+    _c.fire(ViewerEvent.AUTOBUILD_BONUSED);
+  }
   if (
-    _c.borders.length > 0 &&
-    scorer.get() >= _c.borders[0] &&
+    _c.userBonuses.length > 0 &&
+    scorer.get() >= _c.userBonuses[0] &&
     !_c.isBonusing
   ) {
-    _c.fire(ViewerEvent.BONUS_STARTED);
+    _c.fire(ViewerEvent.USER_BONUS_STARTED);
   }
+};
+
+const handleAutoBuildBonus = (_c: Controller) => {
+  cityResource.residence();
+  _c.autoBldBonuses.shift();
 };
 
 const handleBonusStarted = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].show();
   _c.viewers[ViewerType.SHADOW].show();
-  _c.borders.shift();
+  _c.userBonuses.shift();
   _c.isBonusing = true;
 };
 
@@ -253,6 +288,17 @@ const handleTrainEnded = (_c: Controller) => {
   _c.isBonusing = false;
 };
 
+const handleResidenceStarted = (_c: Controller) => {
+  _c.viewers[ViewerType.BONUS].hide();
+  _c.viewers[ViewerType.SHADOW].hide();
+  _c.viewers[ViewerType.RESIDENCE_BUILDER].show();
+};
+
+const handleResidenceEnded = (_c: Controller) => {
+  _c.viewers[ViewerType.RESIDENCE_BUILDER].hide();
+  _c.isBonusing = false;
+};
+
 /**
  * イベントの発火をキャプチャできるようにする
  * @param _c
@@ -262,13 +308,16 @@ const initListener = (_c: Controller, scene: g.Scene) => {
     { key: ViewerEvent.INITED, value: (__c) => handleInited(__c, scene) },
     { key: ViewerEvent.BUILT, value: handleBuilt },
     { key: ViewerEvent.SCORED, value: handleScored },
-    { key: ViewerEvent.BONUS_STARTED, value: handleBonusStarted },
+    { key: ViewerEvent.AUTOBUILD_BONUSED, value: handleAutoBuildBonus },
+    { key: ViewerEvent.USER_BONUS_STARTED, value: handleBonusStarted },
     { key: ViewerEvent.BRANCH_STARTED, value: handleBranchStarted },
     { key: ViewerEvent.BRANCHING, value: handleBranching },
     { key: ViewerEvent.BRANCHED, value: handleBranchEnded },
     { key: ViewerEvent.STATION_STARTED, value: handleStationStarted },
     { key: ViewerEvent.STATION_ENDED, value: handleStationEnded },
     { key: ViewerEvent.TRAIN_ENDED, value: handleTrainEnded },
+    { key: ViewerEvent.RESIDENCE_STARTED, value: handleResidenceStarted },
+    { key: ViewerEvent.RESIDENCE_ENDED, value: handleResidenceEnded },
   ];
   list.forEach((entry) => {
     _c._trackers[entry.key] = new Tracker(_c);
@@ -279,7 +328,8 @@ const initListener = (_c: Controller, scene: g.Scene) => {
 
 const viewer: Controller = {
   isBonusing: false,
-  borders: [...BORDERS],
+  userBonuses: [...USER_BONUSES],
+  autoBldBonuses: [...AUTOBUILD_BONUSES],
   creators: {},
   viewers: {},
   _listener: new TriggerContainer<ViewerEvent, Controller>(),
@@ -305,7 +355,8 @@ const viewer: Controller = {
 
   reset: () => {
     viewer.isBonusing = false;
-    viewer.borders = [...BORDERS];
+    viewer.userBonuses = [...USER_BONUSES];
+    viewer.autoBldBonuses = [...AUTOBUILD_BONUSES];
     viewer.creators = {};
     viewer.viewers = {};
     viewer._trackers = {};

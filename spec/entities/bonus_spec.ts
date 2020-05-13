@@ -36,7 +36,7 @@ describe("bonus", () => {
 
   it("pop up modal when 1st bonus score is god", () => {
     let counter = 0;
-    viewer.register(ViewerEvent.BONUS_STARTED, () => counter++);
+    viewer.register(ViewerEvent.USER_BONUS_STARTED, () => counter++);
 
     expect(bonus.visible()).toBeFalsy();
     expect(counter).toEqual(0);
@@ -47,7 +47,7 @@ describe("bonus", () => {
 
   it("pop down modal when select button preesed", () => {
     let counter = 0;
-    viewer.register(ViewerEvent.BONUS_STARTED, () => counter++);
+    viewer.register(ViewerEvent.USER_BONUS_STARTED, () => counter++);
     const component = createBonusComponent(
       scene,
       "dummy",
@@ -67,7 +67,7 @@ describe("bonus", () => {
   it("forbit to re-open during bonus panel is opened", () => {
     let isOpen = false;
     let openCounter = 0;
-    viewer.register(ViewerEvent.BONUS_STARTED, () => {
+    viewer.register(ViewerEvent.USER_BONUS_STARTED, () => {
       isOpen = true;
       openCounter++;
     });

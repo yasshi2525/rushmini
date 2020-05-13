@@ -70,7 +70,7 @@ describe("game", () => {
       g.game.pushScene(obj.scene);
       g.game.tick(false);
       expect(rs.length).toEqual(1);
-      expect(cs.length).toEqual(1);
+      expect(cs.length).toEqual(2);
       expect(hs.length).toEqual(0);
     });
 

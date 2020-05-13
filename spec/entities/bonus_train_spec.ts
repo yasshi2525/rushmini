@@ -1,4 +1,5 @@
 import preserveEntityCreator from "entities/loader";
+import cityResource from "models/city_resource";
 import modelListener from "models/listener";
 import userResource from "models/user_resource";
 import random from "utils/random";
@@ -34,6 +35,7 @@ describe("bonus_train", () => {
   afterEach(async () => {
     viewer.reset();
     userResource.reset();
+    cityResource.reset();
     routeFinder.reset();
     transportFinder.reset();
     modelListener.flush();

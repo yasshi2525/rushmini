@@ -1,4 +1,5 @@
 import preserveEntityCreator from "entities/loader";
+import cityResource from "models/city_resource";
 import modelListener from "models/listener";
 import userResource, { ModelState } from "models/user_resource";
 import random from "utils/random";
@@ -28,6 +29,7 @@ describe("branch_builder", () => {
   afterEach(async () => {
     viewer.reset();
     userResource.reset();
+    cityResource.reset();
     modelListener.flush();
     await recreateGame();
   });
@@ -144,7 +146,7 @@ describe("branch_builder", () => {
     let isBranching = false;
     let endCounter = 0;
 
-    viewer.register(ViewerEvent.BONUS_STARTED, () => startCounter++);
+    viewer.register(ViewerEvent.USER_BONUS_STARTED, () => startCounter++);
     viewer.register(ViewerEvent.BRANCHING, () => (isBranching = true));
     viewer.register(ViewerEvent.BRANCHED, () => {
       isBranching = false;
@@ -211,7 +213,7 @@ describe("branch_builder", () => {
   it("forbit to re-open during branching", () => {
     let bonusCounter = 0;
     const bonus = viewer.viewers[ViewerType.BONUS];
-    viewer.register(ViewerEvent.BONUS_STARTED, () => bonusCounter++);
+    viewer.register(ViewerEvent.USER_BONUS_STARTED, () => bonusCounter++);
 
     userResource.start(0, 0);
     userResource.extend(3, 4);

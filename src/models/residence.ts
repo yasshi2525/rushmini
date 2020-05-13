@@ -15,7 +15,7 @@ class Residence extends PointableObject implements Steppable {
   /**
    * 人の生成速度。INTERVAL_SEC 秒 経過すると1人生成する
    */
-  public static INTERVAL_SEC: number = 0.2;
+  public static INTERVAL_SEC: number = 0.5;
   /**
    * 残り remain frame 経過すると人を生成する
    */

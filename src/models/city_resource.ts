@@ -1,16 +1,116 @@
+import { find } from "../utils/common";
+import random from "../utils/random";
 import Company from "./company";
 import modelListener, { EventType } from "./listener";
+import Point, { distance } from "./point";
+import { Pointable } from "./pointable";
 import Residence from "./residence";
+
+enum Chunk {
+  NE,
+  NW,
+  SE,
+  SW,
+}
+
+const RESIDENCES = [Chunk.NW, Chunk.SW, Chunk.NE, Chunk.SE];
+const COMPANIES = [Chunk.SE];
+const MAXTRY = 50;
+
+type SizeOption = { w: number; h: number; pad: number };
+
+/**
+ * チャンクサイズを求める
+ * @param opts
+ */
+const toSize = (opts: SizeOption) =>
+  new Point((opts.w - opts.pad * 2) / 2, (opts.h - opts.pad * 2) / 2);
+
+type CenterOption = SizeOption & { ch: Chunk };
+
+/**
+ * チャンクの中心座標を求める
+ * @param opts
+ */
+const toCenter = (opts: CenterOption) => {
+  const size = toSize(opts);
+  let dx = 0;
+  let dy = 0;
+  switch (opts.ch) {
+    case Chunk.NE:
+    case Chunk.SE:
+      dx = size.x / 2;
+      break;
+    case Chunk.NW:
+    case Chunk.SW:
+      dx = -size.x / 2;
+      break;
+  }
+  switch (opts.ch) {
+    case Chunk.NE:
+    case Chunk.NW:
+      dy = -size.y / 2;
+      break;
+    case Chunk.SE:
+    case Chunk.SW:
+      dy = size.y / 2;
+      break;
+  }
+  return new Point(opts.w / 2 + dx, opts.h / 2 + dy);
+};
+
+type RandOption = CenterOption & { rand: (min: number, max: number) => number };
+
+/**
+ * チャンク内のランダムな点を返す
+ * @param opts
+ */
+const toRand = (opts: RandOption) => {
+  const center = toCenter(opts);
+  const size = toSize(opts);
+  return new Point(
+    center.x + opts.rand(-size.x / 2, size.x / 2),
+    center.y + opts.rand(-size.y / 2, size.y / 2)
+  );
+};
+
+type AreaOption = RandOption & { others: Pointable[]; dist: number };
+
+/**
+ * チャンク内のランダムな位置で、他と一定距離離れた点を返す
+ * @param opts
+ */
+const toAreaRand = (opts: AreaOption) => {
+  let pos: Point;
+  let i = 0;
+  do {
+    pos = toRand(opts);
+    i++;
+  } while (
+    find(opts.others, (o) => distance(o.loc(), pos) < opts.dist) &&
+    i < MAXTRY // 無限ループ防止
+  );
+  return pos;
+};
 
 export class CityResource {
   /**
-   * この座標領域以内に初期住宅・会社を設立する
+   * 建物は最低この距離間をおいて建設する
    */
-  public static AREA: number = 50;
+  public static AREA: number = 100;
   public static PADDING: number = 50;
 
   private width: number;
   private height: number;
+  private rand: (min: number, max: number) => number;
+
+  private readonly cs: Company[];
+  private readonly buildings: Pointable[];
+
+  constructor() {
+    this.cs = [];
+    this.buildings = [];
+  }
 
   public init(
     width: number,
@@ -19,23 +119,65 @@ export class CityResource {
   ) {
     this.width = width;
     this.height = height;
-    const c = new Company(
+    this.rand = rand;
+
+    // 初期会社
+    const c0 = new Company(
       1,
-      rand(
-        width - CityResource.AREA - CityResource.PADDING,
-        width - CityResource.PADDING
-      ),
-      rand(
-        height - CityResource.AREA - CityResource.PADDING,
-        height - CityResource.PADDING
-      )
+      width - CityResource.PADDING,
+      height - CityResource.PADDING
     );
-    const r = new Residence(
-      [c],
-      rand(CityResource.PADDING, CityResource.AREA + CityResource.PADDING),
-      rand(CityResource.PADDING, CityResource.AREA + CityResource.PADDING)
+    this.cs.push(c0);
+    this.buildings.push(c0);
+
+    // 追加会社
+    COMPANIES.forEach((ch, idx) => {
+      const pos = toAreaRand({
+        ch,
+        w: width,
+        h: height,
+        pad: CityResource.PADDING,
+        dist: CityResource.AREA,
+        rand,
+        others: this.buildings,
+      });
+      const c = new Company(idx, pos.x, pos.y);
+      this.cs.push(c);
+      this.buildings.push(c);
+    });
+
+    // 初期住宅
+    this.buildings.push(
+      new Residence(this.cs, CityResource.PADDING, CityResource.PADDING)
     );
+
     modelListener.fire(EventType.CREATED);
+  }
+
+  public residence(x?: number, y?: number) {
+    if (x === undefined || y === undefined) {
+      // 追加住宅
+      const ch = RESIDENCES.shift();
+      const pos = toAreaRand({
+        ch,
+        w: this.width,
+        h: this.height,
+        pad: CityResource.PADDING,
+        dist: CityResource.AREA,
+        rand: this.rand,
+        others: this.buildings,
+      });
+      const r = new Residence(this.cs, pos.x, pos.y);
+      this.buildings.push(r);
+    } else {
+      this.buildings.push(new Residence(this.cs, x, y));
+    }
+    modelListener.fire(EventType.CREATED);
+  }
+
+  public reset() {
+    this.cs.length = 0;
+    this.buildings.length = 0;
   }
 }
 

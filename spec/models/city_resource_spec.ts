@@ -19,13 +19,11 @@ afterAll(() => {
 });
 
 describe("city_resource", () => {
-  let randomChecker: g.RandomGenerator;
   let rs: Residence[];
   let cs: Company[];
 
   beforeEach(() => {
     random.init(new g.XorshiftRandomGenerator(SEED));
-    randomChecker = new g.XorshiftRandomGenerator(SEED);
     CityResource.AREA = AREA;
     CityResource.PADDING = PADDING;
     rs = [];
@@ -44,17 +42,53 @@ describe("city_resource", () => {
   it("residence and company is built on initialize", () => {
     const model = new CityResource();
     model.init(WIDTH, HEIGHT, (min, max) => random.random().get(min, max));
-    expect(cs.length).toEqual(1);
-    const c = cs[0];
-    expect(c.loc().x).toEqual(
-      randomChecker.get(WIDTH - AREA - PADDING, WIDTH - PADDING)
-    );
-    expect(c.loc().y).toEqual(
-      randomChecker.get(HEIGHT - AREA - PADDING, HEIGHT - PADDING)
-    );
+    expect(cs.length).toEqual(2);
+    const c0 = cs[0];
+    expect(c0.loc().x).toEqual(WIDTH - AREA);
+    expect(c0.loc().y).toEqual(HEIGHT - AREA);
+    const c1 = cs[1];
+    expect(c1.loc().x).toBeGreaterThanOrEqual(WIDTH / 2);
+    expect(c1.loc().x).toBeLessThanOrEqual(WIDTH);
+    expect(c1.loc().y).toBeGreaterThanOrEqual(HEIGHT / 2);
+    expect(c1.loc().y).toBeLessThanOrEqual(HEIGHT);
+
     expect(rs.length).toEqual(1);
-    const r = rs[0];
-    expect(r.loc().x).toEqual(randomChecker.get(PADDING, AREA + PADDING));
-    expect(r.loc().y).toEqual(randomChecker.get(PADDING, AREA + PADDING));
+    const r0 = rs[0];
+    expect(r0.loc().x).toEqual(AREA);
+    expect(r0.loc().y).toEqual(AREA);
+  });
+
+  it("residence build randomly", () => {
+    const model = new CityResource();
+    model.init(WIDTH, HEIGHT, (min, max) => random.random().get(min, max));
+
+    model.residence(); // NW
+    expect(rs.length).toEqual(2);
+    expect(rs[1].loc().x).toBeGreaterThanOrEqual(0);
+    expect(rs[1].loc().x).toBeLessThanOrEqual(WIDTH / 2);
+    expect(rs[1].loc().y).toBeGreaterThanOrEqual(0);
+    expect(rs[1].loc().y).toBeLessThanOrEqual(HEIGHT / 2);
+
+    model.residence(); // SW
+    expect(rs.length).toEqual(3);
+    expect(rs[2].loc().x).toBeGreaterThanOrEqual(0);
+    expect(rs[2].loc().x).toBeLessThanOrEqual(WIDTH / 2);
+    expect(rs[2].loc().y).toBeGreaterThanOrEqual(HEIGHT / 2);
+    expect(rs[2].loc().y).toBeLessThanOrEqual(HEIGHT);
+
+    model.residence(); // NE
+    expect(rs.length).toEqual(4);
+    expect(rs[3].loc().x).toBeGreaterThanOrEqual(WIDTH / 2);
+    expect(rs[3].loc().x).toBeLessThanOrEqual(WIDTH);
+    expect(rs[3].loc().y).toBeGreaterThanOrEqual(0);
+    expect(rs[3].loc().y).toBeLessThanOrEqual(HEIGHT / 2);
+
+    model.residence(); // SW
+    expect(rs.length).toEqual(5);
+    expect(rs[4].loc().x).toBeGreaterThanOrEqual(WIDTH / 2);
+    expect(rs[4].loc().x).toBeLessThanOrEqual(WIDTH);
+    expect(rs[4].loc().y).toBeGreaterThanOrEqual(HEIGHT / 2);
+    expect(rs[4].loc().y).toBeLessThanOrEqual(HEIGHT);
+    model.residence();
   });
 });

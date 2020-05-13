@@ -18,12 +18,12 @@ beforeEach(() => {
   random.init(new g.XorshiftRandomGenerator(0));
 });
 
-describe("bonus_station", () => {
+describe("bonus_residence", () => {
   let scene: g.Scene;
   let panel: g.E;
-  let station: g.E;
+  let residence: g.E;
   let shadow: g.E;
-  let station_builder: g.E;
+  let residence_builder: g.E;
 
   beforeEach(async () => {
     scorer.init({ score: 0 });
@@ -31,9 +31,9 @@ describe("bonus_station", () => {
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BONUS];
-    station = viewer.viewers[ViewerType.BONUS_STATION];
+    residence = viewer.viewers[ViewerType.BONUS_RESIDENCE];
     shadow = viewer.viewers[ViewerType.SHADOW];
-    station_builder = viewer.viewers[ViewerType.STATION_BUILDER];
+    residence_builder = viewer.viewers[ViewerType.RESIDENCE_BUILDER];
   });
 
   afterEach(async () => {
@@ -53,25 +53,25 @@ describe("bonus_station", () => {
 
     scorer.add(scoreBorders[0]);
     expect(panel.visible()).toBeTruthy();
-    expect(station.visible()).toBeTruthy();
+    expect(residence.visible()).toBeTruthy();
   });
 
   it("bonus panel is hidden after button is pushed", () => {
     scorer.add(scoreBorders[0]);
-    station.pointUp.fire();
+    residence.pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
   });
 
-  it("viewer mask is enabled after click bonus panel", () => {
+  it("viewer mask is disabled after click bonus panel", () => {
     expect(shadow.visible()).toBeFalsy();
 
     scorer.add(scoreBorders[0]);
 
     expect(shadow.visible()).toBeTruthy();
 
-    station.pointUp.fire();
+    residence.pointUp.fire();
 
-    expect(shadow.visible()).toBeTruthy();
+    expect(shadow.visible()).toBeFalsy();
   });
 });

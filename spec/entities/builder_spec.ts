@@ -1,4 +1,5 @@
 import preserveEntityCreator from "entities/loader";
+import cityResource from "models/city_resource";
 import DeptTask from "models/dept_task";
 import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
@@ -30,6 +31,7 @@ describe("railbuilder", () => {
   afterEach(async () => {
     viewer.reset();
     userResource.reset();
+    cityResource.reset();
     modelListener.flush();
     await recreateGame();
   });
