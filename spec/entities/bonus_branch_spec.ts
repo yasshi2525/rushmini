@@ -58,7 +58,7 @@ describe("bonus_branch", () => {
 
   it("bonus panel is hidden after button is pushed", () => {
     scorer.add(scoreBorders[0]);
-    branch.pointUp.fire();
+    branch.children[1].pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
   });
@@ -85,7 +85,7 @@ describe("bonus_branch", () => {
     scorer.add(scoreBorders[0]);
     expect(branch_builder.visible()).toBeFalsy();
 
-    branch.pointUp.fire();
+    branch.children[1].pointUp.fire();
     expect(branch_builder.visible()).toBeTruthy();
 
     expect(branch_builder.children[0].children.length).toEqual(2);
@@ -96,7 +96,7 @@ describe("bonus_branch", () => {
     userResource.extend(50, 50);
     userResource.end();
     scorer.add(scoreBorders[0]);
-    branch.pointUp.fire();
+    branch.children[1].pointUp.fire();
     branch_builder.pointDown.fire({
       local: undefined,
       player: { id: "dummyPlayerID" },
@@ -120,7 +120,7 @@ describe("bonus_branch", () => {
 
     expect(viewer.isBonusing).toBeTruthy();
 
-    branch.pointUp.fire();
+    branch.children[1].pointUp.fire();
 
     expect(viewer.isBonusing).toBeTruthy();
 

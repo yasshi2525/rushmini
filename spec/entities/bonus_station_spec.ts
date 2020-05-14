@@ -58,7 +58,7 @@ describe("bonus_station", () => {
 
   it("bonus panel is hidden after button is pushed", () => {
     scorer.add(scoreBorders[0]);
-    station.pointUp.fire();
+    station.children[1].pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
   });

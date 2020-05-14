@@ -50,7 +50,7 @@ describe("bonus", () => {
     viewer.register(ViewerEvent.USER_BONUS_STARTED, () => counter++);
     const component = createBonusComponent(
       scene,
-      "dummy",
+      "rail",
       0,
       ViewerEvent.BRANCH_STARTED
     );
@@ -59,7 +59,7 @@ describe("bonus", () => {
     expect(bonus.visible()).toBeTruthy();
     expect(counter).toEqual(1);
 
-    component.pointUp.fire();
+    component.children[1].pointUp.fire();
     expect(bonus.visible()).toBeFalsy();
     expect(counter).toEqual(1);
   });

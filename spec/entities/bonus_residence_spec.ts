@@ -58,7 +58,7 @@ describe("bonus_residence", () => {
 
   it("bonus panel is hidden after button is pushed", () => {
     scorer.add(scoreBorders[0]);
-    residence.pointUp.fire();
+    residence.children[1].pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
   });
@@ -70,7 +70,7 @@ describe("bonus_residence", () => {
 
     expect(shadow.visible()).toBeTruthy();
 
-    residence.pointUp.fire();
+    residence.children[1].pointUp.fire();
 
     expect(shadow.visible()).toBeFalsy();
   });

@@ -1,52 +1,32 @@
 import viewer, { ViewerEvent } from "../utils/viewer";
 import { createFramedRect } from "./rectangle";
+import { createSquareSprite } from "./sprite";
 
-const OFFSET_X = 20;
-const OFFSET_Y = 100;
-const SIZE = 100;
-const BORDER_WIDTH = 8;
-const ENABLED_COLOR = "#3cb371";
-const DISABLED_COLOR = "#888888";
-
-const createPanel = (scene: g.Scene, index: number) => {
-  const panel = createFramedRect(
-    scene,
-    SIZE - BORDER_WIDTH,
-    SIZE - BORDER_WIDTH,
-    ENABLED_COLOR,
-    BORDER_WIDTH
-  );
-  panel.touchable = true;
-  panel.x = OFFSET_X + (SIZE + BORDER_WIDTH) * index;
-  panel.y = OFFSET_Y;
-  panel.modified();
-  return panel;
-};
-
-const createInstruction = (scene: g.Scene, label: string) =>
-  new g.SystemLabel({
-    x: SIZE / 2,
-    y: SIZE / 4,
-    scene,
-    fontSize: SIZE / 5,
-    text: label,
-    textAlign: g.TextAlign.Center,
-  });
+const SIZE = 128;
+const OFFSET_Y = 50;
+const RATIO = 0.7;
 
 const createBonusComponent = (
   loadedScene: g.Scene,
-  label: string,
+  key: string,
   index: number,
   onSelected: ViewerEvent
 ) => {
-  const panel = createPanel(loadedScene, index);
-  panel.pointUp.add(() => {
-    (panel.children[0] as g.FilledRect).cssColor = DISABLED_COLOR;
-    panel.touchable = false;
-    panel.modified();
-    viewer.fire(onSelected);
+  const panel = new g.E({
+    scene: loadedScene,
+    x: (g.game.width * RATIO) / 2 + SIZE * (index - 2),
+    y: OFFSET_Y,
   });
-  panel.append(createInstruction(loadedScene, label));
+  const disabled = createSquareSprite(loadedScene, key + "_bonus_disabled");
+  panel.append(disabled);
+  const enabled = createSquareSprite(loadedScene, key + "_bonus_enabled");
+  enabled.touchable = true;
+  enabled.modified();
+  enabled.pointUp.add(() => {
+    viewer.fire(onSelected);
+    enabled.hide();
+  });
+  panel.append(enabled);
   return panel;
 };
 

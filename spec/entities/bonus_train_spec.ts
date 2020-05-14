@@ -57,7 +57,7 @@ describe("bonus_train", () => {
     expect(train.visible()).toBeTruthy();
     expect(shadow.visible()).toBeTruthy();
 
-    train.pointUp.fire();
+    train.children[1].pointUp.fire();
     expect(panel.visible()).toBeFalsy();
     expect(shadow.visible()).toBeFalsy();
   });

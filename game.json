@@ -415,6 +415,90 @@
 			"type": "script",
 			"path": "script/entities/residence_builder.js",
 			"global": true
+		},
+		"frame_main": {
+			"type": "image",
+			"width": 679,
+			"height": 526,
+			"path": "image/frame_main.png"
+		},
+		"rail_bonus_disabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/rail_bonus_disabled.png"
+		},
+		"rail_bonus_enabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/rail_bonus_enabled.png"
+		},
+		"residence_bonus_disabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/residence_bonus_disabled.png"
+		},
+		"residence_bonus_enabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/residence_bonus_enabled.png"
+		},
+		"score_negative": {
+			"type": "image",
+			"width": 128,
+			"height": 44,
+			"path": "image/score_negative.png"
+		},
+		"score_positive": {
+			"type": "image",
+			"width": 128,
+			"height": 44,
+			"path": "image/score_positive.png"
+		},
+		"station_bonus_disabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/station_bonus_disabled.png"
+		},
+		"station_bonus_enabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/station_bonus_enabled.png"
+		},
+		"train_bonus_disabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/train_bonus_disabled.png"
+		},
+		"train_bonus_enabled": {
+			"type": "image",
+			"width": 128,
+			"height": 128,
+			"path": "image/train_bonus_enabled.png"
+		},
+		"score_main": {
+			"type": "image",
+			"width": 256,
+			"height": 112,
+			"path": "image/score_main.png"
+		},
+		"bonus_txt": {
+			"type": "image",
+			"width": 416,
+			"height": 45,
+			"path": "image/bonus_txt.png"
+		},
+		"title_txt": {
+			"type": "image",
+			"width": 740,
+			"height": 121,
+			"path": "image/title_txt.png"
 		}
 	},
 	"moduleMainScripts": {
