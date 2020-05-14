@@ -69,6 +69,19 @@ class FileSystemScriptAsset extends g.ScriptAsset {
   }
 }
 
+// 参考 : pdi-browser の XHRTextAsset
+class FileSystemTextAsset extends g.TextAsset {
+  constructor(id, assetPath) {
+    super(id, assetPath);
+    this.data = undefined;
+  }
+
+  _load(handler) {
+    this.data = fs.readFileSync(this.path);
+    handler._onAssetLoad(this);
+  }
+}
+
 // 参考 : pid-browser の HTMLImageAsset
 class FileSystemImageAsset extends g.ImageAsset {
   _load(handler) {
@@ -92,6 +105,9 @@ class FileSystemResourceFactory extends pdi.ResourceFactory {
   }
   createScriptAsset(id, assetPath) {
     return new FileSystemScriptAsset(id, assetPath);
+  }
+  createTextAsset(id, assetPath) {
+    return new FileSystemTextAsset(id, assetPath);
   }
 }
 

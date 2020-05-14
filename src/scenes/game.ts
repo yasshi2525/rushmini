@@ -36,6 +36,12 @@ const createGameScene = (): GameScene => {
       "rail_bonus_disabled",
       "bonus_txt",
       "frame_main",
+      "score_main",
+      "score_main_glyphs",
+      "score_negative",
+      "score_negative_glyphs",
+      "score_positive",
+      "score_positive_glyphs",
     ],
   });
   ticker.register(scene);

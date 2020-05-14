@@ -443,14 +443,14 @@
 		},
 		"score_negative": {
 			"type": "image",
-			"width": 128,
-			"height": 44,
+			"width": 192,
+			"height": 21,
 			"path": "image/score_negative.png"
 		},
 		"score_positive": {
 			"type": "image",
-			"width": 128,
-			"height": 44,
+			"width": 192,
+			"height": 21,
 			"path": "image/score_positive.png"
 		},
 		"station_bonus_disabled": {
@@ -479,8 +479,8 @@
 		},
 		"score_main": {
 			"type": "image",
-			"width": 256,
-			"height": 112,
+			"width": 490,
+			"height": 28,
 			"path": "image/score_main.png"
 		},
 		"bonus_txt": {
@@ -499,6 +499,41 @@
 			"type": "script",
 			"path": "script/entities/frame.js",
 			"global": true
+		},
+		"score_negative_glyphs": {
+			"type": "text",
+			"path": "text/score_negative_glyphs.json"
+		},
+		"score_positive_glyphs": {
+			"type": "text",
+			"path": "text/score_positive_glyphs.json"
+		},
+		"font": {
+			"type": "script",
+			"path": "script/entities/font.js",
+			"global": true
+		},
+		"score_main_glyphs": {
+			"type": "text",
+			"path": "text/score_main_glyphs.json"
+		},
+		"available_txt": {
+			"type": "image",
+			"width": 369,
+			"height": 45,
+			"path": "image/available_txt.png"
+		},
+		"build_txt": {
+			"type": "image",
+			"width": 557,
+			"height": 38,
+			"path": "image/build_txt.png"
+		},
+		"rollback_txt": {
+			"type": "image",
+			"width": 307,
+			"height": 45,
+			"path": "image/rollback_txt.png"
 		}
 	},
 	"moduleMainScripts": {

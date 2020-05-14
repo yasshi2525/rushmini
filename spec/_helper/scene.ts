@@ -20,6 +20,12 @@ export const createLoadedScene = (loadsAssets: boolean = false) =>
         "rail_bonus_disabled",
         "bonus_txt",
         "frame_main",
+        "score_main",
+        "score_main_glyphs",
+        "score_negative",
+        "score_negative_glyphs",
+        "score_positive",
+        "score_positive_glyphs",
       ];
     }
     const scene = new g.Scene(opts);
