@@ -98,7 +98,7 @@ export class CityResource {
    * 建物は最低この距離間をおいて建設する
    */
   public static AREA: number = 100;
-  public static PADDING: number = 50;
+  public static PADDING: number = 70;
 
   private width: number;
   private height: number;

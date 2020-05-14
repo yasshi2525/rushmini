@@ -1,5 +1,4 @@
 import viewer, { ViewerType } from "../utils/viewer";
-import createBackground from "./background";
 import createBonusPanel from "./bonus";
 import createBonusBranch from "./bonus_branch";
 import createBonusResidence from "./bonus_residence";
@@ -8,6 +7,7 @@ import createBonusTrain from "./bonus_train";
 import createBranchBuilder from "./branch_builder";
 import createRailBuildGuide from "./build_guide";
 import createBuilder from "./builder";
+import createFrame from "./frame";
 import createHumanDespawner from "./human_despawner";
 import createModelViewer from "./model_viewer";
 import createResidenceBuilder from "./residence_builder";
@@ -20,7 +20,7 @@ import createTickLabel from "./tick";
  * ビューアの情報を utils/viewer に渡します
  */
 const preserveEntityCreator = () => {
-  viewer.put(ViewerType.BACKGROUND, createBackground);
+  viewer.put(ViewerType.FRAME, createFrame);
   viewer.put(ViewerType.BONUS_BRANCH, createBonusBranch);
   viewer.put(ViewerType.BONUS_STATION, createBonusStation);
   viewer.put(ViewerType.BONUS_RESIDENCE, createBonusResidence);

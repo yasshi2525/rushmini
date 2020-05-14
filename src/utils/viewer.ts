@@ -17,10 +17,6 @@ import transportFinder from "./transport_finder";
  */
 export enum ViewerType {
   /**
-   * 背景
-   */
-  BACKGROUND,
-  /**
    * モデルの描画先
    */
   MODEL,
@@ -52,6 +48,10 @@ export enum ViewerType {
    * 住宅開発の入力受付
    */
   RESIDENCE_BUILDER,
+  /**
+   * 作業領域の枠
+   */
+  FRAME,
   /**
    * ボーナス選択画面
    */

@@ -59,28 +59,18 @@ const createResourcePanel = <T extends Pointable>(
  * @param loadedScene
  */
 const createModelViewer = (loadedScene: g.Scene) => {
-  const panel = createFramedRect(
-    loadedScene,
-    g.game.width * SIZE,
-    g.game.height * SIZE,
-    COLOR,
-    BORDER
-  );
-  panel.x = (g.game.width * (1 - SIZE)) / 2 - BORDER;
-  panel.y = (g.game.height * (1 - SIZE)) / 2 - BORDER;
-  panel.modified();
-
   const pane = new g.Pane({
     scene: loadedScene,
+    x: (g.game.width * (1 - SIZE)) / 2,
+    y: (g.game.height * (1 - SIZE)) / 2,
     width: g.game.width * SIZE,
     height: g.game.height * SIZE,
   });
-  panel.children[0].append(pane);
 
   configs.forEach((resource) =>
     pane.append(createResourcePanel(resource, loadedScene))
   );
-  return panel;
+  return pane;
 };
 
 export default createModelViewer;

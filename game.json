@@ -294,11 +294,6 @@
 			"path": "script/entities/sprite.js",
 			"global": true
 		},
-		"background": {
-			"type": "script",
-			"path": "script/entities/background.js",
-			"global": true
-		},
 		"bonus_branch": {
 			"type": "script",
 			"path": "script/entities/bonus_branch.js",
@@ -499,6 +494,11 @@
 			"width": 740,
 			"height": 121,
 			"path": "image/title_txt.png"
+		},
+		"frame": {
+			"type": "script",
+			"path": "script/entities/frame.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

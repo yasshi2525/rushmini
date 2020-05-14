@@ -19,6 +19,7 @@ export const createLoadedScene = (loadsAssets: boolean = false) =>
         "rail_bonus_enabled",
         "rail_bonus_disabled",
         "bonus_txt",
+        "frame_main",
       ];
     }
     const scene = new g.Scene(opts);

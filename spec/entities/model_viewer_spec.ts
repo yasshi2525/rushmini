@@ -32,7 +32,7 @@ describe("model_viewer", () => {
 
   beforeEach(async () => {
     scene = await createLoadedScene(true);
-    base = createModelViewer(scene).children[0].children[0];
+    base = createModelViewer(scene);
     c = new Company(1, 3, 4);
     r = new Residence([c], 6, 8);
     h = new Human(r, c);
