@@ -552,6 +552,18 @@
 			"width": 556,
 			"height": 37,
 			"path": "image/station_txt.png"
+		},
+		"finger_basic": {
+			"type": "image",
+			"width": 166,
+			"height": 166,
+			"path": "image/finger_basic.png"
+		},
+		"finger_touch_basic": {
+			"type": "image",
+			"width": 168,
+			"height": 168,
+			"path": "image/finger_touch_basic.png"
 		}
 	},
 	"moduleMainScripts": {

@@ -18,6 +18,8 @@ export const createLoadedScene = (loadsAssets: boolean = false) =>
         "train_bonus_disabled",
         "rail_bonus_enabled",
         "rail_bonus_disabled",
+        "finger_basic",
+        "finger_touch_basic",
         "build_txt",
         "station_txt",
         "branch_txt",

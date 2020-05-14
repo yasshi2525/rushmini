@@ -5,8 +5,8 @@ import userResource from "models/user_resource";
 import { createLoadedScene } from "../_helper/scene";
 
 declare const recreateGame: () => Promise<void>;
-const activeOpacity = 0.75;
-const inactiveOpacity = 0.25;
+const activeOpacity = 0.5;
+const inactiveOpacity = 0.5;
 
 describe("railbuild_guide", () => {
   let scene: g.Scene;
@@ -26,13 +26,12 @@ describe("railbuild_guide", () => {
 
   it("guide listen to model", () => {
     expect(userResource.stateListeners.length).toEqual(1);
-    expect(panel.opacity).toEqual(activeOpacity);
+    expect(panel.visible()).toBeTruthy();
 
     userResource.start(0, 0);
     expect(panel.opacity).toEqual(inactiveOpacity);
     userResource.end();
     expect(panel.visible()).toBeFalsy();
     userResource.reset();
-    expect(panel.visible()).toBeFalsy(); // state listener削除
   });
 });
