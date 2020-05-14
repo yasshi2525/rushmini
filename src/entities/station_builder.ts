@@ -61,15 +61,13 @@ const createStationPanel = (scene: g.Scene) => {
   return panel;
 };
 
-const createInstraction = (scene: g.Scene) =>
-  new g.SystemLabel({
-    scene,
-    text: "線路をクリックorタップして新駅を建設しよう",
-    fontSize: 20,
-    x: (g.game.width * SIZE) / 2,
-    y: 20 * 2,
-    textAlign: g.TextAlign.Center,
-  });
+const appendInstraction = (panel: g.E) => {
+  const sprite = createSquareSprite(panel.scene, "station_txt");
+  sprite.x = (panel.width - sprite.width) / 2;
+  sprite.y = 40;
+  sprite.modified();
+  panel.append(sprite);
+};
 
 const createStationBuilder = (loadedScene: g.Scene) => {
   const rns: RailNode[] = [];
@@ -93,7 +91,7 @@ const createStationBuilder = (loadedScene: g.Scene) => {
     panel.append(createRailEdgePanel(loadedScene, opts))
   );
   panel.append(createStationPanel(loadedScene));
-  panel.append(createInstraction(loadedScene));
+  appendInstraction(panel);
 
   panel.pointUp.add((ev) => handleOnSelected(ev, rns));
 

@@ -1,6 +1,7 @@
 import cityResource from "../models/city_resource";
 import Point from "../models/point";
 import viewer, { ViewerEvent } from "../utils/viewer";
+import { createSquareSprite } from "./sprite";
 
 const SIZE = 0.8;
 const handleOnSelected = (ev: g.PointUpEvent) => {
@@ -12,15 +13,13 @@ const handleOnSelected = (ev: g.PointUpEvent) => {
   viewer.fire(ViewerEvent.RESIDENCE_ENDED);
 };
 
-const createInstraction = (scene: g.Scene) =>
-  new g.SystemLabel({
-    scene,
-    text: "マップをクリックorタップして住宅を建設しよう",
-    fontSize: 20,
-    x: (g.game.width * SIZE) / 2,
-    y: 20 * 2,
-    textAlign: g.TextAlign.Center,
-  });
+const appendInstraction = (panel: g.E) => {
+  const sprite = createSquareSprite(panel.scene, "residence_txt");
+  sprite.x = (panel.width - sprite.width) / 2;
+  sprite.y = 40;
+  sprite.modified();
+  panel.append(sprite);
+};
 
 const createResidenceBuilder = (loadedScene: g.Scene) => {
   const panel = new g.Pane({
@@ -32,8 +31,7 @@ const createResidenceBuilder = (loadedScene: g.Scene) => {
     touchable: true,
   });
 
-  panel.append(createInstraction(loadedScene));
-
+  appendInstraction(panel);
   panel.pointUp.add((ev) => handleOnSelected(ev));
 
   panel.hide();

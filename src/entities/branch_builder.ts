@@ -73,16 +73,11 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
       viewer.fire(ViewerEvent.BRANCHED);
     }
   });
-  panel.append(
-    new g.SystemLabel({
-      scene: loadedScene,
-      text: "分岐させたい駅からドラッグ＆ドロップorスワイプして延伸しよう",
-      fontSize: 20,
-      x: panel.width / 2,
-      y: 20 * 2,
-      textAlign: g.TextAlign.Center,
-    })
-  );
+  const sprite = createSquareSprite(loadedScene, "branch_txt");
+  sprite.x = (panel.width - sprite.width) / 2;
+  sprite.y = 40;
+  sprite.modified();
+  panel.append(sprite);
   panel.hide();
   return panel;
 };

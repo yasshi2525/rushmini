@@ -525,8 +525,8 @@
 		},
 		"build_txt": {
 			"type": "image",
-			"width": 557,
-			"height": 38,
+			"width": 556,
+			"height": 37,
 			"path": "image/build_txt.png"
 		},
 		"rollback_txt": {
@@ -534,6 +534,24 @@
 			"width": 307,
 			"height": 45,
 			"path": "image/rollback_txt.png"
+		},
+		"branch_txt": {
+			"type": "image",
+			"width": 625,
+			"height": 30,
+			"path": "image/branch_txt.png"
+		},
+		"residence_txt": {
+			"type": "image",
+			"width": 581,
+			"height": 37,
+			"path": "image/residence_txt.png"
+		},
+		"station_txt": {
+			"type": "image",
+			"width": 556,
+			"height": 37,
+			"path": "image/station_txt.png"
 		}
 	},
 	"moduleMainScripts": {

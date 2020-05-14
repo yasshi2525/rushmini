@@ -13,7 +13,7 @@ describe("railbuild_guide", () => {
   let panel: g.E;
 
   beforeEach(async () => {
-    scene = await createLoadedScene();
+    scene = await createLoadedScene(true);
     panel = createRailBuildGuide(scene);
     userResource.init();
   });

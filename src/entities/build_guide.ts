@@ -1,4 +1,5 @@
 import userResource from "../models/user_resource";
+import { createSquareSprite } from "./sprite";
 
 /**
  * 画面に占める路線敷設ガイドの大きさ
@@ -41,17 +42,13 @@ const _createPanel = (loadedScene: g.Scene) =>
  * ガイド文を作成し、追加します
  * @param parent
  */
-const _appendInstraction = (parent: g.E) =>
-  parent.append(
-    new g.SystemLabel({
-      scene: parent.scene,
-      text: "路線をドラッグ＆ドロップorスワイプで敷こう",
-      fontSize,
-      x: parent.width / 2,
-      y: fontSize * 2,
-      textAlign: g.TextAlign.Center,
-    })
-  );
+const _appendInstraction = (parent: g.E) => {
+  const sprite = createSquareSprite(parent.scene, "build_txt");
+  sprite.x = (parent.width - sprite.width) / 2;
+  sprite.y = 40;
+  sprite.modified();
+  parent.append(sprite);
+};
 
 /**
  * 敷設開始・終了の地点を指すブロックを作成します
