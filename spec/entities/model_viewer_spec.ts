@@ -31,7 +31,7 @@ describe("model_viewer", () => {
   let t: Train;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(true);
+    scene = await createLoadedScene();
     base = createModelViewer(scene);
     c = new Company(1, 3, 4);
     r = new Residence([c], 6, 8);

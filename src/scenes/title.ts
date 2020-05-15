@@ -16,6 +16,15 @@ export type TitleScene = {
  * @param next
  */
 const preserveShift = (panel: g.E, next: g.Scene) => {
+  let cnt = 0;
+  const counter = () => {
+    if (cnt > g.game.fps * 5) {
+      g.game.replaceScene(next);
+      panel.scene.update.remove(counter);
+    }
+    cnt++;
+  };
+  panel.scene.update.add(counter);
   panel.pointUp.add(() => {
     g.game.replaceScene(next);
   });
@@ -29,7 +38,7 @@ const createTitleScene = (): TitleScene => {
     prepare: (next: g.Scene) => {
       scene.loaded.add(() => {
         const panel = createInstraction(scene);
-        // ガイドパネルが押下されたならば、ゲームを開始する
+        // 5秒経過かガイドパネルが押下されたならば、ゲームを開始する
         preserveShift(panel, next);
         scene.append(panel);
       });

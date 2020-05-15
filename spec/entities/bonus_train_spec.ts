@@ -24,7 +24,7 @@ describe("bonus_train", () => {
 
   beforeEach(async () => {
     scorer.init({ score: 0 });
-    scene = await createLoadedScene(true);
+    scene = await createLoadedScene();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BONUS];

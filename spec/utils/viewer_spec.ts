@@ -13,7 +13,7 @@ describe("controller", () => {
   beforeEach(async () => {
     random.init(new g.XorshiftRandomGenerator(0));
     scorer.init({ score: 0 });
-    scene = await createLoadedScene(true);
+    scene = await createLoadedScene();
     preserveEntityCreator();
   });
 

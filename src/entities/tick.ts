@@ -12,7 +12,7 @@ const createTickLabel = (loadedScene: g.Scene) => {
     fontSize: 28,
     x: 75,
     y: 15,
-    font: createFont(loadedScene, "score_main"),
+    font: createFont("score_main"),
   });
 
   // 残り時間が変化したならラベルテキストを更新する

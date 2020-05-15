@@ -308,43 +308,50 @@
 			"type": "image",
 			"width": 94,
 			"height": 94,
-			"path": "image/company_basic.png"
+			"path": "image/company_basic.png",
+			"global": true
 		},
 		"human_basic": {
 			"type": "image",
 			"width": 54,
 			"height": 54,
-			"path": "image/human_basic.png"
+			"path": "image/human_basic.png",
+			"global": true
 		},
 		"residence_basic": {
 			"type": "image",
 			"width": 94,
 			"height": 94,
-			"path": "image/residence_basic.png"
+			"path": "image/residence_basic.png",
+			"global": true
 		},
 		"station_basic": {
 			"type": "image",
 			"width": 94,
 			"height": 94,
-			"path": "image/station_basic.png"
+			"path": "image/station_basic.png",
+			"global": true
 		},
 		"station_candidate": {
 			"type": "image",
 			"width": 126,
 			"height": 126,
-			"path": "image/station_candidate.png"
+			"path": "image/station_candidate.png",
+			"global": true
 		},
 		"station_covered": {
 			"type": "image",
 			"width": 126,
 			"height": 126,
-			"path": "image/station_covered.png"
+			"path": "image/station_covered.png",
+			"global": true
 		},
 		"train_basic": {
 			"type": "image",
 			"width": 70,
 			"height": 70,
-			"path": "image/train_basic.png"
+			"path": "image/train_basic.png",
+			"global": true
 		},
 		"branch_builder": {
 			"type": "script",
@@ -415,85 +422,99 @@
 			"type": "image",
 			"width": 679,
 			"height": 526,
-			"path": "image/frame_main.png"
+			"path": "image/frame_main.png",
+			"global": true
 		},
 		"rail_bonus_disabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/rail_bonus_disabled.png"
+			"path": "image/rail_bonus_disabled.png",
+			"global": true
 		},
 		"rail_bonus_enabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/rail_bonus_enabled.png"
+			"path": "image/rail_bonus_enabled.png",
+			"global": true
 		},
 		"residence_bonus_disabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/residence_bonus_disabled.png"
+			"path": "image/residence_bonus_disabled.png",
+			"global": true
 		},
 		"residence_bonus_enabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/residence_bonus_enabled.png"
+			"path": "image/residence_bonus_enabled.png",
+			"global": true
 		},
 		"score_negative": {
 			"type": "image",
 			"width": 192,
 			"height": 21,
-			"path": "image/score_negative.png"
+			"path": "image/score_negative.png",
+			"global": true
 		},
 		"score_positive": {
 			"type": "image",
 			"width": 192,
 			"height": 21,
-			"path": "image/score_positive.png"
+			"path": "image/score_positive.png",
+			"global": true
 		},
 		"station_bonus_disabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/station_bonus_disabled.png"
+			"path": "image/station_bonus_disabled.png",
+			"global": true
 		},
 		"station_bonus_enabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/station_bonus_enabled.png"
+			"path": "image/station_bonus_enabled.png",
+			"global": true
 		},
 		"train_bonus_disabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/train_bonus_disabled.png"
+			"path": "image/train_bonus_disabled.png",
+			"global": true
 		},
 		"train_bonus_enabled": {
 			"type": "image",
 			"width": 128,
 			"height": 128,
-			"path": "image/train_bonus_enabled.png"
+			"path": "image/train_bonus_enabled.png",
+			"global": true
 		},
 		"score_main": {
 			"type": "image",
 			"width": 490,
 			"height": 28,
-			"path": "image/score_main.png"
+			"path": "image/score_main.png",
+			"global": true
 		},
 		"bonus_txt": {
 			"type": "image",
 			"width": 416,
 			"height": 45,
-			"path": "image/bonus_txt.png"
+			"path": "image/bonus_txt.png",
+			"global": true
 		},
 		"title_txt": {
 			"type": "image",
 			"width": 740,
 			"height": 121,
-			"path": "image/title_txt.png"
+			"path": "image/title_txt.png",
+			"global": true
 		},
 		"frame": {
 			"type": "script",
@@ -502,11 +523,13 @@
 		},
 		"score_negative_glyphs": {
 			"type": "text",
-			"path": "text/score_negative_glyphs.json"
+			"path": "text/score_negative_glyphs.json",
+			"global": true
 		},
 		"score_positive_glyphs": {
 			"type": "text",
-			"path": "text/score_positive_glyphs.json"
+			"path": "text/score_positive_glyphs.json",
+			"global": true
 		},
 		"font": {
 			"type": "script",
@@ -515,55 +538,71 @@
 		},
 		"score_main_glyphs": {
 			"type": "text",
-			"path": "text/score_main_glyphs.json"
+			"path": "text/score_main_glyphs.json",
+			"global": true
 		},
 		"available_txt": {
 			"type": "image",
 			"width": 369,
 			"height": 45,
-			"path": "image/available_txt.png"
+			"path": "image/available_txt.png",
+			"global": true
 		},
 		"build_txt": {
 			"type": "image",
 			"width": 556,
 			"height": 37,
-			"path": "image/build_txt.png"
+			"path": "image/build_txt.png",
+			"global": true
 		},
 		"rollback_txt": {
 			"type": "image",
 			"width": 307,
 			"height": 45,
-			"path": "image/rollback_txt.png"
+			"path": "image/rollback_txt.png",
+			"global": true
 		},
 		"branch_txt": {
 			"type": "image",
 			"width": 625,
 			"height": 30,
-			"path": "image/branch_txt.png"
+			"path": "image/branch_txt.png",
+			"global": true
 		},
 		"residence_txt": {
 			"type": "image",
 			"width": 581,
 			"height": 37,
-			"path": "image/residence_txt.png"
+			"path": "image/residence_txt.png",
+			"global": true
 		},
 		"station_txt": {
 			"type": "image",
 			"width": 556,
 			"height": 37,
-			"path": "image/station_txt.png"
+			"path": "image/station_txt.png",
+			"global": true
 		},
 		"finger_basic": {
 			"type": "image",
 			"width": 166,
 			"height": 166,
-			"path": "image/finger_basic.png"
+			"path": "image/finger_basic.png",
+			"global": true
 		},
 		"finger_touch_basic": {
 			"type": "image",
 			"width": 168,
 			"height": 168,
-			"path": "image/finger_touch_basic.png"
+			"path": "image/finger_touch_basic.png",
+			"global": true
+		},
+		"title_img": {
+			"type": "image",
+			"width": 652,
+			"height": 250,
+			"path": "image/title_img.png",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

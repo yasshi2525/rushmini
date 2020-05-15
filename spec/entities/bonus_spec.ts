@@ -20,7 +20,7 @@ describe("bonus", () => {
   let bonus: g.E;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(true);
+    scene = await createLoadedScene();
     scorer.init({ score: 0 });
     preserveEntityCreator();
     viewer.init(scene);

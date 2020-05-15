@@ -93,7 +93,7 @@ describe("platform", () => {
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
 
-    for (let i = 0; i < FPS * Train.STAY_SEC - 1; i++) {
+    for (let i = 0; i < FPS * Train.STAY_SEC; i++) {
       t._step();
       expect(t.current()._base()).toEqual(dept);
       expect(h.state()).toEqual(HumanState.ON_TRAIN);

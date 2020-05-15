@@ -27,7 +27,7 @@ class Train extends RoutableObject implements Pointable, Steppable, Routable {
   /**
    * 最低何秒間駅に停車するか
    */
-  public static STAY_SEC: number = 3;
+  public static STAY_SEC: number = 2;
 
   /**
    * 乗客

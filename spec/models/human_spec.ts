@@ -1,4 +1,5 @@
 import Company from "models/company";
+import DeptTask from "models/dept_task";
 import Human, { HumanState } from "models/human";
 import modelListener, { EventType } from "models/listener";
 import { distance } from "models/pointable";
@@ -196,8 +197,9 @@ describe("human", () => {
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
-    for (let j = 0; j < Train.STAY_SEC * FPS; j++) {
+    for (let j = 0; j < Train.STAY_SEC * FPS - 1; j++) {
       t._step();
+      expect(t.current()._base()).toBeInstanceOf(DeptTask);
       expect(h.state()).toEqual(HumanState.ON_TRAIN);
     }
     for (let j = 0; j < (5 * FPS) / Train.SPEED; j++) {

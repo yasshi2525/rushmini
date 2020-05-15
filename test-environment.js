@@ -11,6 +11,10 @@ const btoa = require("btoa");
 const { JSDOM } = require("jsdom");
 window = new JSDOM().window;
 document = window.document;
+const raf = require("raf");
+requestAnimationFrame = raf;
+navigator = window.navigator;
+window.AudioContext = require("web-audio-test-api").AudioContext;
 const pdi = require("@akashic/pdi-browser");
 const gdr = require("@akashic/game-driver");
 const g = require("@akashic/akashic-engine");
@@ -44,18 +48,13 @@ class FileSystemScriptAsset extends g.ScriptAsset {
   }
 
   _load(handler) {
-    fs.readFile(this.path, (err, data) => {
-      if (err) {
-        handler._onAssetError(this, err);
-      } else {
-        this.script = data.toString();
-        handler._onAssetLoad(this);
-      }
-    });
+    this.script = fs.readFileSync(this.path).toString();
+    handler._onAssetLoad(this);
   }
 
   execute(env) {
-    this._wrap(env);
+    const func = this._wrap();
+    func(env);
     return env.module.exports;
   }
 
@@ -115,17 +114,23 @@ class FileSystemResourceFactory extends pdi.ResourceFactory {
  * g.Game インスタンスを生成
  */
 const createGame = async () => {
+  const audio = new pdi.AudioPluginManager();
+  audio.tryInstallPlugin([new pdi.WebAudioPlugin()]);
   const driver = new gdr.GameDriver({
     platform: new FileSystemPlatform({
       resourceFactory: new FileSystemResourceFactory({
-        audioPluginManager: new pdi.AudioPluginManager(),
+        audioPluginManager: audio,
       }),
       amflow: new gdr.MemoryAmflowClient({
         playId: "dummyPlayID",
       }),
       containerView: document.createElement("div"),
     }),
-    player: { id: "dummyPlayerID", name: "test" },
+    player: {
+      id: "dummyPlayerID",
+      name: "test",
+    },
+    errorHandler: (err) => console.error(err),
   });
 
   await driver.doInitialize({
@@ -136,7 +141,9 @@ const createGame = async () => {
     },
     configurationBase: __dirname + "/",
     configurationUrl: __dirname + "/",
-    loopConfiguration: { loopMode: gdr.LoopMode.Realtime },
+    loopConfiguration: {
+      loopMode: gdr.LoopMode.Realtime,
+    },
   });
   return driver._game;
 };

@@ -11,7 +11,7 @@ describe("score", () => {
 
   beforeEach(async () => {
     scorer.init({ score: 0 });
-    scene = await createLoadedScene(true);
+    scene = await createLoadedScene();
     panel = createScoreLabel(scene);
   });
 

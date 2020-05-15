@@ -11,7 +11,7 @@ export const createSquareSprite = (
 ) => {
   const sprite = new g.Sprite({
     scene,
-    src: scene.assets[src],
+    src: g.game.assets[src],
     scaleX: scale,
     scaleY: scale,
   });

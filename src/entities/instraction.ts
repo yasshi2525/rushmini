@@ -1,3 +1,5 @@
+import { createSquareSprite } from "./sprite";
+
 const titleFontSize = 50;
 const titleOffsetY = 50;
 
@@ -12,26 +14,17 @@ const createInstraction = (loadedScene: g.Scene) => {
     height: g.game.height,
     touchable: true,
   });
-  panel.append(
-    new g.FilledRect({
-      scene: loadedScene,
-      x: 0,
-      y: 0,
-      width: panel.width,
-      height: panel.height,
-      cssColor: "#aabbcc",
-    })
-  );
-  panel.append(
-    new g.SystemLabel({
-      scene: loadedScene,
-      text: "社畜を電車で運べ",
-      fontSize: titleFontSize,
-      x: g.game.width / 2,
-      y: titleOffsetY,
-      textAlign: g.TextAlign.Center,
-    })
-  );
+  const title = createSquareSprite(loadedScene, "title_txt");
+  title.x = (panel.width - title.width) / 2;
+  title.y = panel.height * 0.1;
+  title.modified();
+  panel.append(title);
+
+  const img = createSquareSprite(loadedScene, "title_img");
+  img.x = (panel.width - img.width) / 2;
+  img.y = panel.height * 0.4;
+  img.modified();
+  panel.append(img);
 
   return panel;
 };

@@ -36,7 +36,7 @@ describe("human_despawner", () => {
   let r: Residence;
 
   beforeEach(async () => {
-    scene = await createLoadedScene(true);
+    scene = await createLoadedScene();
     c = new Company(1, 0, 0);
     r = new Residence([c], 0, 0);
   });

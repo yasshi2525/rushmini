@@ -201,11 +201,11 @@ describe("route_finder", () => {
       transportFinder.init();
       routeFinder.init();
 
-      const c = new Company(1, 3, 4);
+      const c = new Company(1, 30, 40);
       const r = new Residence([c], 0, 0);
 
       userResource.start(0, 0);
-      userResource.extend(3, 4);
+      userResource.extend(30, 40);
       userResource.end();
 
       const dept1 = userResource.getPrimaryLine().top;
@@ -257,10 +257,14 @@ describe("route_finder", () => {
 
       for (let i = 0; i < FPS * Train.STAY_SEC - 1; i++) {
         t._step();
+        expect(t.current()._base()).toEqual(dept1);
         expect(t.loc()).toEqual(p1.loc());
       }
       t._step();
-      expect(t.current()._base()).not.toBeInstanceOf(DeptTask);
+      expect(t.current()._base()).toEqual(dept1.next);
+      expect(t.loc()).toEqual(p1.loc());
+      t._step();
+      expect(t.current()._base()).toEqual(dept1.next);
       expect(t.loc()).not.toEqual(p1.loc());
       expect(t.loc()).not.toEqual(p2.loc());
       modelListener.fire(EventType.MODIFIED);

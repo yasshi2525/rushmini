@@ -12,7 +12,7 @@ const createScoreLabel = (loadedScene: g.Scene) => {
     y: 15,
     fontSize: 28,
     text: toText(scorer.get()),
-    font: createFont(loadedScene, "score_main"),
+    font: createFont("score_main"),
   });
 
   // 得点が変化したならラベルテキストを更新する

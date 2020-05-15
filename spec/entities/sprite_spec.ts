@@ -9,7 +9,7 @@ describe("sprite", () => {
 
   beforeEach(async () => {
     scene = await createLoadedScene();
-    scene.assets["hoge"] = g.game.resourceFactory.createImageAsset(
+    g.game.assets["hoge"] = g.game.resourceFactory.createImageAsset(
       "hoge",
       "hoge",
       512,
@@ -23,5 +23,6 @@ describe("sprite", () => {
 
   it("1x", () => {
     const p = createSquareSprite(scene, "hoge", 512);
+    expect(p).not.toBeUndefined();
   });
 });
