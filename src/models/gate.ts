@@ -90,7 +90,6 @@ class Gate extends RoutableObject implements Pointable, Steppable {
       const h = this.outQueue.shift();
 
       if (h._getNext() === this) {
-        this.outQueue.shift();
         h._setGate(undefined);
         h._complete();
         h.state(HumanState.MOVE);
