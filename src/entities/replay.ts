@@ -3,6 +3,7 @@ import modelListener from "../models/listener";
 import userResource from "../models/user_resource";
 import routeFinder from "../utils/route_finder";
 import scenes, { SceneType } from "../utils/scene";
+import scorer from "../utils/scorer";
 import stepper from "../utils/stepper";
 import ticker from "../utils/ticker";
 import transportFinder from "../utils/transport_finder";
@@ -27,7 +28,8 @@ const replay = () => {
   modelListener.unregisterAll();
   modelListener.flush();
   ticker.reset();
-  g.game.vars.gameState.score = 0;
+  scorer.reset();
+  scorer.init(g.game.vars.gameState);
   g.game.pushScene(scenes._scenes[SceneType.TITLE]);
 };
 

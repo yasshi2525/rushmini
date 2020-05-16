@@ -27,6 +27,7 @@ const scorer = {
     _listeners.push(listener);
   },
   reset: () => {
+    _storage.score = 0;
     _listeners.length = 0;
   },
 };

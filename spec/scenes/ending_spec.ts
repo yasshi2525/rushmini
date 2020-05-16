@@ -1,6 +1,7 @@
 import { RPGAtsumaruWindow } from "parameterObject";
 import createEndingScene, { handleEnding } from "scenes/ending";
 import scenes, { SceneType } from "utils/scene";
+import scorer from "utils/scorer";
 import ticker from "utils/ticker";
 
 declare const recreateGame: () => Promise<void>;
@@ -15,8 +16,8 @@ describe("ending", () => {
         display: (_: number): any => undefined,
       },
     };
-    const state = { score: 0 };
-    g.game.vars.gameState = state;
+    g.game.vars = { gameState: { score: 0 } };
+    scorer.init(g.game.vars.gameState);
   });
 
   afterEach(async () => {
