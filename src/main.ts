@@ -59,7 +59,7 @@ const screenshot = () => {
 export const main = (param: GameMainParameterObject) => {
   if (param.isAtsumaru) {
     window.RPGAtsumaru.screenshot.setScreenshotHandler(() =>
-      Promise.resolve(screenshot)
+      Promise.resolve(screenshot())
     );
   }
   init(param);
