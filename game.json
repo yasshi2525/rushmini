@@ -634,6 +634,11 @@
 			"type": "script",
 			"path": "script/utils/statics.js",
 			"global": true
+		},
+		"score_view": {
+			"type": "script",
+			"path": "script/entities/score_view.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

@@ -1,5 +1,5 @@
 import modelListener, { EventType } from "models/listener";
-import scorer, { ScoreListener, ScoreStorage } from "utils/scorer";
+import scorer, { ScoreEvent, ScoreListener, ScoreStorage } from "utils/scorer";
 
 describe("scorer", () => {
   let state: ScoreStorage;
@@ -44,9 +44,9 @@ describe("scorer", () => {
   it("add by event", () => {
     scorer.init(state);
     expect(scorer.get()).toEqual(0);
-    modelListener.add(EventType.SCORED, 100);
+    modelListener.add(EventType.CREATED, new ScoreEvent(100, undefined));
     expect(scorer.get()).toEqual(0);
-    modelListener.fire(EventType.SCORED);
+    modelListener.fire(EventType.CREATED);
     expect(scorer.get()).toEqual(100);
   });
 });

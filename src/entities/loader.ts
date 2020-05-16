@@ -12,6 +12,7 @@ import createHumanDespawner from "./human_despawner";
 import createModelViewer from "./model_viewer";
 import createResidenceBuilder from "./residence_builder";
 import createScoreLabel from "./score";
+import createScoreViewer from "./score_view";
 import createShadow from "./shadow";
 import createStationBuilder from "./station_builder";
 import createTickLabel from "./tick";
@@ -33,6 +34,7 @@ const preserveEntityCreator = () => {
   viewer.put(ViewerType.MODEL, createModelViewer);
   viewer.put(ViewerType.RESIDENCE_BUILDER, createResidenceBuilder);
   viewer.put(ViewerType.SCORE, createScoreLabel);
+  viewer.put(ViewerType.SCORER, createScoreViewer);
   viewer.put(ViewerType.STATION_BUILDER, createStationBuilder);
   viewer.put(ViewerType.SHADOW, createShadow);
   viewer.put(ViewerType.TICK, createTickLabel);

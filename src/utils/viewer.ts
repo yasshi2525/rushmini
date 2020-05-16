@@ -25,6 +25,10 @@ export enum ViewerType {
    */
   DESPAWNER,
   /**
+   * 人の動きによる得点授受
+   */
+  SCORER,
+  /**
    * 鉄道建設の仕方の説明
    */
   BUILD_GUIDE,

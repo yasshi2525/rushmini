@@ -7,6 +7,7 @@ import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Train from "models/train";
+import { ScoreEvent } from "utils/scorer";
 import ticker from "utils/ticker";
 
 let oldWarn: (msg: string) => void;
@@ -177,8 +178,8 @@ describe("human", () => {
     const t = new Train(l.top);
     let score = 0;
     modelListener
-      .find(EventType.SCORED, Number)
-      .register((n: number) => (score += n));
+      .find(EventType.CREATED, ScoreEvent)
+      .register((ev: ScoreEvent) => (score += ev.value));
     g2._setNext(c, c, distance(c, g2));
     p2._setNext(g2, c, distance(c, p2));
     l.top._setNext(p2, c, distance(c, p1));
@@ -206,19 +207,19 @@ describe("human", () => {
       t._step();
       expect(h.state()).toEqual(HumanState.ON_TRAIN);
     }
-    modelListener.fire(EventType.SCORED);
+    modelListener.fire(EventType.CREATED);
     expect(score).toEqual(0);
     t._step();
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_PLATFORM);
-    modelListener.fire(EventType.SCORED);
+    modelListener.fire(EventType.CREATED);
     expect(score).toEqual(0);
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
-    modelListener.fire(EventType.SCORED);
+    modelListener.fire(EventType.CREATED);
     expect(score).toEqual(5);
     g2._step();
     expect(h.state()).toEqual(HumanState.MOVE);
-    modelListener.fire(EventType.SCORED);
+    modelListener.fire(EventType.CREATED);
     expect(score).toEqual(5);
   });
 });

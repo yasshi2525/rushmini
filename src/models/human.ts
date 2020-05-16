@@ -1,3 +1,4 @@
+import { ScoreEvent } from "../utils/scorer";
 import ticker from "../utils/ticker";
 import Company from "./company";
 import DeptTask from "./dept_task";
@@ -37,10 +38,6 @@ class Human extends RoutableObject implements Steppable {
    * 1秒間に何pixcel進むか
    */
   public static SPEED: number = 50;
-  /**
-   * 会社に到着した際の加点
-   */
-  public static COMPLETE_SCORE: number = 0;
 
   public static DESPAWN_SCORE: number = -10;
 
@@ -229,19 +226,21 @@ class Human extends RoutableObject implements Steppable {
     this.next?._giveup(this);
     this.train?._giveup(this);
     modelListener.add(EventType.DELETED, this);
-    modelListener.add(EventType.SCORED, Human.DESPAWN_SCORE);
+    modelListener.add(
+      EventType.CREATED,
+      new ScoreEvent(Human.DESPAWN_SCORE, this)
+    );
   }
 
   public _complete() {
     // 運賃支払
     if (this.payment) {
-      modelListener.add(EventType.SCORED, this.payment);
+      modelListener.add(EventType.CREATED, new ScoreEvent(this.payment, this));
     }
     const prev = this.next;
     this.next = this.next.nextFor(this.destination);
     // 会社到着
     if (!this.next) {
-      modelListener.add(EventType.SCORED, Human.COMPLETE_SCORE);
       modelListener.add(EventType.DELETED, this);
     }
     this.payment = prev.paymentFor(this.next);
