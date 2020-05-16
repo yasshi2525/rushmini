@@ -5,13 +5,6 @@ import scenes, { SceneType } from "../utils/scene";
 declare const window: RPGAtsumaruWindow;
 const BOARD_ID = 1;
 
-const preserveShift = (panel: g.E) => {
-  panel.pointUp.add(() => {
-    scenes.reset();
-    scenes.replace(SceneType.TITLE);
-  });
-};
-
 /**
  * ゲーム中に作成したスクリーンショットを表示する
  * @param prev
@@ -25,6 +18,7 @@ export const handleEnding = (prev: g.E) => {
     const anim = () => {
       if (scale < 0.66) {
         scene.update.remove(anim);
+        scene.children[0].show();
         return;
       }
       prev.scale(scale);
@@ -52,12 +46,12 @@ const createEndingScene = (isAtsumaru: boolean) => {
         scene,
         fontSize: 60,
         text: "終了！",
-        x: g.game.width / 2,
-        y: g.game.height / 2 - 30,
+        x: g.game.width - 100,
+        y: g.game.height - 30,
         textAlign: g.TextAlign.Center,
       });
     }
-    preserveShift(panel);
+    panel.hide();
     scene.append(panel);
   });
   return scene;

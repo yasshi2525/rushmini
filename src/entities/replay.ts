@@ -1,20 +1,45 @@
-/**
- * 画面全体に占める割合
- */
-const scale = 0.9;
-const fontSize = 50;
+import cityResource from "../models/city_resource";
+import modelListener from "../models/listener";
+import userResource from "../models/user_resource";
+import routeFinder from "../utils/route_finder";
+import scenes, { SceneType } from "../utils/scene";
+import stepper from "../utils/stepper";
+import ticker from "../utils/ticker";
+import transportFinder from "../utils/transport_finder";
+import viewer from "../utils/viewer";
+
+const scale = 0.8;
+const width = 250;
+const height = 75;
+const fontSize = 35;
 
 const activeOpacity = 1.0;
 const inactiveOpacity = 0.5;
 
+const replay = () => {
+  scenes.reset();
+  viewer.reset();
+  transportFinder.reset();
+  routeFinder.reset();
+  stepper.reset();
+  userResource.reset();
+  cityResource.reset();
+  modelListener.unregisterAll();
+  modelListener.flush();
+  ticker.reset();
+  g.game.vars.gameState.score = 0;
+  g.game.pushScene(scenes._scenes[SceneType.TITLE]);
+};
+
 const _createPanel = (loadedScene: g.Scene) =>
   new g.E({
     scene: loadedScene,
-    x: (g.game.width * (1 - scale)) / 2,
-    y: (g.game.height * (1 - scale)) / 2,
-    width: g.game.width * scale,
-    height: g.game.height * scale,
+    x: g.game.width * scale - width,
+    y: g.game.height * scale - height,
+    width,
+    height,
     opacity: activeOpacity,
+    touchable: true,
   });
 
 const _appendBackground = (parent: g.E) =>
@@ -36,7 +61,7 @@ const _appendButton = (parent: g.E) => {
     y: parent.height / 2,
     fontSize,
     textAlign: g.TextAlign.Center,
-    text: "Replay",
+    text: "もう一度あそぶ",
     textColor: "#000000",
   });
   // パネルを押下したとき半透明にする
@@ -47,6 +72,7 @@ const _appendButton = (parent: g.E) => {
   parent.pointUp.add(() => {
     parent.opacity = activeOpacity;
     parent.modified();
+    replay();
   });
   parent.append(btn);
 };

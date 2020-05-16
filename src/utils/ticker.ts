@@ -4,7 +4,8 @@ const defaultTotalSec = 120;
 const endingSec = 10;
 
 let _fps = 30;
-let _remainFrame = defaultTotalSec * _fps;
+let _initialRemainFrame = defaultTotalSec * _fps;
+let _remainFrame = _initialRemainFrame;
 
 export enum EventType {
   /**
@@ -68,7 +69,8 @@ const ticker = {
    */
   init: (fps: number, val?: number) => {
     _fps = fps;
-    _remainFrame = (val ? val : defaultTotalSec) * _fps;
+    _initialRemainFrame = (val ? val : defaultTotalSec) * _fps;
+    _remainFrame = _initialRemainFrame;
   },
 
   /**
@@ -114,11 +116,9 @@ const ticker = {
   fps: () => _fps,
 
   reset: () => {
-    _fps = 30;
-    _remainFrame = defaultTotalSec * _fps;
+    _remainFrame = _initialRemainFrame;
     _triggers.flush();
     _triggers.unregisterAll();
-    _scenes.forEach((s) => s.scene.update.remove(s.fn));
     _scenes.length = 0;
   },
 };
