@@ -7,13 +7,22 @@ import { createSquareSprite } from "./sprite";
 
 const SLIDE = 20;
 
-const edge = (t: Train) => {
+const edge = (t: Train, ignoreTerminal: boolean) => {
   const lt = t.current()._base();
-  const e = lt.isDeptTask() ? lt.next : lt;
-  if (e.isDeptTask()) {
+  const _e = lt.isDeptTask() ? lt.next : lt;
+  if (_e.isDeptTask()) {
     return undefined;
   }
-  return (e as EdgeTask).edge;
+  const e = _e as EdgeTask;
+  // 上下線が入れ替わる折返し駅の場合補正なし（中央に表示）
+  const prev = e.prev.isDeptTask() ? e.prev.prev : e.prev;
+  if (
+    ignoreTerminal &&
+    e.edge.isOutbound !== (prev as EdgeTask).edge.isOutbound
+  ) {
+    return undefined;
+  }
+  return e.edge;
 };
 
 const _get = (re: RailEdge, fn: (n: number) => number) =>
@@ -37,18 +46,20 @@ const getAngle = (re: RailEdge) => {
 export const trainModifer = (vo: ViewObject<Train>) => {
   const sprite = vo.viewer.children[0];
   const t = vo.subject;
-  sprite.x = getX(edge(t));
-  sprite.y = getY(edge(t));
-  sprite.angle = getAngle(edge(t));
+  const e = edge(t, true);
+  sprite.x = getX(e);
+  sprite.y = getY(e);
+  sprite.angle = getAngle(edge(t, false));
 
   sprite.modified();
 };
 
 creators.put(Train, (scene, t) => {
   const sprite = createSquareSprite(scene, "train_basic");
-  sprite.x = getX(edge(t));
-  sprite.y = getY(edge(t));
-  sprite.angle = getAngle(edge(t));
+  const e = edge(t, true);
+  sprite.x = getX(e);
+  sprite.y = getY(e);
+  sprite.angle = getAngle(edge(t, false));
   sprite.modified();
   return sprite;
 });
