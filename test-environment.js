@@ -40,6 +40,30 @@ class FileSystemPlatform extends pdi.Platform {
   }
 }
 
+// 参考 : pdi-browser の WebAudioAsset
+class FileSystemAudioAsset extends g.AudioAsset {
+  _load(loader) {
+    // 色々やったが無理だった
+    // const raw = fs.readFileSync(this.path + ".ogg");
+    // const ab = new ArrayBuffer(raw.length);
+    // const view = new Uint8Array(ab);
+    // raw.forEach((b, idx) => (view[idx] = b));
+    // const context = new AudioContext();
+    // context.decodeAudioData(ab, (data) => {
+    //   this.data = data;
+    //   loader._onAssetLoad(this);
+    // });
+    loader._onAssetLoad(this);
+  }
+
+  play() {
+    /* do-nothing */
+  }
+  stop() {
+    /* do-nothing */
+  }
+}
+
 // 参考 : pdi-browser の XHRScriptAsset
 class FileSystemScriptAsset extends g.ScriptAsset {
   static PRE_SCRIPT =
@@ -104,6 +128,17 @@ class FileSystemImageAsset extends g.ImageAsset {
 }
 
 class FileSystemResourceFactory extends pdi.ResourceFactory {
+  createAudioAsset(id, assetPath, duration, system, loop, hint) {
+    return new FileSystemAudioAsset(
+      id,
+      assetPath,
+      duration,
+      system,
+      loop,
+      hint
+    );
+  }
+
   createImageAsset(id, assetPath, width, height) {
     return new FileSystemImageAsset(id, assetPath, width, height);
   }

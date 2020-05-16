@@ -608,6 +608,32 @@
 			"type": "script",
 			"path": "script/utils/scene.js",
 			"global": true
+		},
+		"end_sound": {
+			"type": "audio",
+			"path": "audio/end_sound",
+			"systemId": "sound",
+			"duration": 3059,
+			"global": true
+		},
+		"game_bgm": {
+			"type": "audio",
+			"path": "audio/game_bgm",
+			"systemId": "sound",
+			"duration": 182858,
+			"global": true
+		},
+		"start_sound": {
+			"type": "audio",
+			"path": "audio/start_sound",
+			"systemId": "sound",
+			"duration": 37674,
+			"global": true
+		},
+		"statics": {
+			"type": "script",
+			"path": "script/utils/statics.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

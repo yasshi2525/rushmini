@@ -14,6 +14,8 @@ export const handleEnding = (prev: g.E) => {
   prev.anchor(0, 0);
 
   scene.loaded.add(() => {
+    (g.game.assets["game_bgm"] as g.AudioAsset).stop();
+    (g.game.assets["end_sound"] as g.AudioAsset).play();
     let scale = 1;
     const anim = () => {
       if (scale < 0.66) {
