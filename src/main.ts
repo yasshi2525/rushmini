@@ -40,28 +40,26 @@ const createScenes = (isAtsumaru: boolean) => {
 /**
  * 現在シーンのスクリーンショットを画像データにする
  */
-const screenshot = () => {
-  const currentScene = g.game.scene();
-  const sprite = g.Util.createSpriteFromScene(currentScene, currentScene);
-  const imageData = sprite.surface
-    .renderer()
-    ._getImageData(0, 0, sprite.width, sprite.height);
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  canvas.width = imageData.width;
-  canvas.height = imageData.height;
-  context.putImageData(imageData, 0, 0);
-  const dataurl = "data:image/png;base64," + canvas.toDataURL("image/png");
-  sprite.destroy();
-  return dataurl;
+const handleScreenshot = () => {
+  window.RPGAtsumaru.screenshot.setScreenshotHandler(() => {
+    const currentScene = g.game.scene();
+    const sprite = g.Util.createSpriteFromScene(currentScene, currentScene);
+    const imageData = sprite.surface
+      .renderer()
+      ._getImageData(0, 0, sprite.width, sprite.height);
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+    context.putImageData(imageData, 0, 0);
+    const dataurl = canvas.toDataURL("image/png");
+    sprite.destroy(true);
+    return Promise.resolve(dataurl);
+  });
 };
 
 export const main = (param: GameMainParameterObject) => {
-  if (param.isAtsumaru) {
-    window.RPGAtsumaru.screenshot.setScreenshotHandler(() => {
-      return Promise.resolve(screenshot());
-    });
-  }
+  if (param.isAtsumaru) handleScreenshot();
   init(param);
   createScenes(param.isAtsumaru);
   g.game.pushScene(scenes._scenes[SceneType.TITLE]);
