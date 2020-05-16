@@ -648,7 +648,8 @@
 		"sandbox-runtime": "2",
 		"niconico": {
 			"supportedModes": [
-				"ranking"
+				"ranking",
+				"single"
 			],
 			"preferredSessionParameters": {
 				"totalTimeLimit": 120
