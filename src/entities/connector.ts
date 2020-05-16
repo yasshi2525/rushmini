@@ -21,18 +21,23 @@ const positionModifier = <T extends Pointable>(vo: ViewObject<T>) => {
 const connect = <T extends Pointable>(
   factory: ViewObjectFactory<T>,
   cls: new (...args: any[]) => T,
-  modifier?: ModelModifier<T>
+  modifier: { [key in EventType]?: ModelModifier<T> } = {}
 ) => {
   modelListener.find(EventType.CREATED, cls).register((subject) => {
     const vo = factory.createInstance(subject);
 
-    const tracker = new Tracker(vo.subject);
-    tracker.register((h) => {
-      positionModifier(vo);
-      if (modifier) modifier(vo);
-      vo.viewer.modified();
-    });
-    modelListener.track(EventType.MODIFIED, tracker);
+    Object.keys(modifier)
+      .map((k) => parseInt(k, 10))
+      .filter((k) => !isNaN(k))
+      .forEach((k: EventType) => {
+        const tracker = new Tracker(vo.subject);
+        tracker.register((h) => {
+          if (k === EventType.MODIFIED) positionModifier(vo);
+          modifier[k](vo);
+          vo.viewer.modified();
+        });
+        modelListener.track(k, tracker);
+      });
   });
   modelListener
     .find(EventType.DELETED, cls)

@@ -6,7 +6,7 @@ import Station from "../models/station";
 import userResource from "../models/user_resource";
 import { remove } from "../utils/common";
 import viewer, { ViewerEvent } from "../utils/viewer";
-import connect from "./connector";
+import connect, { ModelModifier } from "./connector";
 import { adjust } from "./creator";
 import ViewObjectFactory from "./factory";
 import {
@@ -40,12 +40,17 @@ const handleOnSelected = (ev: g.PointUpEvent, rns: RailNode[]) => {
 
 const createRailEdgePanel = (scene: g.Scene, opts: RailEdgeCandidateOption) => {
   const panel = new g.E({ scene });
+  const modififer: { [key in EventType]?: ModelModifier<RailEdge> } = {};
+  modififer[EventType.MODIFIED] = railEdgeModifier({
+    band: opts.band,
+    slide: opts.slide,
+  });
   connect(
     new ViewObjectFactory<RailEdge>(panel, (s, su) =>
       adjust(s, su, createRailEdgeCandidate(opts)(s, su))
     ),
     RailEdge,
-    railEdgeModifier({ band: opts.band, slide: opts.slide })
+    modififer
   );
   return panel;
 };

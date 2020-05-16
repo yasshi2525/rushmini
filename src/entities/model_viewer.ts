@@ -4,6 +4,7 @@ import "./station_view";
 
 import Company from "../models/company";
 import Human from "../models/human";
+import { EventType as ModelEventType } from "../models/listener";
 import { Pointable } from "../models/pointable";
 import RailEdge from "../models/rail_edge";
 import Residence from "../models/residence";
@@ -11,14 +12,14 @@ import Station from "../models/station";
 import Train from "../models/train";
 import { find } from "../utils/common";
 import scenes, { SceneType } from "../utils/scene";
-import ticker, { EventType } from "../utils/ticker";
+import ticker, { EventType as TickEventType } from "../utils/ticker";
 import connect, { ModelModifier } from "./connector";
 import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import { humanModifier } from "./human_view";
 import { railEdgeModifier } from "./rail_edge_view";
 import { createFramedRect } from "./rectangle";
-import { trainModifer } from "./train_view";
+import { riddenModifer, trainModifer } from "./train_view";
 
 const SIZE = 0.8;
 const COLOR = "#ffffff";
@@ -28,6 +29,7 @@ type Config<T extends Pointable> = {
   key: new (...args: any[]) => T;
   desc?: boolean;
   modifer?: ModelModifier<T>;
+  rideModifer?: ModelModifier<T>;
 };
 
 const configs: Config<Pointable>[] = [
@@ -36,7 +38,7 @@ const configs: Config<Pointable>[] = [
   { key: Human, desc: true, modifer: humanModifier },
   { key: RailEdge, modifer: railEdgeModifier({}) },
   { key: Station },
-  { key: Train, modifer: trainModifer },
+  { key: Train, modifer: trainModifer, rideModifer: riddenModifer },
 ];
 
 /**
@@ -49,10 +51,14 @@ const createResourcePanel = <T extends Pointable>(
   scene: g.Scene
 ) => {
   const panel = new g.E({ scene });
+  const modifer: { [key in ModelEventType]?: ModelModifier<T> } = {};
+  if (config.modifer) modifer[ModelEventType.MODIFIED] = config.modifer;
+  if (config.rideModifer) modifer[ModelEventType.RIDDEN] = config.rideModifer;
+
   connect(
     new ViewObjectFactory<T>(panel, creators.find(config.key), config.desc),
     config.key,
-    config.modifer
+    modifer
   );
   return panel;
 };
@@ -74,7 +80,7 @@ const createModelViewer = (loadedScene: g.Scene) => {
     pane.append(createResourcePanel(resource, loadedScene))
   );
   // スクリーンショットをエンディングで表示させる
-  ticker.triggers.find(EventType.OVER).register(() => {
+  ticker.triggers.find(TickEventType.OVER).register(() => {
     scenes.preserve(SceneType.ENDING, (scene) =>
       g.Util.createSpriteFromE(scene, pane)
     );

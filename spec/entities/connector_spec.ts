@@ -57,13 +57,22 @@ describe("connetor", () => {
 
   it("connect with modifier", () => {
     let counter = 0;
+    let otherCounter = 0;
     const subject = new Simple();
-    connect(factory, Simple, () => counter++);
+    const modifier: { [key in EventType]?: () => void } = {};
+    modifier[EventType.MODIFIED] = () => counter++;
+    modifier[EventType.RIDDEN] = () => otherCounter++;
+    connect(factory, Simple, modifier);
     modelListener.add(EventType.CREATED, subject);
     modelListener.fire(EventType.CREATED);
     expect(counter).toEqual(0);
     modelListener.add(EventType.MODIFIED, subject);
     modelListener.fire(EventType.MODIFIED);
     expect(counter).toEqual(1);
+    expect(otherCounter).toEqual(0);
+    modelListener.add(EventType.RIDDEN, subject);
+    modelListener.fire(EventType.RIDDEN);
+    expect(counter).toEqual(1);
+    expect(otherCounter).toEqual(1);
   });
 });

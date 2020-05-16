@@ -30,6 +30,7 @@ const stepper = {
     hs.forEach((h) => h._step());
     listener.fire(Ev.CREATED);
     listener.fire(Ev.MODIFIED);
+    listener.fire(Ev.RIDDEN);
     listener.fire(Ev.SCORED);
     listener.fire(Ev.DELETED);
   },

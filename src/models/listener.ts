@@ -3,6 +3,7 @@ import { removeIf } from "../utils/common";
 export enum EventType {
   CREATED,
   MODIFIED,
+  RIDDEN,
   SCORED,
   DELETED,
 }

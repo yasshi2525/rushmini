@@ -1,6 +1,7 @@
 import { remove, removeIf } from "../utils/common";
 import DeptTask from "./dept_task";
 import Human, { HumanState } from "./human";
+import modelListener, { EventType } from "./listener";
 import Train from "./train";
 import TrainTask from "./train_task";
 
@@ -118,6 +119,7 @@ class StayTask extends TrainTask {
         h._setDeptTask(undefined);
         this.train.passengers.push(h);
         this.waitSec += 1 / Train.MOBILITY_SEC;
+        modelListener.add(EventType.RIDDEN, this.train);
         return true;
       }
       // 上記が else になるのは、発車待ち時に経路が変わったとき。
@@ -142,6 +144,7 @@ class StayTask extends TrainTask {
         h._setPlatform(p);
         remove(psngr, h);
         this.waitSec += 1 / Train.MOBILITY_SEC;
+        modelListener.add(EventType.RIDDEN, this.train);
         return true;
       } else {
         // 降車待ち中に経路再探索がされ、目的地がかわり

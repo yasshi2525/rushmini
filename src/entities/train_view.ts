@@ -54,6 +54,24 @@ export const trainModifer = (vo: ViewObject<Train>) => {
   sprite.modified();
 };
 
+const SHAKE = [2.5, 7.5, 15, 7.5, 2.5, 0, -2.5, -7.5, -15, -7.5, -2.5];
+
+export const riddenModifer = (vo: ViewObject<Train>) => {
+  const sprite = vo.viewer.children[0];
+  let count = 0;
+  const baseAngle = getAngle(edge(vo.subject, false));
+  const shake = () => {
+    if (count < SHAKE.length) {
+      sprite.angle = baseAngle + SHAKE[count];
+    } else {
+      sprite.update.remove(shake);
+    }
+    sprite.modified();
+    count++;
+  };
+  sprite.update.add(shake);
+};
+
 creators.put(Train, (scene, t) => {
   const sprite = createSquareSprite(scene, "train_basic");
   const e = edge(t, true);
