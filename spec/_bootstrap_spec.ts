@@ -13,6 +13,14 @@ declare const window: RPGAtsumaruWindow;
  * カバレッジのため通している
  */
 describe("_bootstrap", () => {
+  beforeEach(() => {
+    window.RPGAtsumaru = {
+      screenshot: {
+        setScreenshotHandler: (_: () => Promise<string> | string) => {},
+      },
+    };
+  });
+
   afterEach(async () => {
     await recreateGame();
   });

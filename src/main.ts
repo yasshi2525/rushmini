@@ -1,4 +1,4 @@
-import { GameMainParameterObject } from "./parameterObject";
+import { GameMainParameterObject, RPGAtsumaruWindow } from "./parameterObject";
 import createEndingScene, { handleEnding } from "./scenes/ending";
 import createGameScene from "./scenes/game";
 import createTitleScene from "./scenes/title";
@@ -6,6 +6,8 @@ import random from "./utils/random";
 import scenes, { SceneType } from "./utils/scene";
 import scorer from "./utils/scorer";
 import ticker from "./utils/ticker";
+
+declare const window: RPGAtsumaruWindow;
 
 const _gameState = {
   score: 0,
@@ -36,6 +38,14 @@ const createScenes = (isAtsumaru: boolean) => {
 };
 
 export const main = (param: GameMainParameterObject) => {
+  if (param.isAtsumaru) {
+    window.RPGAtsumaru.screenshot.setScreenshotHandler(() => {
+      const pngData = document
+        .getElementsByTagName("canvas")[0]
+        .toDataURL("image/png");
+      return Promise.resolve(pngData);
+    });
+  }
   init(param);
   createScenes(param.isAtsumaru);
   g.game.pushScene(scenes._scenes[SceneType.TITLE]);
