@@ -40,10 +40,18 @@ const createScenes = (isAtsumaru: boolean) => {
 export const main = (param: GameMainParameterObject) => {
   if (param.isAtsumaru) {
     window.RPGAtsumaru.screenshot.setScreenshotHandler(() => {
-      const pngData = document
-        .getElementsByTagName("canvas")[0]
-        .toDataURL("image/png");
-      return Promise.resolve(pngData);
+      const currentScene = g.game.scene();
+      const sprite = g.Util.createSpriteFromScene(currentScene, currentScene);
+      const imageData = sprite.surface
+        .renderer()
+        ._getImageData(0, 0, sprite.width, sprite.height);
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      context.putImageData(imageData, 0, 0);
+      const dataurl = "data:image/png;base64," + canvas.toDataURL("image/png");
+      return Promise.resolve(dataurl);
     });
   }
   init(param);
