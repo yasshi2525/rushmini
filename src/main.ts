@@ -52,15 +52,15 @@ const screenshot = () => {
   canvas.height = imageData.height;
   context.putImageData(imageData, 0, 0);
   const dataurl = "data:image/png;base64," + canvas.toDataURL("image/png");
-  sprite.destroy(true);
+  sprite.destroy();
   return dataurl;
 };
 
 export const main = (param: GameMainParameterObject) => {
   if (param.isAtsumaru) {
-    window.RPGAtsumaru.screenshot.setScreenshotHandler(() =>
-      Promise.resolve(screenshot())
-    );
+    window.RPGAtsumaru.screenshot.setScreenshotHandler(() => {
+      return Promise.resolve(screenshot());
+    });
   }
   init(param);
   createScenes(param.isAtsumaru);
