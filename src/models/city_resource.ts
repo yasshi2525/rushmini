@@ -123,7 +123,7 @@ export class CityResource {
 
     // 初期会社
     const c0 = new Company(
-      1,
+      2,
       width - CityResource.PADDING,
       height - CityResource.PADDING
     );
@@ -141,7 +141,7 @@ export class CityResource {
         rand,
         others: this.buildings,
       });
-      const c = new Company(idx, pos.x, pos.y);
+      const c = new Company(idx + 1, pos.x, pos.y);
       this.cs.push(c);
       this.buildings.push(c);
     });
