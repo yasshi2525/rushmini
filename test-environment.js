@@ -19,6 +19,11 @@ const pdi = require("@akashic/pdi-browser");
 const gdr = require("@akashic/game-driver");
 const g = require("@akashic/akashic-engine");
 
+// createSpriteFromE すると Image given has not completed loading が発生するためモック化
+g.Util.createSpriteFromE = (scene, e) => {
+  return new g.E({ scene });
+};
+
 /**
  * pdi-browser は XHR で game.json を取得している。これを fs 経由の取得に切り替える
  */

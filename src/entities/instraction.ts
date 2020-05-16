@@ -1,10 +1,14 @@
+import scenes, { SceneType } from "../utils/scene";
+import ticker from "../utils/ticker";
 import { createSquareSprite } from "./sprite";
 
+const WAIT_SEC = 6;
 const titleFontSize = 50;
 const titleOffsetY = 50;
 
 /**
  * タイトルに表示する説明文
+ * 6秒経過かガイドパネルが押下されたならば、ゲームを開始する
  * @param loadedScene
  */
 const createInstraction = (loadedScene: g.Scene) => {
@@ -25,6 +29,19 @@ const createInstraction = (loadedScene: g.Scene) => {
   img.y = panel.height * 0.4;
   img.modified();
   panel.append(img);
+
+  let cnt = 0;
+  const counter = () => {
+    if (cnt > ticker.fps() * WAIT_SEC) {
+      loadedScene.update.remove(counter);
+      scenes.replace(SceneType.GAME);
+    }
+    cnt++;
+  };
+  loadedScene.update.add(counter);
+  panel.pointUp.addOnce(() => {
+    scenes.replace(SceneType.GAME);
+  });
 
   return panel;
 };

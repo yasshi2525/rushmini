@@ -4,6 +4,7 @@ import modelListener, { EventType } from "models/listener";
 import Residence from "models/residence";
 import createGameScene from "scenes/game";
 import random from "utils/random";
+import scenes, { SceneType } from "utils/scene";
 import scorer from "utils/scorer";
 import ticker from "utils/ticker";
 import viewer from "utils/viewer";
@@ -22,23 +23,37 @@ describe("game", () => {
 
   afterEach(async () => {
     viewer.reset();
+    scenes.reset();
     modelListener.flush();
     modelListener.unregisterAll();
     await recreateGame();
   });
 
   it("create scene", () => {
-    const obj = createGameScene();
-    expect(obj.scene.name).toEqual("game");
+    const scene = createGameScene();
+    expect(scene).not.toBeUndefined();
   });
 
   it("load scene", () => {
-    const obj = createGameScene();
-    const mock = new g.Scene({ game: g.game });
-    obj.prepare(mock);
-    g.game.pushScene(obj.scene);
+    const scene = createGameScene();
+    g.game.pushScene(scene);
     g.game.tick(false);
-    expect(g.game.scene().name).toEqual("game");
+    expect(g.game.scene()).toEqual(scene);
+  });
+
+  it("game over changes scene", () => {
+    scenes.put(SceneType.ENDING, () => new g.Scene({ game: g.game }));
+    const scene = createGameScene();
+    g.game.pushScene(scene);
+    g.game.tick(false);
+    expect(g.game.scene()).toEqual(scene);
+    expect(ticker.getRemainGameTime()).toEqual(GAME);
+    for (let i = 0; i < FPS * GAME - 1; i++) {
+      g.game.tick(true);
+      expect(g.game.scene()).toEqual(scene);
+    }
+    g.game.tick(false);
+    expect(g.game.scene()).not.toEqual(scene);
   });
 
   describe("init controller", () => {
@@ -64,10 +79,8 @@ describe("game", () => {
     });
 
     it("create residence and company in zero tick", () => {
-      const obj = createGameScene();
-      const mock = new g.Scene({ game: g.game });
-      obj.prepare(mock);
-      g.game.pushScene(obj.scene);
+      const scene = createGameScene();
+      g.game.pushScene(scene);
       g.game.tick(false);
       expect(rs.length).toEqual(1);
       expect(cs.length).toEqual(2);
@@ -75,23 +88,8 @@ describe("game", () => {
     });
 
     afterEach(async () => {
+      scenes.reset();
       await recreateGame();
     });
-  });
-
-  it("game over changes scene", () => {
-    const obj = createGameScene();
-    const mock = new g.Scene({ game: g.game, name: "mock" });
-    obj.prepare(mock);
-    g.game.pushScene(obj.scene);
-    g.game.tick(false);
-    expect(g.game.scene().name).toEqual("game");
-    expect(ticker.getRemainGameTime()).toEqual(GAME);
-    for (let i = 0; i < FPS * GAME - 1; i++) {
-      g.game.tick(true);
-      expect(g.game.scene().name).toEqual("game");
-    }
-    g.game.tick(true);
-    expect(g.game.scene().name).toEqual("mock");
   });
 });

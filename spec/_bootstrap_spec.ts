@@ -53,8 +53,7 @@ describe("_bootstrap", () => {
     g.game.tick(false);
     g.game.tick(false);
     g.game.tick(false);
-    scene = g.game.scene();
-    expect(scene.name).toEqual("title");
+    expect(g.game.scene()).not.toBeUndefined();
   });
 
   it("load main scene by firing message", () => {
@@ -72,8 +71,7 @@ describe("_bootstrap", () => {
       })
     );
     g.game.tick(false);
-    scene = g.game.scene();
-    expect(scene.name).toEqual("title");
+    expect(g.game.scene()).not.toBeUndefined();
     expect(ticker.getRemainGameTime()).toEqual(TOTAL - ENDING);
     expect(random.random().seed).toEqual(SEED);
   });
@@ -93,7 +91,7 @@ describe("_bootstrap", () => {
     );
     g.game.tick(false);
     scene = g.game.scene();
-    expect(scene.name).toEqual("title");
+    expect(g.game.scene()).not.toBeUndefined();
     expect(ticker.getRemainGameTime()).toEqual(TOTAL - ENDING);
     expect(random.random()).not.toBeNull();
   });

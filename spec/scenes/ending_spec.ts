@@ -1,5 +1,7 @@
 import { RPGAtsumaruWindow } from "parameterObject";
-import createEndingScene from "scenes/ending";
+import createEndingScene, { handleEnding } from "scenes/ending";
+import scenes, { SceneType } from "utils/scene";
+import ticker from "utils/ticker";
 
 declare const recreateGame: () => Promise<void>;
 declare const window: RPGAtsumaruWindow;
@@ -22,29 +24,38 @@ describe("ending", () => {
   });
 
   it("create scene", () => {
-    const obj = createEndingScene(false);
-    expect(obj.scene.name).toEqual("ending");
+    const scene = createEndingScene(false);
+    expect(scene).not.toBeUndefined();
   });
 
   it("load scene", () => {
-    const obj = createEndingScene(false);
-    const mock = new g.Scene({ game: g.game });
-    obj.prepare(mock);
-    g.game.pushScene(obj.scene);
+    const scene = createEndingScene(false);
+    g.game.pushScene(scene);
     g.game.tick(false);
-    expect(g.game.scene().name).toEqual("ending");
+    expect(g.game.scene()).toEqual(scene);
   });
 
   it("replay button changes scene", () => {
-    const obj = createEndingScene(true);
-    const mock = new g.Scene({ game: g.game, name: "mock" });
-    obj.prepare(mock);
-    g.game.pushScene(obj.scene);
+    scenes.put(SceneType.TITLE, () => new g.Scene({ game: g.game }));
+    const scene = createEndingScene(true);
+    g.game.pushScene(scene);
     g.game.tick(false);
-    expect(g.game.scene().name).toEqual("ending");
     g.game.scene().children[0].pointDown.fire();
     g.game.scene().children[0].pointUp.fire();
     g.game.tick(false);
-    expect(g.game.scene().name).toEqual("mock");
+    expect(g.game.scene()).not.toEqual(scene);
+  });
+
+  it("ending animation invoked from prev", () => {
+    scenes.put(SceneType.ENDING, () => createEndingScene(false));
+    scenes.preserve(SceneType.ENDING, (scene) => new g.E({ scene }));
+    scenes.register(SceneType.ENDING, handleEnding);
+
+    scenes.replace(SceneType.ENDING);
+
+    g.game.tick(false);
+    for (let i = 0; i < ticker.fps() + 2; i++) {
+      g.game.tick(true);
+    }
   });
 });

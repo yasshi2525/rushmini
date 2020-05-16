@@ -1,4 +1,5 @@
 import createTitleScene from "scenes/title";
+import scenes, { SceneType } from "utils/scene";
 import ticker from "utils/ticker";
 
 declare const recreateGame: () => Promise<void>;
@@ -10,46 +11,50 @@ describe("title", () => {
   });
 
   afterEach(async () => {
+    scenes.reset();
     await recreateGame();
   });
 
   it("create scene", () => {
-    const obj = createTitleScene();
-    expect(obj.scene).not.toBeUndefined();
-    expect(obj.scene.name).toEqual("title");
+    const scene = createTitleScene();
+    expect(scene).not.toBeUndefined();
   });
 
   it("load title scene", () => {
-    const mockScene = new g.Scene({
-      game: g.game,
-      name: "mock",
-    });
-    const obj = createTitleScene();
-    obj.prepare(mockScene);
-    g.game.pushScene(obj.scene);
+    const scene = createTitleScene();
+    g.game.pushScene(scene);
     // just register
-    expect(obj.scene.isCurrentScene()).toBeFalsy();
+    expect(scene.isCurrentScene()).toBeFalsy();
     // change to main scene
     g.game.tick(false);
-    expect(obj.scene.isCurrentScene()).toBeTruthy();
+    expect(scene.isCurrentScene()).toBeTruthy();
     expect(g.game.scene()).not.toBeUndefined();
-    expect(g.game.scene()).toEqual(obj.scene);
+    expect(g.game.scene()).toEqual(scene);
   });
 
   it("point down change to next scene", () => {
-    const mockScene = new g.Scene({
-      game: g.game,
-      name: "mock",
-    });
-    const obj = createTitleScene();
-    obj.prepare(mockScene);
-    g.game.pushScene(obj.scene);
+    scenes.put(SceneType.GAME, () => new g.Scene({ game: g.game }));
+    const scene = createTitleScene();
+    g.game.pushScene(scene);
     g.game.tick(false);
-    expect(g.game.scene()).toEqual(obj.scene);
-    obj.scene.children[0].pointUp.fire();
-    expect(g.game.scene()).toEqual(obj.scene);
+    expect(g.game.scene()).toEqual(scene);
+    scene.children[0].pointUp.fire();
+    expect(g.game.scene()).toEqual(scene);
     g.game.tick(false);
-    expect(g.game.scene()).toEqual(mockScene);
-    expect(mockScene.isCurrentScene()).toBeTruthy();
+    expect(g.game.scene()).not.toEqual(scene);
+  });
+
+  it("do nothing 6 seconds changes to next scene", () => {
+    scenes.put(SceneType.GAME, () => new g.Scene({ game: g.game }));
+    const scene = createTitleScene();
+    g.game.pushScene(scene);
+    g.game.tick(false);
+    expect(g.game.scene()).toEqual(scene);
+    for (let i = 0; i < 6 * ticker.fps() + 1; i++) {
+      g.game.tick(true);
+      expect(g.game.scene()).toEqual(scene);
+    }
+    g.game.tick(false);
+    expect(g.game.scene()).not.toEqual(scene);
   });
 });

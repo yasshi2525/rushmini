@@ -1,8 +1,9 @@
 import { GameMainParameterObject } from "./parameterObject";
-import createEndingScene, { EndingScene } from "./scenes/ending";
-import createGameScene, { GameScene } from "./scenes/game";
-import createTitleScene, { TitleScene } from "./scenes/title";
+import createEndingScene, { handleEnding } from "./scenes/ending";
+import createGameScene from "./scenes/game";
+import createTitleScene from "./scenes/title";
 import random from "./utils/random";
+import scenes, { SceneType } from "./utils/scene";
 import scorer from "./utils/scorer";
 import ticker from "./utils/ticker";
 
@@ -28,26 +29,14 @@ const init = (param: GameMainParameterObject) => {
 };
 
 const createScenes = (isAtsumaru: boolean) => {
-  return {
-    title: createTitleScene(),
-    game: createGameScene(),
-    ending: createEndingScene(isAtsumaru),
-  };
-};
-
-const prepareScenes = (
-  title: TitleScene,
-  game: GameScene,
-  ending: EndingScene
-) => {
-  title.prepare(game.scene);
-  game.prepare(ending.scene);
-  ending.prepare(title.scene);
+  scenes.put(SceneType.TITLE, createTitleScene);
+  scenes.put(SceneType.GAME, createGameScene);
+  scenes.put(SceneType.ENDING, () => createEndingScene(isAtsumaru));
+  scenes.register(SceneType.ENDING, handleEnding);
 };
 
 export const main = (param: GameMainParameterObject) => {
   init(param);
-  const scenes = createScenes(param.isAtsumaru);
-  prepareScenes(scenes.title, scenes.game, scenes.ending);
-  g.game.pushScene(scenes.title.scene);
+  createScenes(param.isAtsumaru);
+  g.game.pushScene(scenes._scenes[SceneType.TITLE]);
 };

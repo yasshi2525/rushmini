@@ -603,6 +603,11 @@
 			"height": 250,
 			"path": "image/title_img.png",
 			"global": true
+		},
+		"scene": {
+			"type": "script",
+			"path": "script/utils/scene.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
@@ -615,7 +620,7 @@
 				"ranking"
 			],
 			"preferredSessionParameters": {
-				"totalTimeLimit": 120
+				"totalTimeLimit": 20
 			}
 		}
 	},

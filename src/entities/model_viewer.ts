@@ -9,6 +9,9 @@ import RailEdge from "../models/rail_edge";
 import Residence from "../models/residence";
 import Station from "../models/station";
 import Train from "../models/train";
+import { find } from "../utils/common";
+import scenes, { SceneType } from "../utils/scene";
+import ticker, { EventType } from "../utils/ticker";
 import connect, { ModelModifier } from "./connector";
 import creators from "./creator";
 import ViewObjectFactory from "./factory";
@@ -70,6 +73,12 @@ const createModelViewer = (loadedScene: g.Scene) => {
   configs.forEach((resource) =>
     pane.append(createResourcePanel(resource, loadedScene))
   );
+  // スクリーンショットをエンディングで表示させる
+  ticker.triggers.find(EventType.OVER).register(() => {
+    scenes.preserve(SceneType.ENDING, (scene) =>
+      g.Util.createSpriteFromE(scene, pane)
+    );
+  });
   return pane;
 };
 
