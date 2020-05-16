@@ -227,6 +227,8 @@ export class UserResource {
 
   public reset() {
     this.stateListeners.length = 0;
+    this.railCounter = 0;
+    this.trainCounter = 0;
   }
 
   public station(rn: RailNode) {
