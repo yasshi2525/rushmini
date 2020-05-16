@@ -619,7 +619,7 @@
 		"game_bgm": {
 			"type": "audio",
 			"path": "audio/game_bgm",
-			"systemId": "sound",
+			"systemId": "music",
 			"duration": 182858,
 			"global": true
 		},
