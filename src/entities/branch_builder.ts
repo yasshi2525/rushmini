@@ -57,11 +57,13 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
   );
   connect(factory, Station);
 
-  let pointerId: number;
+  let pointerId: number = undefined;
 
   panel.pointDown.add((ev) => {
-    pointerId = ev.pointerId;
-    started = handleStart(container, ev.point.x, ev.point.y, factory);
+    if (pointerId === undefined) {
+      pointerId = ev.pointerId;
+      started = handleStart(container, ev.point.x, ev.point.y, factory);
+    }
   });
   panel.pointMove.add((ev) => {
     if (pointerId === ev.pointerId && started) {
@@ -75,6 +77,7 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
     if (pointerId === ev.pointerId && started) {
       userResource.end();
       viewer.fire(ViewerEvent.BRANCHED);
+      pointerId = undefined;
     }
   });
   const sprite = createSquareSprite(loadedScene, "branch_txt");

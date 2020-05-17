@@ -17,12 +17,14 @@ const createBuilder = (loadedScene: g.Scene) => {
     touchable: true,
   });
 
-  let pointerId: number;
+  let pointerId: number = undefined;
 
   // カーソルが押下されたならば、路線建設を開始する
   builder.pointDown.add((ev) => {
-    pointerId = ev.pointerId;
-    userResource.start(ev.point.x, ev.point.y);
+    if (pointerId === undefined) {
+      pointerId = ev.pointerId;
+      userResource.start(ev.point.x, ev.point.y);
+    }
   });
 
   // カーソルの地点まで線路を延伸する
@@ -40,6 +42,7 @@ const createBuilder = (loadedScene: g.Scene) => {
     if (ev.pointerId === pointerId) {
       userResource.end();
       viewer.fire(ViewerEvent.BUILT);
+      pointerId = undefined;
     }
   });
 
