@@ -10,8 +10,6 @@ import viewer, { ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
 });
@@ -33,7 +31,6 @@ describe("railbuilder", () => {
     userResource.reset();
     cityResource.reset();
     modelListener.flush();
-    await recreateGame();
   });
 
   it("dragging starts rail building", () => {

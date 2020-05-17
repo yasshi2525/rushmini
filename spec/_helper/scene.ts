@@ -8,4 +8,5 @@ export const createLoadedScene = () =>
     });
     g.game.pushScene(scene);
     g.game.tick(false);
+    expect(g.game.scene()).toEqual(scene);
   });

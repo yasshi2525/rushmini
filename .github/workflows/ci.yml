@@ -28,6 +28,11 @@ jobs:
         with:
           coverageLocations: ./coverage/lcov.info:lcov
           coverageCommand: npm test
+      - name: Upload score report
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: score_report
+          path: report
 
   archive:
     needs: [test]

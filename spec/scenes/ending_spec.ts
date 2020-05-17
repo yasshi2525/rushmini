@@ -4,7 +4,6 @@ import scenes, { SceneType } from "utils/scene";
 import scorer from "utils/scorer";
 import ticker from "utils/ticker";
 
-declare const recreateGame: () => Promise<void>;
 declare const window: RPGAtsumaruWindow;
 
 describe("ending", () => {
@@ -18,10 +17,6 @@ describe("ending", () => {
     };
     g.game.vars = { gameState: { score: 0 } };
     scorer.init(g.game.vars.gameState);
-  });
-
-  afterEach(async () => {
-    await recreateGame();
   });
 
   it("create scene", () => {

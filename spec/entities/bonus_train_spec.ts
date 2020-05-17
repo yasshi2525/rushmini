@@ -10,8 +10,6 @@ import viewer, { ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 beforeEach(() => {
   random.init(new g.XorshiftRandomGenerator(0));
 });
@@ -41,7 +39,6 @@ describe("bonus_train", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     scorer.reset();
-    await recreateGame();
   });
 
   it("press increases train", () => {

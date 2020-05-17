@@ -10,8 +10,6 @@ import viewer, { ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 const scoreBorders = [1000, 2000, 4000, 8000];
 
 beforeEach(() => {
@@ -45,7 +43,6 @@ describe("bonus_residence", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     scorer.reset();
-    await recreateGame();
   });
 
   it("button can be pushed after bonus panel is opened", () => {

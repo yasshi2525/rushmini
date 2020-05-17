@@ -12,8 +12,6 @@ import ticker from "utils/ticker";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 const WIDTH = 800;
 const HEIGHT = 640;
 const seed = 0;
@@ -48,7 +46,6 @@ describe("model_viewer", () => {
   afterEach(async () => {
     modelListener.unregisterAll();
     modelListener.flush();
-    await recreateGame();
   });
 
   it("panel has 6 type panel", () => {

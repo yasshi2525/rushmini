@@ -9,7 +9,6 @@ import scorer from "utils/scorer";
 import ticker from "utils/ticker";
 import viewer from "utils/viewer";
 
-declare const recreateGame: () => Promise<void>;
 const FPS = 15;
 const GAME = 30;
 const ENDING = 10;
@@ -26,7 +25,6 @@ describe("game", () => {
     scenes.reset();
     modelListener.flush();
     modelListener.unregisterAll();
-    await recreateGame();
   });
 
   it("create scene", () => {
@@ -47,8 +45,8 @@ describe("game", () => {
     g.game.pushScene(scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(scene);
-    expect(ticker.getRemainGameTime()).toEqual(GAME);
-    for (let i = 0; i < FPS * GAME - 1; i++) {
+    expect(ticker.getRemainGameTime()).toEqual(GAME - 1);
+    for (let i = 0; i < FPS * GAME - 2; i++) {
       g.game.tick(true);
       expect(g.game.scene()).toEqual(scene);
     }
@@ -89,7 +87,6 @@ describe("game", () => {
 
     afterEach(async () => {
       scenes.reset();
-      await recreateGame();
     });
   });
 });

@@ -3,8 +3,6 @@ import scorer from "utils/scorer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 describe("score", () => {
   let scene: g.Scene;
   let panel: g.E;
@@ -13,10 +11,6 @@ describe("score", () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
     panel = createScoreLabel(scene);
-  });
-
-  afterEach(async () => {
-    await recreateGame();
   });
 
   it("observe", () => {

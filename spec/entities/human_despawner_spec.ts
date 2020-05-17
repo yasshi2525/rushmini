@@ -11,8 +11,6 @@ import ticker from "utils/ticker";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 const FPS = 60;
 const LIFE_SPAN = 1;
 const oldLIFE_SPAN = Human.LIFE_SPAN;
@@ -44,7 +42,6 @@ describe("human_despawner", () => {
   afterEach(async () => {
     modelListener.flush();
     modelListener.unregisterAll();
-    await recreateGame();
   });
 
   it("panel is created when human is died", () => {

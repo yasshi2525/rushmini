@@ -5,7 +5,6 @@ import bootstrap = require("_bootstrap");
 
 const ENDING = 10;
 
-declare const recreateGame: () => Promise<void>;
 declare const window: RPGAtsumaruWindow;
 
 /**
@@ -19,10 +18,6 @@ describe("_bootstrap", () => {
         setScreenshotHandler: (_: () => Promise<string> | string) => {},
       },
     };
-  });
-
-  afterEach(async () => {
-    await recreateGame();
   });
 
   it("with empty", () => {

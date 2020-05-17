@@ -5,7 +5,6 @@ import { Pointable } from "models/pointable";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
 class Simple implements Pointable {
   loc() {
     return ZeroPoint;
@@ -28,7 +27,6 @@ describe("factory", () => {
   });
 
   afterEach(async () => {
-    await recreateGame();
     console.warn = oldWarn;
   });
 

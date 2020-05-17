@@ -2,7 +2,6 @@ import createTitleScene from "scenes/title";
 import scenes, { SceneType } from "utils/scene";
 import ticker from "utils/ticker";
 
-declare const recreateGame: () => Promise<void>;
 const FPS = 60;
 
 describe("title", () => {
@@ -12,7 +11,6 @@ describe("title", () => {
 
   afterEach(async () => {
     scenes.reset();
-    await recreateGame();
   });
 
   it("create scene", () => {

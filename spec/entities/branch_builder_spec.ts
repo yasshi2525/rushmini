@@ -8,8 +8,6 @@ import viewer, { ViewerEvent, ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
 });
@@ -31,7 +29,6 @@ describe("branch_builder", () => {
     userResource.reset();
     cityResource.reset();
     modelListener.flush();
-    await recreateGame();
   });
 
   it("branch is started when candidate is selected", () => {

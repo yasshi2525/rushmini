@@ -5,8 +5,6 @@ import viewer, { ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 describe("controller", () => {
   let scene: g.Scene;
 
@@ -15,10 +13,6 @@ describe("controller", () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
     preserveEntityCreator();
-  });
-
-  afterEach(async () => {
-    recreateGame();
   });
 
   it("init creates panels", () => {

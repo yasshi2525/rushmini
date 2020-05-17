@@ -6,7 +6,6 @@ import { Pointable } from "models/pointable";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
 class Simple implements Pointable {
   loc() {
     return ZeroPoint;
@@ -25,14 +24,7 @@ describe("connetor", () => {
   beforeEach(async () => {
     scene = await createLoadedScene();
     panel = new g.E({ scene });
-    factory = new ViewObjectFactory(
-      panel,
-      (_scene, _) => new g.E({ scene: _scene })
-    );
-  });
-
-  afterEach(async () => {
-    await recreateGame();
+    factory = new ViewObjectFactory(panel, (_scene, _) => new g.E({ scene }));
   });
 
   it("viewer object is created after onDone event", () => {

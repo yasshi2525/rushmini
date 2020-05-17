@@ -11,8 +11,6 @@ import viewer, { ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
-
 beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
 });
@@ -40,7 +38,6 @@ describe("station_builder", () => {
     routeFinder.reset();
     modelListener.flush();
     modelListener.unregisterAll();
-    await recreateGame();
   });
 
   it("station creation is started when rail edge is cliked", () => {

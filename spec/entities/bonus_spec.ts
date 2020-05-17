@@ -7,7 +7,6 @@ import viewer, { ViewerEvent, ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
 
-declare const recreateGame: () => Promise<void>;
 const FIRST_BONUS = 1000;
 const SECOND_BONUS = 2000;
 
@@ -31,7 +30,6 @@ describe("bonus", () => {
     viewer.reset();
     modelListener.flush();
     modelListener.unregisterAll();
-    await recreateGame();
   });
 
   it("pop up modal when 1st bonus score is god", () => {
