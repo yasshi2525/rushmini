@@ -12,14 +12,6 @@ declare const window: RPGAtsumaruWindow;
  * カバレッジのため通している
  */
 describe("_bootstrap", () => {
-  beforeEach(() => {
-    window.RPGAtsumaru = {
-      screenshot: {
-        setScreenshotHandler: (_: () => Promise<string> | string) => {},
-      },
-    };
-  });
-
   it("with empty", () => {
     bootstrap({});
     const scene = g.game.scene();
