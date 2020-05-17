@@ -56,19 +56,23 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
     createEmphasis(sc, s, "station_candidate")
   );
   connect(factory, Station);
+
+  let pointerId: number;
+
   panel.pointDown.add((ev) => {
+    pointerId = ev.pointerId;
     started = handleStart(container, ev.point.x, ev.point.y, factory);
   });
   panel.pointMove.add((ev) => {
-    if (started) {
+    if (pointerId === ev.pointerId && started) {
       userResource.extend(
         ev.point.x + ev.startDelta.x,
         ev.point.y + ev.startDelta.y
       );
     }
   });
-  panel.pointUp.add(() => {
-    if (started) {
+  panel.pointUp.add((ev) => {
+    if (pointerId === ev.pointerId && started) {
       userResource.end();
       viewer.fire(ViewerEvent.BRANCHED);
     }

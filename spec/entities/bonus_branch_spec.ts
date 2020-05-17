@@ -150,7 +150,17 @@ describe("bonus_branch", () => {
 
     expect(viewer.isBonusing).toBeTruthy();
 
-    branch_builder.pointUp.fire();
+    branch_builder.pointUp.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      pointerId: 1,
+      priority: 2,
+      prevDelta: { x: 0, y: 0 },
+      startDelta: { x: 0, y: 0 },
+      target: branch_builder,
+      type: g.EventType.PointUp,
+    });
 
     expect(viewer.isBonusing).toBeFalsy();
   });

@@ -17,23 +17,30 @@ const createBuilder = (loadedScene: g.Scene) => {
     touchable: true,
   });
 
+  let pointerId: number;
+
   // カーソルが押下されたならば、路線建設を開始する
   builder.pointDown.add((ev) => {
+    pointerId = ev.pointerId;
     userResource.start(ev.point.x, ev.point.y);
   });
 
   // カーソルの地点まで線路を延伸する
   builder.pointMove.add((ev) => {
-    userResource.extend(
-      ev.point.x + ev.startDelta.x,
-      ev.point.y + ev.startDelta.y
-    );
+    if (ev.pointerId === pointerId) {
+      userResource.extend(
+        ev.point.x + ev.startDelta.x,
+        ev.point.y + ev.startDelta.y
+      );
+    }
   });
 
   // カーソルの地点を終点とする
-  builder.pointUp.add(() => {
-    userResource.end();
-    viewer.fire(ViewerEvent.BUILT);
+  builder.pointUp.add((ev) => {
+    if (ev.pointerId === pointerId) {
+      userResource.end();
+      viewer.fire(ViewerEvent.BUILT);
+    }
   });
 
   return builder;
