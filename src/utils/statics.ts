@@ -58,10 +58,8 @@ const emptyState = () => {
 const emptySet = <T>(init: T) => {
   const obj: ResourceSet<T> = {};
   resourceTypes.forEach((cls) => {
-    if (Array.isArray(init)) {
-      obj[cls.name] = Object.assign([], init);
-    } else if (init instanceof Object) {
-      obj[cls.name] = Object.assign({}, init);
+    if (init instanceof Array) {
+      obj[cls.name] = init.slice(0, init.length) as any;
     } else {
       obj[cls.name] = init;
     }

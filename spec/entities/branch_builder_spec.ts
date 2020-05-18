@@ -367,4 +367,61 @@ describe("branch_builder", () => {
     expect(viewer.isBonusing).toBeTruthy();
     expect(bonusCounter).toEqual(2);
   });
+
+  it("forbit multi touch", () => {
+    userResource.start(0, 0);
+    userResource.extend(300, 400);
+    userResource.end();
+    userResource.commit();
+
+    panel.show();
+
+    panel.pointDown.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      priority: 2,
+      pointerId: 1,
+      target: panel,
+      type: g.EventType.PointDown,
+    });
+
+    panel.pointMove.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      startDelta: { x: 110, y: 0 },
+      prevDelta: { x: 110, y: 0 },
+      priority: 2,
+      pointerId: 2,
+      target: panel,
+      type: g.EventType.PointMove,
+    });
+
+    expect(userResource.getState()).toEqual(ModelState.STARTED);
+
+    panel.pointUp.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      startDelta: { x: 110, y: 0 },
+      prevDelta: { x: 0, y: 0 },
+      priority: 2,
+      pointerId: 2,
+      target: panel,
+      type: g.EventType.PointUp,
+    });
+    expect(userResource.getState()).toEqual(ModelState.STARTED);
+
+    panel.pointDown.fire({
+      local: undefined,
+      player: { id: "dummyPlayerID" },
+      point: { x: 2, y: 2 },
+      priority: 2,
+      pointerId: 2,
+      target: panel,
+      type: g.EventType.PointDown,
+    });
+    expect(userResource.getState()).toEqual(ModelState.STARTED);
+  });
 });

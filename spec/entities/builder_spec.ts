@@ -5,7 +5,9 @@ import EdgeTask from "models/edge_task";
 import modelListener from "models/listener";
 import userResource, { ModelState } from "models/user_resource";
 import random from "utils/random";
+import routeFinder from "utils/route_finder";
 import scorer from "utils/scorer";
+import transportFinder from "utils/transport_finder";
 import viewer, { ViewerType } from "utils/viewer";
 
 import { createLoadedScene } from "../_helper/scene";
@@ -26,8 +28,10 @@ describe("railbuilder", () => {
     panel = viewer.viewers[ViewerType.BUILDER];
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    transportFinder.reset();
+    routeFinder.reset();
     userResource.reset();
     cityResource.reset();
     modelListener.flush();
@@ -140,5 +144,86 @@ describe("railbuilder", () => {
     expect(inbound.next).toEqual(dept1);
 
     expect(panel.visible()).toBeFalsy();
+  });
+
+  it("rollback unused line", () => {
+    panel.pointDown.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      point: { x: -100, y: -100 },
+      type: g.EventType.PointDown,
+      pointerId: 1,
+      target: panel,
+    });
+    panel.pointMove.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointMove,
+      pointerId: 1,
+      point: { x: -100, y: -100 },
+      startDelta: { x: -200, y: 0 },
+      prevDelta: { x: -200, y: 0 },
+      target: panel,
+    });
+    panel.pointUp.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointUp,
+      pointerId: 1,
+      point: { x: 0, y: 1000 },
+      startDelta: { x: -200, y: 0 },
+      prevDelta: { x: -200, y: 0 },
+      target: panel,
+    });
+    expect(userResource.getState()).toEqual(ModelState.INITED);
+  });
+
+  it("forbit multitouch", () => {
+    panel.pointDown.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      point: { x: 0, y: 0 },
+      type: g.EventType.PointDown,
+      pointerId: 1,
+      target: panel,
+    });
+    panel.pointMove.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointMove,
+      pointerId: 2,
+      point: { x: 0, y: 0 },
+      startDelta: { x: 0, y: 100 },
+      prevDelta: { x: 0, y: 100 },
+      target: panel,
+    });
+    expect(userResource.getState()).toEqual(ModelState.STARTED);
+    panel.pointUp.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      type: g.EventType.PointUp,
+      pointerId: 2,
+      point: { x: 0, y: 0 },
+      startDelta: { x: 0, y: 100 },
+      prevDelta: { x: 0, y: 0 },
+      target: panel,
+    });
+    expect(userResource.getState()).toEqual(ModelState.STARTED);
+    panel.pointDown.fire({
+      priority: 2,
+      local: true,
+      player: { id: "1" },
+      point: { x: 0, y: 0 },
+      type: g.EventType.PointDown,
+      pointerId: 2,
+      target: panel,
+    });
+    expect(userResource.getState()).toEqual(ModelState.STARTED);
   });
 });

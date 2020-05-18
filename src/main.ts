@@ -41,7 +41,7 @@ const createScenes = (isAtsumaru: boolean) => {
  * 現在シーンのスクリーンショットを画像データにする
  */
 const handleScreenshot = () => {
-  if (window.RPGAtsumaru.screenshot)
+  if (window.RPGAtsumaru?.screenshot)
     window.RPGAtsumaru.screenshot.setScreenshotHandler(() => {
       const currentScene = g.game.scene();
       const sprite = g.Util.createSpriteFromScene(currentScene, currentScene);

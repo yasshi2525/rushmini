@@ -19,6 +19,7 @@ describe("rail_line", () => {
   it("creation", () => {
     const l = new RailLine();
     expect(l.top).toBeUndefined();
+    expect(l.length()).toEqual(0);
   });
 
   describe("_start", () => {

@@ -33,29 +33,3 @@ export const createFramedRect = (
   );
   return frame;
 };
-
-/**
- * 余白のある四角形を返します
- * @param scene
- * @param padding
- * @param color
- * @param border
- */
-export const createPaddingRect = (
-  scene: g.Scene,
-  padding: number,
-  color: string,
-  border: number
-) => {
-  const rect = createFramedRect(
-    scene,
-    g.game.width - padding * 2,
-    g.game.height - padding * 2,
-    color,
-    border
-  );
-  rect.x = padding - border;
-  rect.y = padding - border;
-  rect.modified();
-  return rect;
-};
