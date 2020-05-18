@@ -18,10 +18,9 @@ import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import { humanModifier } from "./human_view";
 import { railEdgeModifier } from "./rail_edge_view";
-import { createFramedRect } from "./rectangle";
+import { createFramedRect, createWorkingArea } from "./rectangle";
 import { riddenModifer, trainModifer } from "./train_view";
 
-const SIZE = 0.8;
 const COLOR = "#ffffff";
 const BORDER = 5;
 
@@ -68,13 +67,7 @@ const createResourcePanel = <T extends Pointable>(
  * @param loadedScene
  */
 const createModelViewer = (loadedScene: g.Scene) => {
-  const pane = new g.Pane({
-    scene: loadedScene,
-    x: (g.game.width * (1 - SIZE)) / 2,
-    y: (g.game.height * (1 - SIZE)) / 2,
-    width: g.game.width * SIZE,
-    height: g.game.height * SIZE,
-  });
+  const pane = createWorkingArea(loadedScene, { isPane: true });
 
   configs.forEach((resource) =>
     pane.append(createResourcePanel(resource, loadedScene))

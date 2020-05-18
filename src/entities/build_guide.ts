@@ -1,5 +1,6 @@
 import { TriggerContainer } from "../models/listener";
 import userResource from "../models/user_resource";
+import { appendInstruction, createWorkingArea } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
 enum GuideEvent {
@@ -11,12 +12,6 @@ enum GuideEvent {
 
 type GuideState = {};
 
-/**
- * 画面に占める路線敷設ガイドの大きさ
- */
-const SIZE = 0.8;
-const INSTRUCTION_Y = 120;
-
 const activeOpacity = 0.5;
 const inactiveOpacity = 0.5;
 
@@ -26,29 +21,33 @@ const tapStart = { x: 100, y: 150 };
 const tapEnd = { x: 400, y: 300 };
 const moveDelaySec = 2;
 
-/**
- * 全体を乗せるコンテナを作成
- * @param loadedScene
- */
-const createPanel = (loadedScene: g.Scene) =>
-  new g.E({
-    scene: loadedScene,
-    x: (g.game.width * (1 - SIZE)) / 2,
-    y: (g.game.height * (1 - SIZE)) / 2,
-    width: g.game.width * SIZE,
-    height: g.game.height * SIZE,
-  });
-
-/**
- * ガイド文を作成し、追加します
- * @param panel
- */
-const appendInstraction = (panel: g.E) => {
-  const sprite = createSquareSprite(panel.scene, "build_txt");
-  sprite.x = (panel.width - sprite.width) / 2;
-  sprite.y = INSTRUCTION_Y;
-  sprite.modified();
-  panel.append(sprite);
+const addShiftAnimation = (
+  isStart: boolean,
+  panel: g.E,
+  sprite: g.E,
+  listener: TriggerContainer<GuideEvent, GuideState>
+) => {
+  let counter = 0;
+  const animation = () => {
+    if (counter < tapDelaySec * g.game.fps) {
+      sprite.x +=
+        ((isStart ? -1 : +1) * tapDistance) / tapDelaySec / g.game.fps;
+      sprite.opacity += (isStart ? +1 : -1) / tapDelaySec / g.game.fps;
+      sprite.modified();
+    } else {
+      panel.update.remove(animation);
+      panel.remove(sprite);
+      if (isStart) {
+        listener.add(GuideEvent.TOUCH_STARTED, {});
+        listener.fire(GuideEvent.TOUCH_STARTED);
+      } else {
+        listener.add(GuideEvent.STARTED, {});
+        listener.fire(GuideEvent.STARTED);
+      }
+    }
+    counter++;
+  };
+  panel.update.add(animation);
 };
 
 const handleTouchStart = (
@@ -63,21 +62,7 @@ const handleTouchStart = (
   sprite.x = tapStart.x + tapDistance;
   sprite.y = tapStart.y;
   sprite.modified();
-  let counter = 0;
-  const animation = () => {
-    if (counter < tapDelaySec * g.game.fps) {
-      sprite.x -= tapDistance / tapDelaySec / g.game.fps;
-      sprite.opacity += 1 / tapDelaySec / g.game.fps;
-      sprite.modified();
-    } else {
-      panel.update.remove(animation);
-      panel.remove(sprite);
-      listener.add(GuideEvent.TOUCH_STARTED, {});
-      listener.fire(GuideEvent.TOUCH_STARTED);
-    }
-    counter++;
-  };
-  panel.update.add(animation);
+  addShiftAnimation(true, panel, sprite, listener);
   panel.append(sprite);
 };
 
@@ -156,21 +141,7 @@ const handleTouchEnd = (
   sprite.y = tapEnd.y;
   sprite.opacity = 1;
   sprite.modified();
-  let counter = 0;
-  const animation = () => {
-    if (counter < tapDelaySec * g.game.fps) {
-      sprite.x += tapDistance / tapDelaySec / g.game.fps;
-      sprite.opacity -= 1 / tapDelaySec / g.game.fps;
-      sprite.modified();
-    } else {
-      panel.update.remove(animation);
-      panel.remove(sprite);
-      listener.add(GuideEvent.STARTED, {});
-      listener.fire(GuideEvent.STARTED);
-    }
-    counter++;
-  };
-  panel.update.add(animation);
+  addShiftAnimation(false, panel, sprite, listener);
   panel.append(sprite);
 };
 
@@ -197,9 +168,9 @@ const _createHandler = (panel: g.E) => ({
  * @param loadedScene
  */
 const createRailBuildGuide = (loadedScene: g.Scene) => {
-  const panel = createPanel(loadedScene);
+  const panel = createWorkingArea(loadedScene, {});
   // ガイド文
-  appendInstraction(panel);
+  appendInstruction(panel, "build_txt");
 
   const guide = new g.E({ scene: loadedScene, opacity: activeOpacity });
   panel.append(guide);

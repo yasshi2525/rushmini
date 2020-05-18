@@ -5,11 +5,12 @@ import viewer, { ViewerEvent } from "../utils/viewer";
 import connect from "./connector";
 import { adjust } from "./creator";
 import ViewObjectFactory from "./factory";
+import {
+  appendInstruction,
+  appnedWarning,
+  createWorkingArea,
+} from "./rectangle";
 import { createSquareSprite } from "./sprite";
-
-const SIZE = 0.8;
-const INSTRUCTION_Y = 120;
-const WARNING_Y = 160;
 
 const createEmphasis = (scene: g.Scene, subject: Station, name: string) => {
   const sprite = createSquareSprite(scene, name);
@@ -19,21 +20,12 @@ const createEmphasis = (scene: g.Scene, subject: Station, name: string) => {
 
 const createBranchBuilder = (loadedScene: g.Scene) => {
   let started = false;
-  const panel = new g.Pane({
-    scene: loadedScene,
-    x: (g.game.width * (1 - SIZE)) / 2,
-    y: (g.game.height * (1 - SIZE)) / 2,
-    width: g.game.width * SIZE,
-    height: g.game.height * SIZE,
+  const panel = createWorkingArea(loadedScene, {
     touchable: true,
+    isPane: true,
   });
 
-  const warning = createSquareSprite(loadedScene, "rollback_txt");
-  warning.x = (panel.width - warning.width) / 2;
-  warning.y = WARNING_Y;
-  warning.hide();
-  warning.modified();
-  panel.append(warning);
+  const warning = appnedWarning(panel);
 
   const container = new g.E({ scene: loadedScene });
   panel.append(container);
@@ -96,11 +88,7 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
       }
     }
   });
-  const sprite = createSquareSprite(loadedScene, "branch_txt");
-  sprite.x = (panel.width - sprite.width) / 2;
-  sprite.y = INSTRUCTION_Y;
-  sprite.modified();
-  panel.append(sprite);
+  appendInstruction(panel, "branch_txt");
   panel.hide();
   return panel;
 };

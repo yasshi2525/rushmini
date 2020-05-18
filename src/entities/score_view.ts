@@ -4,8 +4,8 @@ import connect from "./connector";
 import { adjust } from "./creator";
 import ViewObjectFactory from "./factory";
 import createFont from "./font";
+import { createWorkingArea } from "./rectangle";
 
-const SIZE = 0.8;
 const SPEED = 30;
 
 const createScorePanel = (scene: g.Scene, ev: ScoreEvent) => {
@@ -39,13 +39,7 @@ const createScorePanel = (scene: g.Scene, ev: ScoreEvent) => {
 };
 
 const createScoreViewer = (loadedScene: g.Scene) => {
-  const panel = new g.Pane({
-    scene: loadedScene,
-    x: (g.game.width * (1 - SIZE)) / 2,
-    y: (g.game.height * (1 - SIZE)) / 2,
-    width: g.game.width * SIZE,
-    height: g.game.height * SIZE,
-  });
+  const panel = createWorkingArea(loadedScene, { isPane: true });
 
   const factory = new ViewObjectFactory<ScoreEvent>(panel, createScorePanel);
   connect(factory, ScoreEvent);

@@ -1,8 +1,8 @@
 import userResource from "../models/user_resource";
 import viewer, { ViewerEvent } from "../utils/viewer";
+import { appnedWarning, createWorkingArea } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
-const SIZE = 0.8;
 const WARNING_Y = 160;
 
 /**
@@ -10,21 +10,9 @@ const WARNING_Y = 160;
  * @param loadedScene
  */
 const createBuilder = (loadedScene: g.Scene) => {
-  const builder = new g.E({
-    scene: loadedScene,
-    x: (g.game.width * (1 - SIZE)) / 2,
-    y: (g.game.height * (1 - SIZE)) / 2,
-    width: g.game.width * SIZE,
-    height: g.game.height * SIZE,
-    touchable: true,
-  });
+  const builder = createWorkingArea(loadedScene, { touchable: true });
 
-  const warning = createSquareSprite(loadedScene, "rollback_txt");
-  warning.x = (builder.width - warning.width) / 2;
-  warning.y = WARNING_Y;
-  warning.hide();
-  warning.modified();
-  builder.append(warning);
+  const warning = appnedWarning(builder);
 
   let pointerId: number = undefined;
 

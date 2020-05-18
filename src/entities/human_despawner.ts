@@ -4,9 +4,9 @@ import Point from "../models/point";
 import { insertTop } from "../utils/common";
 import ticker from "../utils/ticker";
 import { adjust } from "./creator";
+import { createWorkingArea } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
-const SIZE = 0.8;
 const ANIMATION_SEC = 1;
 const ACCELERATION = 0.1;
 
@@ -49,13 +49,7 @@ const handleDeleted = (container: g.E, h: Human) => {
 };
 
 const createHumanDespawner = (loadedScene: g.Scene) => {
-  const panel = new g.Pane({
-    scene: loadedScene,
-    x: (g.game.width * (1 - SIZE)) / 2,
-    y: (g.game.height * (1 - SIZE)) / 2,
-    width: g.game.width * SIZE,
-    height: g.game.height * SIZE,
-  });
+  const panel = createWorkingArea(loadedScene, { isPane: true });
   modelListener
     .find(EventType.DELETED, Human)
     .register((h) => handleDeleted(panel, h));

@@ -14,12 +14,11 @@ import {
   createRailEdgeCandidate,
   railEdgeModifier,
 } from "./rail_edge_view";
+import { appendInstruction, createWorkingArea } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
-const SIZE = 0.8;
 const SLIDE = 10;
 const DIST = 20;
-const INSTRUCTION_Y = 120;
 const BORDERS: RailEdgeCandidateOption[] = [
   { band: 16, slide: SLIDE, color: "#ffffff" },
   { band: 12, slide: SLIDE, color: "#ffd700" },
@@ -67,14 +66,6 @@ const createStationPanel = (scene: g.Scene) => {
   return panel;
 };
 
-const appendInstraction = (panel: g.E) => {
-  const sprite = createSquareSprite(panel.scene, "station_txt");
-  sprite.x = (panel.width - sprite.width) / 2;
-  sprite.y = INSTRUCTION_Y;
-  sprite.modified();
-  panel.append(sprite);
-};
-
 const createStationBuilder = (loadedScene: g.Scene) => {
   const rns: RailNode[] = [];
   modelListener
@@ -84,12 +75,8 @@ const createStationBuilder = (loadedScene: g.Scene) => {
     .find(EventType.DELETED, RailNode)
     .register((rn) => remove(rns, rn));
 
-  const panel = new g.Pane({
-    scene: loadedScene,
-    x: (g.game.width * (1 - SIZE)) / 2,
-    y: (g.game.height * (1 - SIZE)) / 2,
-    width: g.game.width * SIZE,
-    height: g.game.height * SIZE,
+  const panel = createWorkingArea(loadedScene, {
+    isPane: true,
     touchable: true,
   });
 
@@ -97,7 +84,7 @@ const createStationBuilder = (loadedScene: g.Scene) => {
     panel.append(createRailEdgePanel(loadedScene, opts))
   );
   panel.append(createStationPanel(loadedScene));
-  appendInstraction(panel);
+  appendInstruction(panel, "station_txt");
 
   panel.pointUp.add((ev) => handleOnSelected(ev, rns));
 
