@@ -9,19 +9,20 @@ enum GuideEvent {
   ENDED,
 }
 
-type GuideState = { isActive: boolean };
+type GuideState = {};
 
 /**
  * 画面に占める路線敷設ガイドの大きさ
  */
 const SIZE = 0.8;
+const INSTRUCTION_Y = 120;
 
 const activeOpacity = 0.5;
 const inactiveOpacity = 0.5;
 
 const tapDelaySec = 1;
 const tapDistance = 50;
-const tapStart = { x: 100, y: 100 };
+const tapStart = { x: 100, y: 150 };
 const tapEnd = { x: 400, y: 300 };
 const moveDelaySec = 2;
 
@@ -45,17 +46,16 @@ const createPanel = (loadedScene: g.Scene) =>
 const appendInstraction = (panel: g.E) => {
   const sprite = createSquareSprite(panel.scene, "build_txt");
   sprite.x = (panel.width - sprite.width) / 2;
-  sprite.y = 40;
+  sprite.y = INSTRUCTION_Y;
   sprite.modified();
   panel.append(sprite);
 };
 
 const handleTouchStart = (
   panel: g.E,
-  state: GuideState,
   listener: TriggerContainer<GuideEvent, GuideState>
 ) => {
-  if (!state.isActive) {
+  if (!(panel.parent as g.E).visible()) {
     return;
   }
   const sprite = createSquareSprite(panel.scene, "finger_basic");
@@ -70,23 +70,22 @@ const handleTouchStart = (
       sprite.opacity += 1 / tapDelaySec / g.game.fps;
       sprite.modified();
     } else {
-      panel.scene.update.remove(animation);
+      panel.update.remove(animation);
       panel.remove(sprite);
-      listener.add(GuideEvent.TOUCH_STARTED, state);
+      listener.add(GuideEvent.TOUCH_STARTED, {});
       listener.fire(GuideEvent.TOUCH_STARTED);
     }
     counter++;
   };
-  panel.scene.update.add(animation);
+  panel.update.add(animation);
   panel.append(sprite);
 };
 
 const handleTouchMove = (
   panel: g.E,
-  state: GuideState,
   listener: TriggerContainer<GuideEvent, GuideState>
 ) => {
-  if (!state.isActive) {
+  if (!(panel.parent as g.E).visible()) {
     return;
   }
   const sprite = createSquareSprite(panel.scene, "finger_touch_basic");
@@ -100,7 +99,7 @@ const handleTouchMove = (
 
   const arrow = new g.FilledRect({
     x: (tapStart.x + tapEnd.x) / 2,
-    y: (tapStart.y + tapEnd.y) / 2,
+    y: (tapStart.y + tapEnd.y) / 2 - 25,
     scene: panel.scene,
     width: dist,
     height: 50,
@@ -131,25 +130,24 @@ const handleTouchMove = (
       pane.width = (tapEnd.x - tapStart.x) * d + 90;
       pane.invalidate();
     } else {
-      panel.scene.update.remove(animation);
+      panel.update.remove(animation);
       panel.remove(sprite);
       panel.remove(pane);
-      listener.add(GuideEvent.TOUCH_ENDED, state);
+      listener.add(GuideEvent.TOUCH_ENDED, {});
       listener.fire(GuideEvent.TOUCH_ENDED);
     }
     counter++;
   };
-  panel.scene.update.add(animation);
+  panel.update.add(animation);
   panel.append(pane);
   panel.append(sprite);
 };
 
 const handleTouchEnd = (
   panel: g.E,
-  state: GuideState,
   listener: TriggerContainer<GuideEvent, GuideState>
 ) => {
-  if (!state.isActive) {
+  if (!(panel.parent as g.E).visible()) {
     return;
   }
   const sprite = createSquareSprite(panel.scene, "finger_basic");
@@ -165,14 +163,14 @@ const handleTouchEnd = (
       sprite.opacity -= 1 / tapDelaySec / g.game.fps;
       sprite.modified();
     } else {
-      panel.scene.update.remove(animation);
+      panel.update.remove(animation);
       panel.remove(sprite);
-      listener.add(GuideEvent.STARTED, state);
+      listener.add(GuideEvent.STARTED, {});
       listener.fire(GuideEvent.STARTED);
     }
     counter++;
   };
-  panel.scene.update.add(animation);
+  panel.update.add(animation);
   panel.append(sprite);
 };
 
@@ -180,16 +178,16 @@ const handleTouchEnd = (
  * モデル操作によって、ガイドの表示有無を変化させる
  * @param panel
  */
-const _createHandler = (panel: g.E, state: GuideState) => ({
+const _createHandler = (panel: g.E) => ({
   onStarted: () => {
     // カーソルを押下したならガイドを薄くする
     panel.opacity = inactiveOpacity;
     panel.modified();
   },
   onFixed: () => {
-    // カーソルが離れ、路線が完成したなら、ガイドを消す
-    state.isActive = false;
-    panel.hide();
+    // カーソルが離れたならば元の色合いに戻す。消すのは BUILTイベント発生後
+    panel.opacity = activeOpacity;
+    panel.modified();
   },
 });
 
@@ -206,24 +204,22 @@ const createRailBuildGuide = (loadedScene: g.Scene) => {
   const guide = new g.E({ scene: loadedScene, opacity: activeOpacity });
   panel.append(guide);
 
-  const state: GuideState = { isActive: true };
-
   // ガイドアニメーション
   const listener = new TriggerContainer<GuideEvent, GuideState>();
 
   listener.find(GuideEvent.STARTED).register((s) => {
-    handleTouchStart(guide, s, listener);
+    handleTouchStart(guide, listener);
   });
   listener.find(GuideEvent.TOUCH_STARTED).register((s) => {
-    handleTouchMove(guide, s, listener);
+    handleTouchMove(guide, listener);
   });
   listener.find(GuideEvent.TOUCH_ENDED).register((s) => {
-    handleTouchEnd(guide, s, listener);
+    handleTouchEnd(guide, listener);
   });
-  listener.add(GuideEvent.STARTED, state);
+  listener.add(GuideEvent.STARTED, {});
   listener.fire(GuideEvent.STARTED);
 
-  userResource.stateListeners.push(_createHandler(panel, state));
+  userResource.stateListeners.push(_createHandler(panel));
   return panel;
 };
 

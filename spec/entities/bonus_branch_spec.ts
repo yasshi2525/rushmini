@@ -85,7 +85,7 @@ describe("bonus_branch", () => {
     branch.children[1].pointUp.fire();
     expect(branch_builder.visible()).toBeTruthy();
 
-    expect(branch_builder.children[0].children.length).toEqual(2);
+    expect(branch_builder.children[1].children.length).toEqual(2);
   });
 
   it("mask is hidden after candidate station is clicked", () => {
@@ -137,8 +137,8 @@ describe("bonus_branch", () => {
       local: undefined,
       player: { id: "dummyPlayerID" },
       point: { x: 2, y: 2 },
-      prevDelta: { x: 0, y: 0 },
-      startDelta: { x: 0, y: 0 },
+      prevDelta: { x: 100, y: 100 },
+      startDelta: { x: 100, y: 100 },
       priority: 2,
       pointerId: 1,
       target: branch_builder,
@@ -154,7 +154,7 @@ describe("bonus_branch", () => {
       pointerId: 1,
       priority: 2,
       prevDelta: { x: 0, y: 0 },
-      startDelta: { x: 0, y: 0 },
+      startDelta: { x: 100, y: 100 },
       target: branch_builder,
       type: g.EventType.PointUp,
     });

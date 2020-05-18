@@ -129,6 +129,7 @@ const transportFinder = {
     listener.find(Ev.DELETED, Train).register(handler.onDeleted.train);
     userResource.stateListeners.push({
       onFixed: handler.onFixed,
+      onRollback: handler.onFixed,
     });
   },
 };

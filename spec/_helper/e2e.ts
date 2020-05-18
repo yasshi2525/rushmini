@@ -32,12 +32,7 @@ const dump = (
   from: { [index: string]: number },
   prefix: string
 ) => {
-  Object.entries(from).forEach(([k, v]) => {
-    to[prefix + k] = v;
-    if (isNaN(v)) {
-      console.log(`${prefix + k} is NaN`);
-    }
-  });
+  Object.entries(from).forEach(([k, v]) => (to[prefix + k] = v));
 };
 
 const createRecord = (total: number): Record => {

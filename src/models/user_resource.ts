@@ -1,4 +1,5 @@
 import ActionProxy from "./action";
+import cityResource from "./city_resource";
 import DeptTask from "./dept_task";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
@@ -13,10 +14,12 @@ export enum ModelState {
 }
 
 const DELTA = 0.0001;
+const SHORT_THRESHOLD = 100;
 
 type StateListener = {
   onStarted?: (ev: UserResource) => void;
   onFixed?: (ev: UserResource) => void;
+  onRollback?: (ev: UserResource) => void;
   onReset?: (ev: UserResource) => void;
 };
 
@@ -37,6 +40,8 @@ export class UserResource {
   private action: ActionProxy;
 
   private state: ModelState;
+  private committed_state: ModelState;
+  private committed_length: number;
 
   /**
    * 最低この距離離れないと、RailEdgeを作成しない (じぐざぐ防止)
@@ -65,6 +70,8 @@ export class UserResource {
     this.distTrain = 0;
     this.lastPos = undefined;
     this.setState(ModelState.INITED);
+    this.committed_state = ModelState.INITED;
+    this.committed_length = 0;
     this.action = new ActionProxy();
   }
 
@@ -224,11 +231,15 @@ export class UserResource {
     }
     this.distRail = 0;
     this.distTrain = 0;
+    this.lastPos = undefined;
     this.action.startBranch(p);
     this.setState(ModelState.STARTED);
   }
 
   public reset() {
+    this.state = ModelState.INITED;
+    this.committed_state = ModelState.INITED;
+    this.committed_length = 0;
     this.stateListeners.length = 0;
     this.distRail = 0;
     this.distTrain = 0;
@@ -258,13 +269,34 @@ export class UserResource {
 
   public commit() {
     this.action.commit();
+    this.committed_state = this.state;
+    this.committed_length = this.action.line().length();
   }
 
   public rollback() {
     this.action.rollback();
     modelListener.fire(EventType.MODIFIED);
     modelListener.fire(EventType.DELETED);
-    this.setState(ModelState.FIXED);
+    this.distRail = 0;
+    this.distTrain = 0;
+    this.setState(this.committed_state);
+    this.stateListeners
+      .filter((l) => l.onRollback)
+      .forEach((l) => l.onRollback(this));
+  }
+
+  public shouldRollaback() {
+    const diff = this.action.line().length() - this.committed_length;
+    if (diff <= SHORT_THRESHOLD * 2) return true;
+    // 電車を使う経路が存在しない場合もロールバックさせる
+    for (let r of cityResource.rs) {
+      for (let c of cityResource.cs) {
+        if (r.nextFor(c) !== c) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
 

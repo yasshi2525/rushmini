@@ -19,6 +19,7 @@ import { createSquareSprite } from "./sprite";
 const SIZE = 0.8;
 const SLIDE = 10;
 const DIST = 20;
+const INSTRUCTION_Y = 120;
 const BORDERS: RailEdgeCandidateOption[] = [
   { band: 16, slide: SLIDE, color: "#ffffff" },
   { band: 12, slide: SLIDE, color: "#ffd700" },
@@ -69,7 +70,7 @@ const createStationPanel = (scene: g.Scene) => {
 const appendInstraction = (panel: g.E) => {
   const sprite = createSquareSprite(panel.scene, "station_txt");
   sprite.x = (panel.width - sprite.width) / 2;
-  sprite.y = 40;
+  sprite.y = INSTRUCTION_Y;
   sprite.modified();
   panel.append(sprite);
 };

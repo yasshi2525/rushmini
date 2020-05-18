@@ -104,8 +104,8 @@ describe("railbuilder", () => {
       type: g.EventType.PointMove,
       pointerId: 1,
       point: { x: 10, y: 20 },
-      startDelta: { x: 1, y: 2 },
-      prevDelta: { x: 1, y: 2 },
+      startDelta: { x: 100, y: 200 },
+      prevDelta: { x: 100, y: 200 },
       target: panel,
     });
     panel.pointUp.fire({
@@ -115,8 +115,8 @@ describe("railbuilder", () => {
       type: g.EventType.PointUp,
       pointerId: 1,
       point: { x: 10, y: 20 },
-      startDelta: { x: 1, y: 2 },
-      prevDelta: { x: 1, y: 2 },
+      startDelta: { x: 100, y: 200 },
+      prevDelta: { x: 0, y: 0 },
       target: panel,
     });
     const dept1 = userResource.getPrimaryLine().top;
@@ -126,15 +126,15 @@ describe("railbuilder", () => {
     const outbound = dept1.next;
     expect(outbound).toBeInstanceOf(EdgeTask);
     expect(outbound.departure().loc()).toEqual({ x: 10, y: 20 });
-    expect(outbound.destination().loc()).toEqual({ x: 11, y: 22 });
+    expect(outbound.destination().loc()).toEqual({ x: 110, y: 220 });
 
     const dept2 = outbound.next;
     expect(dept2).toBeInstanceOf(DeptTask);
-    expect(dept2.departure().loc()).toEqual({ x: 11, y: 22 });
+    expect(dept2.departure().loc()).toEqual({ x: 110, y: 220 });
 
     const inbound = dept2.next;
     expect(inbound).toBeInstanceOf(EdgeTask);
-    expect(inbound.departure().loc()).toEqual({ x: 11, y: 22 });
+    expect(inbound.departure().loc()).toEqual({ x: 110, y: 220 });
     expect(inbound.destination().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept1);

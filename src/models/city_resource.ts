@@ -104,11 +104,13 @@ export class CityResource {
   private height: number;
   private rand: (min: number, max: number) => number;
 
-  private readonly cs: Company[];
+  public readonly cs: Company[];
+  public readonly rs: Residence[];
   private readonly buildings: Pointable[];
 
   constructor() {
     this.cs = [];
+    this.rs = [];
     this.buildings = [];
   }
 
@@ -147,9 +149,13 @@ export class CityResource {
     });
 
     // 初期住宅
-    this.buildings.push(
-      new Residence(this.cs, CityResource.PADDING, CityResource.PADDING)
+    const r = new Residence(
+      this.cs,
+      CityResource.PADDING,
+      CityResource.PADDING
     );
+    this.rs.push(r);
+    this.buildings.push(r);
 
     modelListener.fire(EventType.CREATED);
   }
@@ -168,6 +174,7 @@ export class CityResource {
         others: this.buildings,
       });
       const r = new Residence(this.cs, pos.x, pos.y);
+      this.rs.push(r);
       this.buildings.push(r);
     } else {
       this.buildings.push(new Residence(this.cs, x, y));
@@ -177,6 +184,7 @@ export class CityResource {
 
   public reset() {
     this.cs.length = 0;
+    this.rs.length = 0;
     this.buildings.length = 0;
   }
 }

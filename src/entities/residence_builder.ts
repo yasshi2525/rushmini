@@ -4,6 +4,8 @@ import viewer, { ViewerEvent } from "../utils/viewer";
 import { createSquareSprite } from "./sprite";
 
 const SIZE = 0.8;
+const INSTRUCTION_Y = 120;
+
 const handleOnSelected = (ev: g.PointUpEvent) => {
   const pos = new Point(
     ev.point.x + ev.startDelta.x,
@@ -16,7 +18,7 @@ const handleOnSelected = (ev: g.PointUpEvent) => {
 const appendInstraction = (panel: g.E) => {
   const sprite = createSquareSprite(panel.scene, "residence_txt");
   sprite.x = (panel.width - sprite.width) / 2;
-  sprite.y = 40;
+  sprite.y = INSTRUCTION_Y;
   sprite.modified();
   panel.append(sprite);
 };

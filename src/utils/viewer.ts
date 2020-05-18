@@ -121,6 +121,10 @@ export enum ViewerEvent {
    */
   BRANCHED,
   /**
+   * 支線建設やりなおし
+   */
+  BRANCH_ROLLBACKED,
+  /**
    * 新駅ボーナスが選ばれた（立地を探し中）
    */
   STATION_STARTED,
@@ -231,6 +235,7 @@ const handleInited = (_c: Controller, scene: g.Scene) => {
 };
 
 const handleBuilt = (_c: Controller) => {
+  _c.viewers[ViewerType.BUILD_GUIDE].hide();
   _c.viewers[ViewerType.BUILDER].hide();
 };
 
@@ -277,6 +282,10 @@ const handleBranchEnded = (_c: Controller) => {
   _c.isBonusing = false;
 };
 
+const handleBranchRollbacked = (_c: Controller) => {
+  _c.viewers[ViewerType.SHADOW].show();
+};
+
 const handleStationStarted = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].hide();
   _c.viewers[ViewerType.STATION_BUILDER].show();
@@ -319,6 +328,7 @@ const initListener = (_c: Controller, scene: g.Scene) => {
     { key: ViewerEvent.BRANCH_STARTED, value: handleBranchStarted },
     { key: ViewerEvent.BRANCHING, value: handleBranching },
     { key: ViewerEvent.BRANCHED, value: handleBranchEnded },
+    { key: ViewerEvent.BRANCH_ROLLBACKED, value: handleBranchRollbacked },
     { key: ViewerEvent.STATION_STARTED, value: handleStationStarted },
     { key: ViewerEvent.STATION_ENDED, value: handleStationEnded },
     { key: ViewerEvent.TRAIN_ENDED, value: handleTrainEnded },

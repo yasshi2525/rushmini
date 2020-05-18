@@ -272,6 +272,17 @@ const handler = {
     },
     human: (h: Human) => remove(hs, h),
   },
+  onFixed: () => {
+    finders.forEach((f) => {
+      // 鉄道による移動距離を計算 (前提: transport_finder が実行済み)
+      // Lt => P
+      transport(f);
+      const n = f.node(lts[0]);
+      humanRouting(f);
+      f.execute();
+      hs.forEach((h) => h._reroute());
+    });
+  },
 };
 
 const routeFinder = {
@@ -290,17 +301,8 @@ const routeFinder = {
     listener.find(Ev.DELETED, Human).register(handler.onDeleted.human);
 
     userResource.stateListeners.push({
-      onFixed: () => {
-        // 鉄道による移動距離を計算 (前提: transport_finder が実行済み)
-        finders.forEach((f) => {
-          // Lt => P
-          transport(f);
-          const n = f.node(lts[0]);
-          humanRouting(f);
-          f.execute();
-          hs.forEach((h) => h._reroute());
-        });
-      },
+      onFixed: handler.onFixed,
+      onRollback: handler.onFixed,
     });
   },
 };
