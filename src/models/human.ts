@@ -63,8 +63,11 @@ class Human extends RoutableObject implements Steppable {
    * 次に向かう経由点
    */
   private next: Routable;
+
+  private rideFrom: DeptTask;
+
   /**
-   * 降車時に払う運賃
+   * 改札を出るときに支払う運賃
    */
   private payment: number;
 
@@ -81,6 +84,7 @@ class Human extends RoutableObject implements Steppable {
     this.departure = departure;
     this.destination = destination;
     this.next = departure.nextFor(destination);
+    this.payment = 0;
     modelListener.add(EventType.CREATED, this);
   }
 
@@ -218,6 +222,20 @@ class Human extends RoutableObject implements Steppable {
     if (this.stamina < -DELTA && this._state !== HumanState.DIED) this.dead();
   }
 
+  public _ride(dept: DeptTask) {
+    this.rideFrom = dept;
+  }
+
+  public _getOff(platform: Platform) {
+    this.payment += this.rideFrom.paymentFor(platform);
+  }
+
+  public _pay() {
+    // 運賃支払い
+    modelListener.add(EventType.CREATED, new ScoreEvent(this.payment, this));
+    this.payment = 0;
+  }
+
   /**
    * 死亡状態にし、関連タスクから自身を除外する。
    */
@@ -233,17 +251,12 @@ class Human extends RoutableObject implements Steppable {
   }
 
   public _complete() {
-    // 運賃支払
-    if (this.payment) {
-      modelListener.add(EventType.CREATED, new ScoreEvent(this.payment, this));
-    }
     const prev = this.next;
     this.next = this.next.nextFor(this.destination);
     // 会社到着
     if (!this.next) {
       modelListener.add(EventType.DELETED, this);
     }
-    this.payment = prev.paymentFor(this.next);
   }
 }
 

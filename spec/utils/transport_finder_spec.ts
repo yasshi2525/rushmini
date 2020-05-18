@@ -44,8 +44,8 @@ describe("transport_finder", () => {
       const p2 = dept2.departure().platform;
 
       expect(p1.nextFor(p2)).toEqual(dept1);
-      expect(p1.distanceFor(p2)).toEqual(0.5);
-      expect(p1.paymentFor(p2)).toEqual(0.5);
+      expect(p1.distanceFor(p2)).toEqual(1.5);
+      expect(p1.paymentFor(p2)).toEqual(1.5);
       expect(p1.nextFor(p1)).toEqual(dept1);
       expect(p1.distanceFor(p1)).toEqual(0);
       expect(p1.paymentFor(p1)).toEqual(0);
@@ -54,19 +54,19 @@ describe("transport_finder", () => {
       expect(dept1.distanceFor(p1)).toEqual(0);
       expect(dept1.paymentFor(p1)).toEqual(0);
       expect(dept1.nextFor(p2)).toEqual(p2);
-      expect(dept1.distanceFor(p2)).toEqual(0.5);
-      expect(dept1.paymentFor(p2)).toEqual(0.5);
+      expect(dept1.distanceFor(p2)).toEqual(1.5); // 乗車 +1
+      expect(dept1.paymentFor(p2)).toEqual(1.5); // 乗車 +1
 
       expect(p2.nextFor(p1)).toEqual(dept2);
-      expect(p2.distanceFor(p1)).toEqual(0.5);
-      expect(p2.paymentFor(p1)).toEqual(0.5);
+      expect(p2.distanceFor(p1)).toEqual(1.5); // 乗車 +1
+      expect(p2.paymentFor(p1)).toEqual(1.5); // 乗車 +1
       expect(p2.nextFor(p2)).toEqual(dept2);
       expect(p2.distanceFor(p2)).toEqual(0);
       expect(p2.paymentFor(p2)).toEqual(0);
 
       expect(dept2.nextFor(p1)).toEqual(p1);
-      expect(dept2.distanceFor(p1)).toEqual(0.5);
-      expect(dept2.paymentFor(p1)).toEqual(0.5);
+      expect(dept2.distanceFor(p1)).toEqual(1.5); // 乗車 +1
+      expect(dept2.paymentFor(p1)).toEqual(1.5); // 乗車 +1
       expect(dept2.nextFor(p2)).toEqual(p2);
       expect(dept2.distanceFor(p2)).toEqual(0);
       expect(dept2.paymentFor(p2)).toEqual(0);
@@ -248,54 +248,54 @@ describe("transport_finder", () => {
       expect(dept12.nextFor(p3)).toEqual(p2);
       expect(dept12.nextFor(pX)).toEqual(pX);
       expect(dept12.distanceFor(p1)).toEqual(0);
-      expect(dept12.distanceFor(p2)).toEqual(5);
-      expect(dept12.distanceFor(p3)).toEqual(10);
-      expect(dept12.distanceFor(pX)).toEqual(10);
+      expect(dept12.distanceFor(p2)).toEqual(6); // 乗車
+      expect(dept12.distanceFor(p3)).toEqual(12); // 乗車+乗り換え
+      expect(dept12.distanceFor(pX)).toEqual(11); // 乗車
 
       expect(dept2X.nextFor(p1)).toEqual(p2);
       expect(dept2X.nextFor(p2)).toEqual(p2);
       expect(dept2X.nextFor(p3)).toEqual(p2);
       expect(dept2X.nextFor(pX)).toEqual(pX);
-      expect(dept2X.distanceFor(p1)).toEqual(5);
+      expect(dept2X.distanceFor(p1)).toEqual(6); // 乗車
       expect(dept2X.distanceFor(p2)).toEqual(0);
-      expect(dept2X.distanceFor(p3)).toEqual(5);
-      expect(dept2X.distanceFor(pX)).toEqual(5);
+      expect(dept2X.distanceFor(p3)).toEqual(6); // 乗車
+      expect(dept2X.distanceFor(pX)).toEqual(6); // 乗車
 
       expect(deptX2.nextFor(p1)).toEqual(p2);
       expect(deptX2.nextFor(p2)).toEqual(p2);
       expect(deptX2.nextFor(p3)).toEqual(p3);
       expect(deptX2.nextFor(pX)).toEqual(pX);
-      expect(deptX2.distanceFor(p1)).toEqual(10);
-      expect(deptX2.distanceFor(p2)).toEqual(5);
-      expect(deptX2.distanceFor(p3)).toEqual(10);
+      expect(deptX2.distanceFor(p1)).toEqual(12); // 乗車+乗り換え
+      expect(deptX2.distanceFor(p2)).toEqual(6); // 乗車
+      expect(deptX2.distanceFor(p3)).toEqual(11); // 乗車
       expect(deptX2.distanceFor(pX)).toEqual(0);
 
       expect(dept23.nextFor(p1)).toEqual(p2);
       expect(dept23.nextFor(p2)).toEqual(p2);
       expect(dept23.nextFor(p3)).toEqual(p3);
       expect(dept23.nextFor(pX)).toEqual(p2);
-      expect(dept23.distanceFor(p1)).toEqual(5);
+      expect(dept23.distanceFor(p1)).toEqual(6); // 乗車
       expect(dept23.distanceFor(p2)).toEqual(0);
-      expect(dept23.distanceFor(p3)).toEqual(5);
-      expect(dept23.distanceFor(pX)).toEqual(5);
+      expect(dept23.distanceFor(p3)).toEqual(6); // 乗車
+      expect(dept23.distanceFor(pX)).toEqual(6); // 乗車
 
       expect(dept32.nextFor(p1)).toEqual(p1);
       expect(dept32.nextFor(p2)).toEqual(p2);
       expect(dept32.nextFor(p3)).toEqual(p3);
       expect(dept32.nextFor(pX)).toEqual(p2);
-      expect(dept32.distanceFor(p1)).toEqual(10);
-      expect(dept32.distanceFor(p2)).toEqual(5);
+      expect(dept32.distanceFor(p1)).toEqual(11); // 乗車
+      expect(dept32.distanceFor(p2)).toEqual(6); // 乗車
       expect(dept32.distanceFor(p3)).toEqual(0);
-      expect(dept32.distanceFor(pX)).toEqual(10);
+      expect(dept32.distanceFor(pX)).toEqual(12); // 乗車+乗り換え
 
       expect(dept21.nextFor(p1)).toEqual(p1);
       expect(dept21.nextFor(p2)).toEqual(p2);
       expect(dept21.nextFor(p3)).toEqual(p2);
       expect(dept21.nextFor(pX)).toEqual(p2);
-      expect(dept21.distanceFor(p1)).toEqual(5);
+      expect(dept21.distanceFor(p1)).toEqual(6); // 乗車
       expect(dept21.distanceFor(p2)).toEqual(0);
-      expect(dept21.distanceFor(p3)).toEqual(5);
-      expect(dept21.distanceFor(pX)).toEqual(5);
+      expect(dept21.distanceFor(p3)).toEqual(6); // 乗車
+      expect(dept21.distanceFor(pX)).toEqual(6); // 乗車
     });
     it("train", () => {
       expect(t.nextFor(p1)).toEqual(p1);
@@ -304,7 +304,7 @@ describe("transport_finder", () => {
       expect(t.nextFor(pX)).toEqual(pX);
       expect(t.distanceFor(p1)).toEqual(0);
       expect(t.distanceFor(p2)).toEqual(5);
-      expect(t.distanceFor(p3)).toEqual(10);
+      expect(t.distanceFor(p3)).toEqual(11); // 乗り換え必要のため +1
       expect(t.distanceFor(pX)).toEqual(10);
     });
   });

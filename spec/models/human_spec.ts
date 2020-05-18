@@ -216,7 +216,7 @@ describe("human", () => {
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_EXIT_GATE);
     modelListener.fire(EventType.CREATED);
-    expect(score).toEqual(5);
+    expect(score).toEqual(0);
     g2._step();
     expect(h.state()).toEqual(HumanState.MOVE);
     modelListener.fire(EventType.CREATED);

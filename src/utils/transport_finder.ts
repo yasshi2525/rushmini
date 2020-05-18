@@ -13,6 +13,8 @@ import { remove } from "./common";
  * 徒歩に比べて鉄道の移動がどれほど優位か
  */
 const DIST_RATIO = 0.1;
+const RIDE_COST = 1; // 乗車コスト。これをしないと途中で乗り降りしてしまう
+
 /**
  * 1移動コストあたり、いくら料金が発生するか
  */
@@ -54,7 +56,7 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
     f.edge(dept.stay, dept, 0, 0);
 
     let current: LineTask = dept;
-    let length = current.length();
+    let length = current.length() + RIDE_COST;
 
     do {
       current = current.next;

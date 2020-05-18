@@ -77,10 +77,10 @@ describe("route_finder", () => {
       expect(p2.nextFor(c)).toEqual(g2);
       expect(g2.nextFor(c)).toEqual(c);
 
-      expect(r.paymentFor(c)).toEqual(0.5);
-      expect(g1.paymentFor(c)).toEqual(0.5);
-      expect(p1.paymentFor(c)).toEqual(0.5);
-      expect(dept1.paymentFor(c)).toEqual(0.5);
+      expect(r.paymentFor(c)).toEqual(1.5);
+      expect(g1.paymentFor(c)).toEqual(1.5);
+      expect(p1.paymentFor(c)).toEqual(1.5);
+      expect(dept1.paymentFor(c)).toEqual(1.5);
       expect(p2.paymentFor(c)).toEqual(0);
       expect(g2.paymentFor(c)).toEqual(0);
     });

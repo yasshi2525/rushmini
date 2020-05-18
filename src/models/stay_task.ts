@@ -117,6 +117,7 @@ class StayTask extends TrainTask {
         h.state(HumanState.ON_TRAIN);
         remove(dept._queue(), h);
         h._setDeptTask(undefined);
+        h._ride(dept);
         this.train.passengers.push(h);
         this.waitSec += 1 / Train.MOBILITY_SEC;
         modelListener.add(EventType.RIDDEN, this.train);
@@ -142,6 +143,7 @@ class StayTask extends TrainTask {
         h._setTrain(undefined);
         p.outQueue.push(h);
         h._setPlatform(p);
+        h._getOff(p);
         remove(psngr, h);
         this.waitSec += 1 / Train.MOBILITY_SEC;
         modelListener.add(EventType.RIDDEN, this.train);
