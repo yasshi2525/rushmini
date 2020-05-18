@@ -4,6 +4,7 @@ import userResource from "../models/user_resource";
 import routeFinder from "../utils/route_finder";
 import scenes, { SceneType } from "../utils/scene";
 import scorer from "../utils/scorer";
+import statics from "../utils/statics";
 import stepper from "../utils/stepper";
 import ticker from "../utils/ticker";
 import transportFinder from "../utils/transport_finder";
@@ -25,6 +26,7 @@ const replay = () => {
   stepper.reset();
   userResource.reset();
   cityResource.reset();
+  statics.reset();
   modelListener.unregisterAll();
   modelListener.flush();
   ticker.reset();

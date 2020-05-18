@@ -10,6 +10,9 @@ export const find = <T>(arr: T[], cond: (v: T) => boolean) => {
   return undefined;
 };
 
+export const sum = <T>(arr: T[], num: (e: T) => number) =>
+  arr.reduce((p, n) => p + num(n), 0);
+
 export const remove = <T>(arr: T[], subject: T | ((s: T) => boolean)) => {
   if (subject instanceof Function) {
     let elm;

@@ -13,20 +13,20 @@ import { Steppable } from "./steppable";
 import Train from "./train";
 
 export enum HumanState {
-  SPAWNED,
-  MOVE,
-  WAIT_ENTER_GATE,
-  WAIT_ENTER_PLATFORM,
-  WAIT_ENTER_DEPTQUEUE,
-  WAIT_TRAIN_ARRIVAL,
-  WAIT_ENTER_TRAIN,
-  ON_TRAIN,
-  WAIT_EXIT_TRAIN,
-  WAIT_EXIT_PLATFORM,
-  WAIT_EXIT_GATE,
-  ARCHIVED,
-  DIED,
-  WAIT_REROUTING,
+  SPAWNED = "spawned",
+  MOVE = "move",
+  WAIT_ENTER_GATE = "wait_enter_gate",
+  WAIT_ENTER_PLATFORM = "wait_enter_platform",
+  WAIT_ENTER_DEPTQUEUE = "wait_enter_deptqueue",
+  WAIT_TRAIN_ARRIVAL = "wait_train_arrival",
+  WAIT_ENTER_TRAIN = "wait_enter_train",
+  ON_TRAIN = "on_train",
+  WAIT_EXIT_TRAIN = "wait_exit_train",
+  WAIT_EXIT_PLATFORM = "wait_exit_platform",
+  WAIT_EXIT_GATE = "wait_exit_gate",
+  ARCHIVED = "archived",
+  DIED = "died",
+  WAIT_REROUTING = "wait_rerouting",
 }
 
 const DELTA = 0.000001;

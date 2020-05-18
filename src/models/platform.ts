@@ -1,4 +1,5 @@
-import { remove, removeIf } from "../utils/common";
+import { remove, removeIf, sum } from "../utils/common";
+import DeptTask from "./dept_task";
 import Gate from "./gate";
 import Human, { HumanState } from "./human";
 import modelListener, { EventType } from "./listener";
@@ -20,15 +21,25 @@ class Platform extends RoutableObject {
    */
   readonly outQueue: Human[];
 
+  public readonly depts: DeptTask[];
+
   constructor(on: RailNode, st: Station) {
     super();
     this.on = on;
     this.station = st;
     this.inQueue = [];
     this.outQueue = [];
+    this.depts = [];
     on.platform = this;
     st.platforms.push(this);
     modelListener.add(EventType.CREATED, this);
+  }
+
+  /**
+   * ホーム上にいる人数を返します
+   */
+  public numUsed() {
+    return this.inQueue.length + sum(this.depts, (d) => d._queue().length);
   }
 
   public loc() {
@@ -101,7 +112,7 @@ class Platform extends RoutableObject {
     const gate = this.station.gate;
     if (
       gate._concourse.indexOf(subject) !== -1 &&
-      this.inQueue.length < Platform.CAPACITY
+      this.numUsed() < Platform.CAPACITY
     ) {
       remove(gate._concourse, subject);
       subject._setGate(undefined);

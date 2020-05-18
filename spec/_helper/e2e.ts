@@ -9,6 +9,7 @@ import random from "utils/random";
 import routeFinder from "utils/route_finder";
 import scenes from "utils/scene";
 import scorer from "utils/scorer";
+import statics from "utils/statics";
 import stepper from "utils/stepper";
 import ticker, { EventType } from "utils/ticker";
 import transportFinder from "utils/transport_finder";
@@ -20,17 +21,37 @@ export type Record = {
   score: number;
 };
 
-const toRecordHeader = () => `time,score`;
+const toRecordHeader = (r: Record) => Object.keys(r).join(",");
 const toRecordString = (r: Record) =>
   Object.keys(r)
     .map((k) => r[k])
     .join(",");
 
-const createRecord = (total: number) => {
-  return {
+const dump = (
+  to: Record,
+  from: { [index: string]: number },
+  prefix: string
+) => {
+  Object.entries(from).forEach(([k, v]) => {
+    to[prefix + k] = v;
+    if (isNaN(v)) {
+      console.log(`${prefix + k} is NaN`);
+    }
+  });
+};
+
+const createRecord = (total: number): Record => {
+  const obj: Record = {
     time: total,
     score: scorer.get(),
   };
+  obj[`allSpawn`] = statics.numSpawn;
+  dump(obj, statics.numResource, "num_");
+  const dy = statics.collect();
+  dump(obj, dy.human, "num_");
+  dump(obj, dy.crowd, "rate_");
+  dump(obj, statics.diedIn, "died_");
+  return obj;
 };
 
 export const startGame = (table: Record[], onGameOver: () => void) => {
@@ -101,7 +122,7 @@ export const writeReport = async (name: string, table: Record[]) => {
     });
   });
 
-  await writeWrapper(fd, toRecordHeader(), "w");
+  await writeWrapper(fd, toRecordHeader(table[0]), "w");
 
   for (let record of table) await writeWrapper(fd, toRecordString(record), "a");
 };

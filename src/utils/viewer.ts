@@ -8,6 +8,7 @@ import userResource from "../models/user_resource";
 import random from "./random";
 import routeFinder from "./route_finder";
 import scorer from "./scorer";
+import statics from "./statics";
 import stepper from "./stepper";
 import ticker, { EventType as TickEventType } from "./ticker";
 import transportFinder from "./transport_finder";
@@ -199,6 +200,7 @@ const parent = (_c: Controller, key: ViewerType, scene: g.Scene) => {
 };
 
 const initController = (width: number, height: number) => {
+  statics.init();
   transportFinder.init();
   routeFinder.init();
   stepper.init();

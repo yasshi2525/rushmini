@@ -54,6 +54,7 @@ export class DeptTask extends LineTask implements Routable {
     super(parent, prev) /* istanbul ignore next */;
     this.router = new DeptTaskRouter(this);
     this.stay = stay;
+    stay.depts.push(this);
     modelListener.add(EventType.CREATED, this);
   }
 
@@ -156,6 +157,11 @@ export class DeptTask extends LineTask implements Routable {
 
   public _queue() {
     return this.router.queue;
+  }
+
+  public _remove() {
+    remove(this.stay.depts, this);
+    super._remove();
   }
 }
 export default DeptTask;
