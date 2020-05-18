@@ -136,6 +136,17 @@ class RailLine {
       lt._insertPlatform(platform)
     );
   }
+
+  public length() {
+    if (!this.top) return 0;
+    let current: LineTask = this.top;
+    let len = 0;
+    do {
+      len += current.length();
+      current = current.next;
+    } while (current !== this.top);
+    return len;
+  }
 }
 
 export default RailLine;

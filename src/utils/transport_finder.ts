@@ -16,9 +16,9 @@ const DIST_RATIO = 0.1;
 const RIDE_COST = 1; // 乗車コスト。これをしないと途中で乗り降りしてしまう
 
 /**
- * 1移動コストあたり、いくら料金が発生するか
+ * 総延長に対する移動距離の割合に対して乗ずる料金
  */
-const PAY_RATIO = 1;
+const PAY_RATIO = 100;
 
 const finders: PathFinder[] = [];
 const ls: RailLine[] = [];
@@ -56,15 +56,20 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
     f.edge(dept.stay, dept, 0, 0);
 
     let current: LineTask = dept;
-    let length = current.length() + RIDE_COST;
+    let length = current.length();
 
     do {
       current = current.next;
-      length += current.length() * DIST_RATIO;
+      length += current.length();
       if (current.isDeptTask()) {
         // Dept -> P のみ登録する
         // P -> P 接続にしてしまうと乗り換えが必要かどうか分からなくなるため
-        f.edge(dept, current.stay, length, length * PAY_RATIO);
+        f.edge(
+          dept,
+          current.stay,
+          length * DIST_RATIO + RIDE_COST,
+          (length / l.length()) * PAY_RATIO
+        );
       }
     } while (dept !== current);
   });
