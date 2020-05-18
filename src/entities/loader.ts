@@ -16,6 +16,7 @@ import createScoreViewer from "./score_view";
 import createShadow from "./shadow";
 import createStationBuilder from "./station_builder";
 import createTickLabel from "./tick";
+import createWaitPanel from "./waiter";
 
 /**
  * ビューアの情報を utils/viewer に渡します
@@ -38,6 +39,7 @@ const preserveEntityCreator = () => {
   viewer.put(ViewerType.STATION_BUILDER, createStationBuilder);
   viewer.put(ViewerType.SHADOW, createShadow);
   viewer.put(ViewerType.TICK, createTickLabel);
+  viewer.put(ViewerType.WAITER, createWaitPanel);
 };
 
 export default preserveEntityCreator;

@@ -38,6 +38,10 @@ export enum ViewerType {
    */
   BUILDER,
   /**
+   * 初回ボーナス授受まで表示するアナウンス
+   */
+  WAITER,
+  /**
    * ボーナス画面のとき、モデルを影で隠す
    */
   SHADOW,
@@ -237,6 +241,7 @@ const handleInited = (_c: Controller, scene: g.Scene) => {
 const handleBuilt = (_c: Controller) => {
   _c.viewers[ViewerType.BUILD_GUIDE].hide();
   _c.viewers[ViewerType.BUILDER].hide();
+  _c.viewers[ViewerType.WAITER].show();
 };
 
 /**
@@ -262,6 +267,7 @@ const handleAutoBuildBonus = (_c: Controller) => {
 };
 
 const handleBonusStarted = (_c: Controller) => {
+  _c.viewers[ViewerType.WAITER].hide();
   _c.viewers[ViewerType.BONUS].show();
   _c.viewers[ViewerType.SHADOW].show();
   _c.userBonuses.shift();

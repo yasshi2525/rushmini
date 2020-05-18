@@ -639,6 +639,11 @@
 			"type": "script",
 			"path": "script/entities/score_view.js",
 			"global": true
+		},
+		"waiter": {
+			"type": "script",
+			"path": "script/entities/waiter.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

@@ -32,7 +32,6 @@ describe("railbuild_guide", () => {
     userResource.extend(300, 400);
     userResource.end();
     expect(panel.visible()).toBeTruthy(); // イベント発火で消える
-    viewer.fire(ViewerEvent.BUILT);
   });
 
   it("guide reopen when rollback", () => {
