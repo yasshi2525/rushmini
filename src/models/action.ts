@@ -252,6 +252,7 @@ class ActionProxy {
     this._tailNode = re.to;
     this._tailEdge = re;
     this.actions.push(action);
+    return re.arrow.length();
   }
 
   public buildStation(rn?: RailNode) {

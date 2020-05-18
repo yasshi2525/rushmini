@@ -167,13 +167,17 @@ describe("user_resource", () => {
     it("build station at regular interval", () => {
       instance.start(0, 0);
       let tail: LineTask = instance.getPrimaryLine().top;
-      for (let i = 0; i < UserResource.STATION_INTERVAL - 1; i++) {
+      for (
+        let i = 0;
+        i < UserResource.STATION_INTERVAL / UserResource.DIST - 1;
+        i++
+      ) {
         instance.extend((i + 1) * UserResource.DIST, 0);
         tail = tail.next;
         expect(tail.destination().platform).toBeUndefined();
       }
 
-      instance.extend(UserResource.STATION_INTERVAL - 1, 0);
+      instance.extend(UserResource.STATION_INTERVAL + UserResource.DIST * 2, 0);
       tail = tail.next;
       expect(tail.destination().platform).not.toBeUndefined();
       tail = tail.next;
@@ -191,7 +195,11 @@ describe("user_resource", () => {
       let tail: LineTask = instance.getPrimaryLine().top;
       expect(ts[0].loc()).toEqual(tail.departure().loc());
 
-      for (let i = 0; i < UserResource.TRAIN_INTERVAL - 1; i++) {
+      for (
+        let i = 0;
+        i < UserResource.TRAIN_INTERVAL / UserResource.DIST - 1;
+        i++
+      ) {
         instance.extend((i + 1) * UserResource.DIST, 0);
         tail = tail.next;
         if (tail.destination().platform) {
@@ -208,7 +216,7 @@ describe("user_resource", () => {
       expect(ts[2].loc()).toEqual(tail.departure().loc());
 
       instance.extend(UserResource.TRAIN_INTERVAL, 0);
-      expect(ts.length).toEqual(3);
+      expect(ts.length).toEqual(5);
       expect(instance.getState()).toEqual(ModelState.STARTED);
     });
 

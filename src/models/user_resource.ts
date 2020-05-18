@@ -32,8 +32,8 @@ const find = (state: ModelState, l: StateListener) => {
 };
 
 export class UserResource {
-  public static STATION_INTERVAL: number = 50;
-  public static TRAIN_INTERVAL: number = 100;
+  public static STATION_INTERVAL: number = 250;
+  public static TRAIN_INTERVAL: number = 500;
   private action: ActionProxy;
 
   private state: ModelState;
@@ -51,16 +51,18 @@ export class UserResource {
   public readonly stateListeners: StateListener[];
 
   /**
-   * 駅を一定間隔で設置するため、最後に駅を持ってからextendした回数を保持するカウンター
+   * 駅を一定間隔で設置するため、最後に駅を作ってからextendした距離を保持するカウンター
    */
-  private railCounter: number = 0;
-  private trainCounter: number = 0;
+  private distRail: number;
+  private distTrain: number;
 
   constructor() {
     this.stateListeners = [];
   }
 
   public init() {
+    this.distRail = 0;
+    this.distTrain = 0;
     this.lastPos = undefined;
     this.setState(ModelState.INITED);
     this.action = new ActionProxy();
@@ -110,25 +112,25 @@ export class UserResource {
   /**
    * 一定間隔で駅を作成する
    */
-  private interviseStation() {
-    this.railCounter++;
-    if (this.railCounter >= UserResource.STATION_INTERVAL) {
+  private interviseStation(dist: number) {
+    this.distRail += dist;
+    if (this.distRail >= UserResource.STATION_INTERVAL) {
       this.action.buildStation();
-      this.railCounter = 0;
+      this.distRail = 0;
     }
   }
 
   /**
    * 一定間隔で電車を作成する
    */
-  private interviseTrain() {
-    this.trainCounter++;
-    if (this.trainCounter >= UserResource.TRAIN_INTERVAL) {
+  private interviseTrain(dist: number) {
+    this.distTrain += dist;
+    if (this.distTrain >= UserResource.TRAIN_INTERVAL) {
       this.action
         .line()
         .filter((lt) => lt.departure() === this.action.tail())
         .forEach((lt) => this.action.deployTrain(lt));
-      this.trainCounter = 0;
+      this.distTrain = 0;
     }
   }
 
@@ -151,11 +153,11 @@ export class UserResource {
         ) {
           return;
         }
-        this.action.extendRail(x, y);
-        this.interviseStation();
+        const dist = this.action.extendRail(x, y);
+        this.interviseStation(dist);
 
         this.action.insertEdge();
-        this.interviseTrain();
+        this.interviseTrain(dist);
 
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
@@ -220,15 +222,16 @@ export class UserResource {
       console.warn("try to branch from unrelated platform");
       return;
     }
-
+    this.distRail = 0;
+    this.distTrain = 0;
     this.action.startBranch(p);
     this.setState(ModelState.STARTED);
   }
 
   public reset() {
     this.stateListeners.length = 0;
-    this.railCounter = 0;
-    this.trainCounter = 0;
+    this.distRail = 0;
+    this.distTrain = 0;
   }
 
   public station(rn: RailNode) {
