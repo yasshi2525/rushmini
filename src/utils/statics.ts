@@ -177,7 +177,9 @@ const statics: Controller = {
       numCommuter: statics._commute.length,
       commuteTime:
         statics._commute.length > 0
-          ? sum(statics._commute, (e) => e.value) / statics._commute.length
+          ? sum(statics._commute, (e) => e.value) /
+            statics._commute.length /
+            ticker.fps()
           : 0,
     };
     findArray(statics._objs, Human).forEach((h) => obj.human[h.state()]++);
