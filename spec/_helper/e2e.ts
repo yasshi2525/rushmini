@@ -42,10 +42,11 @@ const createRecord = (total: number): Record => {
   };
   const dy = statics.collect();
   obj[`allSpawn`] = statics.numSpawn;
-  obj[`commuter`] = statics.numCommute;
   dump(obj, statics.numResource, "num_");
+  obj[`num_commuter`] = dy.numCommuter;
   dump(obj, dy.human, "num_");
   dump(obj, dy.crowd, "rate_");
+  obj[`commute_time`] = dy.commuteTime;
   dump(obj, dy.wait, "wait_");
   dump(obj, dy.die, "died_");
   return obj;

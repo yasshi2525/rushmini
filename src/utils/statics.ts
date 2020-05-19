@@ -25,6 +25,8 @@ type DynamicStatics = {
   crowd: CrowdStatics;
   wait: StateStatics;
   die: StateStatics;
+  numCommuter: number;
+  commuteTime: number;
 };
 
 export class WaitEvent {
@@ -42,7 +44,15 @@ export class WaitEvent {
   }
 }
 
-export class CommuteEvent {}
+/**
+ * 電車に乗って通勤しきったときに発生
+ */
+export class CommuteEvent {
+  value: number;
+  constructor(value: number) {
+    this.value = value;
+  }
+}
 
 export class DieEvent {
   cause: HumanState;
@@ -55,7 +65,7 @@ type Controller = {
   _objs: ResourceSet<Array<any>>;
   numResource: ResourceSet<number>;
   numSpawn: number;
-  numCommute: number;
+  _commute: CommuteEvent[];
   _wait: WaitEvent[];
   _die: DieEvent[];
   init: () => void;
@@ -97,7 +107,7 @@ const statics: Controller = {
   _objs: {},
   numResource: {},
   numSpawn: 0,
-  numCommute: 0,
+  _commute: [],
   _wait: [],
   _die: [],
   init: () => {
@@ -139,7 +149,7 @@ const statics: Controller = {
       .register((e) => statics._die.push(e));
     modelListener
       .find(EventType.CREATED, CommuteEvent)
-      .register(() => statics.numCommute++);
+      .register((e) => statics._commute.push(e));
   },
   collect: () => {
     const obj = {
@@ -164,6 +174,11 @@ const statics: Controller = {
       },
       wait: emptyState(),
       die: emptyState(),
+      numCommuter: statics._commute.length,
+      commuteTime:
+        statics._commute.length > 0
+          ? sum(statics._commute, (e) => e.value) / statics._commute.length
+          : 0,
     };
     findArray(statics._objs, Human).forEach((h) => obj.human[h.state()]++);
     Object.keys(HumanState).forEach((k: keyof typeof HumanState) => {
@@ -180,7 +195,7 @@ const statics: Controller = {
     statics._objs = emptySet([]);
     statics.numSpawn = 0;
     statics.numResource = emptySet(0);
-    statics.numCommute = 0;
+    statics._commute.length = 0;
     statics._die.length = 0;
     statics._wait.length = 0;
   },

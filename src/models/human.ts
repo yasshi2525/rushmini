@@ -76,7 +76,7 @@ class Human extends RoutableObject implements Steppable {
   private platform: Platform;
   private dept: DeptTask;
   private train: Train;
-  private isUsedTrain: boolean;
+  private rideCount: number;
   private wait: WaitEvent;
 
   constructor(departure: Residence, destination: Company) {
@@ -88,7 +88,7 @@ class Human extends RoutableObject implements Steppable {
     this.destination = destination;
     this.next = departure.nextFor(destination);
     this.payment = 0;
-    this.isUsedTrain = false;
+    this.rideCount = 0;
     this.wait = new WaitEvent(this._state);
     modelListener.add(EventType.CREATED, this);
   }
@@ -209,10 +209,6 @@ class Human extends RoutableObject implements Steppable {
    * @param t
    */
   public _setTrain(t?: Train) {
-    if (!this.isUsedTrain) {
-      modelListener.add(EventType.CREATED, new CommuteEvent());
-    }
-    this.isUsedTrain = true;
     this.train = t;
   }
 
@@ -226,6 +222,7 @@ class Human extends RoutableObject implements Steppable {
 
   public _step() {
     this.wait.wait();
+    if (this._state === HumanState.ON_TRAIN) this.rideCount++;
     this.next?._fire(this);
 
     // 会社についている場合、ダメージは喰らわない
@@ -268,6 +265,9 @@ class Human extends RoutableObject implements Steppable {
     this.next = this.next.nextFor(this.destination);
     // 会社到着
     if (!this.next) {
+      if (this.rideCount > 0) {
+        modelListener.add(EventType.CREATED, new CommuteEvent(this.rideCount));
+      }
       modelListener.add(EventType.CREATED, new DieEvent(this._state));
       modelListener.add(EventType.DELETED, this);
     }

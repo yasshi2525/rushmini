@@ -2,6 +2,7 @@ import { RPGAtsumaruWindow } from "parameterObject";
 import createEndingScene, { handleEnding } from "scenes/ending";
 import scenes, { SceneType } from "utils/scene";
 import scorer from "utils/scorer";
+import statics from "utils/statics";
 import ticker from "utils/ticker";
 
 declare const window: RPGAtsumaruWindow;
@@ -16,6 +17,7 @@ describe("ending", () => {
       },
     };
     g.game.vars = { gameState: { score: 0 } };
+    statics.init();
     scorer.init(g.game.vars.gameState);
   });
 

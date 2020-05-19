@@ -3,7 +3,7 @@ import statics from "../utils/statics";
 import createFont from "./font";
 import { createSquareSprite } from "./sprite";
 
-const UNITS = ["人", "人", "人", "秒", "秒", "％", "％", "％"];
+const UNITS = ["人", "人", "秒", "秒", "秒", "％", "％", "％"];
 
 const SIZE = 0.275;
 const PADDING = 0.1;
@@ -53,8 +53,8 @@ const createStaticsPanel = (loadedSccene: g.Scene) => {
   const dy = statics.collect();
   const values = [
     statics.numSpawn,
-    statics._die.filter((s) => s.cause === HumanState.ARCHIVED).length,
-    statics.numCommute,
+    dy.numCommuter,
+    dy.commuteTime,
     dy.wait[HumanState.WAIT_ENTER_PLATFORM] +
       dy.wait[HumanState.WAIT_ENTER_DEPTQUEUE] +
       dy.wait[HumanState.WAIT_TRAIN_ARRIVAL],
