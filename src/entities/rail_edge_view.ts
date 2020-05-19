@@ -2,34 +2,27 @@ import RailEdge from "../models/rail_edge";
 import { ModelModifier } from "./connector";
 import creators from "./creator";
 
-const BAND = 2;
-const SLIDE = 10;
-const COLOR = "#aaaaaa";
-
 type GetWidthOption = {
   re: RailEdge;
   isForward: boolean;
-  band?: number;
-  slide?: number;
+  band: number;
+  slide: number;
 };
 
 const getWidth = (opts: GetWidthOption) => {
   const rn = opts.isForward ? opts.re.to : opts.re.from;
   const w =
     opts.re.arrow.length() / 2 +
-    (opts.re.isOutbound
-      ? rn.left(opts.slide ?? SLIDE)
-      : rn.right(opts.slide ?? SLIDE));
-  return Math.max(w, 0) + (opts.band ?? BAND) / 2;
+    (opts.re.isOutbound ? rn.left(opts.slide) : rn.right(opts.slide));
+  return Math.max(w, 0) + opts.band / 4;
 };
 
 type _GetOption = GetWidthOption & { fn: (n: number) => number; width: number };
 
 const _get = (opts: _GetOption) =>
-  (opts.slide ?? SLIDE) * opts.fn(opts.re.arrow.angle() + Math.PI / 2) -
+  opts.slide * opts.fn(opts.re.arrow.angle() + Math.PI / 2) -
   ((opts.isForward ? 1 : -1) * (opts.width * opts.fn(opts.re.arrow.angle()))) /
-    2 -
-  (opts.band ?? BAND) / 4;
+    2;
 
 type GetPosOption = Omit<_GetOption, "fn">;
 
@@ -67,14 +60,74 @@ const modifyPos = (opts: ModifyPosOption) => {
   opts.panel.modified();
 };
 
-type ModiferOption = { band?: number; slide?: number };
+type CreateOption = GetWidthOption & { scene: g.Scene; color?: string };
 
-export const railEdgeModifier = (
-  opts: ModiferOption
+const createLine = (opts: CreateOption) =>
+  new g.FilledRect({
+    scene: opts.scene,
+    width: getWidth(opts),
+    height: opts.band,
+    cssColor: opts.color,
+    angle: opts.re.arrow.angleDegree(),
+    anchorX: 0.5,
+    anchorY: 0.5,
+  });
+
+export type RailEdgeModuleOption = {
+  band: number;
+  slide: number;
+  color: string;
+};
+
+export const createRailEdgeModule = (opts: RailEdgeModuleOption) => (
+  scene: g.Scene,
+  re: RailEdge
+) => {
+  const e = new g.E({ scene });
+  const forward = createLine({
+    scene,
+    re,
+    band: opts.band,
+    slide: opts.slide,
+    color: opts.color,
+    isForward: true,
+  });
+  modifyPos({
+    re,
+    band: opts.band,
+    slide: opts.slide,
+    panel: forward,
+    isForward: true,
+  });
+  const backward = createLine({
+    scene,
+    re,
+    band: opts.band,
+    slide: opts.slide,
+    color: opts.color,
+    isForward: false,
+  });
+  modifyPos({
+    re,
+    band: opts.band,
+    slide: opts.slide,
+    panel: backward,
+    isForward: false,
+  });
+  e.append(forward);
+  e.append(backward);
+  return e;
+};
+
+type RailEdgeModiferOption = { band: number; slide: number };
+
+export const createRailEdgeModuleModifier = (
+  opts: RailEdgeModiferOption
 ): ModelModifier<RailEdge> => (vo) => {
   const re = vo.subject;
-  const forward = vo.viewer.children[0].children[0];
-  const backward = vo.viewer.children[0].children[1];
+  const viewer = vo.viewer;
+  const forward = viewer.children[0].children[0];
+  const backward = viewer.children[0].children[1];
 
   forward.width = getWidth({
     re,
@@ -105,76 +158,13 @@ export const railEdgeModifier = (
   });
 };
 
-type CreateOption = GetWidthOption & { scene: g.Scene; color?: string };
+const BORDERS: RailEdgeModuleOption[] = [
+  { band: 8, slide: 10, color: "#ffffff" },
+  { band: 4, slide: 10, color: "#000000" },
+];
 
-const create = (opts: CreateOption) =>
-  new g.FilledRect({
-    scene: opts.scene,
-    width: getWidth(opts),
-    height: opts.band ?? BAND,
-    cssColor: opts.color ?? COLOR,
-    angle: opts.re.arrow.angleDegree(),
-    anchorX: 0.5,
-    anchorY: 0.5,
-  });
+export const defaultRailEdgeModifier: ModelModifier<
+  RailEdge
+>[] = BORDERS.map((opts) => createRailEdgeModuleModifier(opts));
 
-export type RailEdgeCandidateOption = {
-  band: number;
-  slide: number;
-  color: string;
-};
-
-export const createRailEdgeCandidate = (opts: RailEdgeCandidateOption) => (
-  scene: g.Scene,
-  re: RailEdge
-) => {
-  const e = new g.E({ scene });
-  const forward = create({
-    scene,
-    re,
-    band: opts.band,
-    slide: opts.slide,
-    color: opts.color,
-    isForward: true,
-  });
-  modifyPos({
-    re,
-    band: opts.band,
-    slide: opts.slide,
-    panel: forward,
-    isForward: true,
-  });
-  const backward = create({
-    scene,
-    re,
-    band: opts.band,
-    slide: opts.slide,
-    color: opts.color,
-    isForward: false,
-  });
-  modifyPos({
-    re,
-    band: opts.band,
-    slide: opts.slide,
-    panel: backward,
-    isForward: false,
-  });
-  e.append(forward);
-  e.append(backward);
-  return e;
-};
-
-creators.put(RailEdge, (scene, re) => {
-  const e = new g.E({ scene });
-
-  const forward = create({ scene, re, isForward: true });
-  modifyPos({ re, panel: forward, isForward: true });
-
-  const backward = create({ scene, re, isForward: false });
-  modifyPos({ re, panel: backward, isForward: false });
-
-  e.append(forward);
-  e.append(backward);
-
-  return e;
-});
+BORDERS.forEach((opts) => creators.put(RailEdge, createRailEdgeModule(opts)));

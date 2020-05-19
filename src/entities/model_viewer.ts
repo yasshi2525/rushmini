@@ -17,7 +17,7 @@ import connect, { ModelModifier } from "./connector";
 import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import { humanModifier } from "./human_view";
-import { railEdgeModifier } from "./rail_edge_view";
+import { defaultRailEdgeModifier } from "./rail_edge_view";
 import { createFramedRect, createWorkingArea } from "./rectangle";
 import { riddenModifer, trainModifer } from "./train_view";
 
@@ -27,17 +27,17 @@ const BORDER = 5;
 type Config<T extends Pointable> = {
   key: new (...args: any[]) => T;
   desc?: boolean;
-  modifer?: ModelModifier<T>;
-  rideModifer?: ModelModifier<T>;
+  modifers?: ModelModifier<T>[];
+  rideModifers?: ModelModifier<T>[];
 };
 
 const configs: Config<Pointable>[] = [
   { key: Residence },
   { key: Company },
-  { key: Human, desc: true, modifer: humanModifier },
-  { key: RailEdge, modifer: railEdgeModifier({}) },
+  { key: Human, desc: true, modifers: [humanModifier] },
+  { key: RailEdge, modifers: defaultRailEdgeModifier },
   { key: Station },
-  { key: Train, modifer: trainModifer, rideModifer: riddenModifer },
+  { key: Train, modifers: [trainModifer], rideModifers: [riddenModifer] },
 ];
 
 /**
@@ -49,17 +49,23 @@ const createResourcePanel = <T extends Pointable>(
   config: Config<T>,
   scene: g.Scene
 ) => {
-  const panel = new g.E({ scene });
-  const modifer: { [key in ModelEventType]?: ModelModifier<T> } = {};
-  if (config.modifer) modifer[ModelEventType.MODIFIED] = config.modifer;
-  if (config.rideModifer) modifer[ModelEventType.RIDDEN] = config.rideModifer;
+  const container = new g.E({ scene });
+  creators.find(config.key).forEach((creator, idx) => {
+    const panel = new g.E({ scene });
+    const modifer: { [key in ModelEventType]?: ModelModifier<T> } = {};
+    if (config.modifers && config.modifers[idx])
+      modifer[ModelEventType.MODIFIED] = config.modifers[idx];
+    if (config.rideModifers && config.rideModifers[idx])
+      modifer[ModelEventType.RIDDEN] = config.rideModifers[idx];
+    connect(
+      new ViewObjectFactory<T>(panel, creator, config.desc),
+      config.key,
+      modifer
+    );
+    container.append(panel);
+  });
 
-  connect(
-    new ViewObjectFactory<T>(panel, creators.find(config.key), config.desc),
-    config.key,
-    modifer
-  );
-  return panel;
+  return container;
 };
 
 /**

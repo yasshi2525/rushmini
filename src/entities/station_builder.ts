@@ -10,16 +10,16 @@ import connect, { ModelModifier } from "./connector";
 import { adjust } from "./creator";
 import ViewObjectFactory from "./factory";
 import {
-  RailEdgeCandidateOption,
-  createRailEdgeCandidate,
-  railEdgeModifier,
+  RailEdgeModuleOption,
+  createRailEdgeModule,
+  createRailEdgeModuleModifier,
 } from "./rail_edge_view";
 import { appendInstruction, createWorkingArea } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
 const SLIDE = 10;
 const DIST = 20;
-const BORDERS: RailEdgeCandidateOption[] = [
+const BORDERS: RailEdgeModuleOption[] = [
   { band: 16, slide: SLIDE, color: "#ffffff" },
   { band: 12, slide: SLIDE, color: "#ffd700" },
   { band: 8, slide: SLIDE, color: "#ffffff" },
@@ -38,21 +38,26 @@ const handleOnSelected = (ev: g.PointUpEvent, rns: RailNode[]) => {
   }
 };
 
-const createRailEdgePanel = (scene: g.Scene, opts: RailEdgeCandidateOption) => {
-  const panel = new g.E({ scene });
-  const modififer: { [key in EventType]?: ModelModifier<RailEdge> } = {};
-  modififer[EventType.MODIFIED] = railEdgeModifier({
-    band: opts.band,
-    slide: opts.slide,
+const createRailEdgePanel = (
+  scene: g.Scene,
+  optsList: RailEdgeModuleOption[]
+) => {
+  const container = new g.E({ scene });
+  optsList.forEach((opts, idx) => {
+    const panel = new g.E({ scene });
+
+    const modififer: { [key in EventType]?: ModelModifier<RailEdge> } = {};
+    modififer[EventType.MODIFIED] = createRailEdgeModuleModifier(opts);
+    connect(
+      new ViewObjectFactory<RailEdge>(panel, (s, su) =>
+        adjust(s, su, createRailEdgeModule(opts)(s, su))
+      ),
+      RailEdge,
+      modififer
+    );
+    container.append(panel);
   });
-  connect(
-    new ViewObjectFactory<RailEdge>(panel, (s, su) =>
-      adjust(s, su, createRailEdgeCandidate(opts)(s, su))
-    ),
-    RailEdge,
-    modififer
-  );
-  return panel;
+  return container;
 };
 
 const createStationPanel = (scene: g.Scene) => {
@@ -80,9 +85,7 @@ const createStationBuilder = (loadedScene: g.Scene) => {
     touchable: true,
   });
 
-  BORDERS.forEach((opts) =>
-    panel.append(createRailEdgePanel(loadedScene, opts))
-  );
+  panel.append(createRailEdgePanel(loadedScene, BORDERS));
   panel.append(createStationPanel(loadedScene));
   appendInstruction(panel, "station_txt");
 

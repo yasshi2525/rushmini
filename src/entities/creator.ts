@@ -44,10 +44,12 @@ const creators = {
    */
   find: <T extends Pointable>(
     key: new (...args: any[]) => T
-  ): ViewCreator<T> => {
-    const mapper = find(_storage, (obj) => obj.key === key);
-    return (scene, subject) =>
-      adjust(scene, subject, mapper.creator(scene, subject));
+  ): ViewCreator<T>[] => {
+    return _storage
+      .filter((entry) => entry.key === key)
+      .map((entry) => (scene, subject) =>
+        adjust(scene, subject, entry.creator(scene, subject))
+      );
   },
 
   /**

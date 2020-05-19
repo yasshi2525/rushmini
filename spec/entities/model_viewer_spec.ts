@@ -53,7 +53,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 1. residence", () => {
-    const panel = base.children[0];
+    const panel = base.children[0].children[0];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -70,7 +70,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 2. company", () => {
-    const panel = base.children[1];
+    const panel = base.children[1].children[0];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -87,7 +87,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 3. human", () => {
-    const panel = base.children[2];
+    const panel = base.children[2].children[0];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -104,7 +104,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 3. human on train is hidden", () => {
-    const panel = base.children[2];
+    const panel = base.children[2].children[0];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -121,7 +121,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 4. rail_edge", () => {
-    const panel = base.children[3];
+    const panel = base.children[3].children[0];
     modelListener.fire(EventType.CREATED);
     modelListener.fire(EventType.MODIFIED);
     expect(panel.children.length).toEqual(2);
@@ -134,11 +134,11 @@ describe("model_viewer", () => {
     const rect = pos.children[0];
     expect(rect.x).toEqual(0);
     expect(rect.y).toEqual(0);
-    expect((rect.children[0] as g.FilledRect).cssColor).toEqual("#aaaaaa");
+    expect((rect.children[0] as g.FilledRect).cssColor).toEqual("#ffffff");
   });
 
   it("layer 5. station", () => {
-    const panel = base.children[4];
+    const panel = base.children[4].children[0];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
@@ -155,7 +155,7 @@ describe("model_viewer", () => {
   });
 
   it("layer 6. train", () => {
-    const panel = base.children[5];
+    const panel = base.children[5].children[0];
     modelListener.fire(EventType.CREATED);
     expect(panel.children.length).toEqual(1);
 
