@@ -9,11 +9,11 @@ import stepper from "../utils/stepper";
 import ticker from "../utils/ticker";
 import transportFinder from "../utils/transport_finder";
 import viewer from "../utils/viewer";
+import { createSquareSprite } from "./sprite";
 
-const scale = 0.8;
+const scale = 0.9;
 const width = 250;
 const height = 75;
-const fontSize = 35;
 
 const activeOpacity = 1.0;
 const inactiveOpacity = 0.5;
@@ -59,25 +59,10 @@ const _appendBackground = (parent: g.E) =>
   );
 
 const _appendButton = (parent: g.E) => {
-  const btn = new g.SystemLabel({
-    scene: parent.scene,
-    x: parent.width / 2,
-    y: parent.height / 2,
-    fontSize,
-    textAlign: g.TextAlign.Center,
-    text: "もう一度あそぶ",
-    textColor: "#000000",
-  });
-  // パネルを押下したとき半透明にする
-  parent.pointDown.add(() => {
-    parent.opacity = inactiveOpacity;
-    parent.modified();
-  });
-  parent.pointUp.add(() => {
-    parent.opacity = activeOpacity;
-    parent.modified();
-    replay();
-  });
+  const btn = createSquareSprite(parent.scene, "replay_txt");
+  btn.x = (parent.width - btn.width) / 2;
+  btn.y = (parent.height - btn.height) / 2;
+  btn.modified();
   parent.append(btn);
 };
 
@@ -85,6 +70,16 @@ const createReplay = (loadedScene: g.Scene) => {
   const panel = _createPanel(loadedScene);
   _appendBackground(panel);
   _appendButton(panel);
+  // パネルを押下したとき半透明にする
+  panel.pointDown.add(() => {
+    panel.opacity = inactiveOpacity;
+    panel.modified();
+  });
+  panel.pointUp.add(() => {
+    panel.opacity = activeOpacity;
+    panel.modified();
+    replay();
+  });
   return panel;
 };
 

@@ -12,21 +12,9 @@ import Residence from "../models/residence";
 import Station from "../models/station";
 import Train from "../models/train";
 import { remove, sum } from "./common";
+import ticker from "./ticker";
 
-const resourceTypes = [
-  Company,
-  Residence,
-  RailNode,
-  RailEdge,
-  Station,
-  Platform,
-  Gate,
-  RailLine,
-  DeptTask,
-  MoveTask,
-  Train,
-  Human,
-];
+let resourceTypes: any[] = [];
 
 type ResourceSet<T> = { [index: string]: T };
 type StateStatics = { [key in HumanState]: number };
@@ -35,13 +23,41 @@ type CrowdStatics = { [index: string]: number };
 type DynamicStatics = {
   human: StateStatics;
   crowd: CrowdStatics;
+  wait: StateStatics;
+  die: StateStatics;
 };
+
+export class WaitEvent {
+  state: HumanState;
+  value: number;
+  constructor(state: HumanState) {
+    this.state = state;
+    this.value = 0;
+  }
+  public wait() {
+    this.value++;
+  }
+  public fire() {
+    modelListener.add(EventType.CREATED, this);
+  }
+}
+
+export class CommuteEvent {}
+
+export class DieEvent {
+  cause: HumanState;
+  constructor(cause: HumanState) {
+    this.cause = cause;
+  }
+}
 
 type Controller = {
   _objs: ResourceSet<Array<any>>;
   numResource: ResourceSet<number>;
   numSpawn: number;
-  diedIn: StateStatics;
+  numCommute: number;
+  _wait: WaitEvent[];
+  _die: DieEvent[];
   init: () => void;
   collect: () => DynamicStatics;
   reset: () => void;
@@ -78,11 +94,30 @@ const rate = <T>(arr: T[], num: (e: T) => number, cap: number) => {
 };
 
 const statics: Controller = {
-  _objs: emptySet([]),
-  numResource: emptySet(0),
-  diedIn: emptyState(),
+  _objs: {},
+  numResource: {},
   numSpawn: 0,
+  numCommute: 0,
+  _wait: [],
+  _die: [],
   init: () => {
+    // ここで作らないと一部クラスが Undefined になる
+    resourceTypes = [
+      Company,
+      Residence,
+      RailNode,
+      RailEdge,
+      Station,
+      Platform,
+      Gate,
+      RailLine,
+      DeptTask,
+      MoveTask,
+      Train,
+      Human,
+    ];
+    statics._objs = emptySet([]);
+    statics.numResource = emptySet(0);
     resourceTypes.forEach((cls) => {
       modelListener.find(EventType.CREATED, cls).register((e) => {
         if (e instanceof Human) statics.numSpawn++;
@@ -91,12 +126,20 @@ const statics: Controller = {
         statics._objs[key].push(e);
       });
       modelListener.find(EventType.DELETED, cls).register((e) => {
-        if (e instanceof Human) statics.diedIn[e.state()]++;
         const key = e.constructor.name;
         statics.numResource[key]--;
         remove(statics._objs[key], e);
       });
     });
+    modelListener
+      .find(EventType.CREATED, WaitEvent)
+      .register((e) => statics._wait.push(e));
+    modelListener
+      .find(EventType.CREATED, DieEvent)
+      .register((e) => statics._die.push(e));
+    modelListener
+      .find(EventType.CREATED, CommuteEvent)
+      .register(() => statics.numCommute++);
   },
   collect: () => {
     const obj = {
@@ -119,15 +162,27 @@ const statics: Controller = {
           Train.CAPACITY
         ),
       },
+      wait: emptyState(),
+      die: emptyState(),
     };
     findArray(statics._objs, Human).forEach((h) => obj.human[h.state()]++);
+    Object.keys(HumanState).forEach((k: keyof typeof HumanState) => {
+      const state = HumanState[k];
+      const ws = statics._wait.filter((w) => w.state === state);
+      obj.wait[state] =
+        ws.length > 0 ? sum(ws, (w) => w.value) / ws.length / ticker.fps() : 0;
+      obj.die[state] = statics._die.filter((d) => d.cause === state).length;
+    });
+    statics._wait.length = 0;
     return obj;
   },
   reset: () => {
     statics._objs = emptySet([]);
     statics.numSpawn = 0;
     statics.numResource = emptySet(0);
-    statics.diedIn = emptyState();
+    statics.numCommute = 0;
+    statics._die.length = 0;
+    statics._wait.length = 0;
   },
 };
 

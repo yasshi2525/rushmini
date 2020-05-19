@@ -40,12 +40,14 @@ const createRecord = (total: number): Record => {
     time: total,
     score: scorer.get(),
   };
-  obj[`allSpawn`] = statics.numSpawn;
-  dump(obj, statics.numResource, "num_");
   const dy = statics.collect();
+  obj[`allSpawn`] = statics.numSpawn;
+  obj[`commuter`] = statics.numCommute;
+  dump(obj, statics.numResource, "num_");
   dump(obj, dy.human, "num_");
   dump(obj, dy.crowd, "rate_");
-  dump(obj, statics.diedIn, "died_");
+  dump(obj, dy.wait, "wait_");
+  dump(obj, dy.die, "died_");
   return obj;
 };
 
@@ -61,17 +63,17 @@ export const startGame = (table: Record[], onGameOver: () => void) => {
   expect(random.random().seed).toEqual(0);
   expect(scorer.get()).toEqual(0);
   const total = ticker.getRemainGameTime();
-  table.push(createRecord(0));
   expect(total).toEqual(110);
   ticker.triggers.find(EventType.SECOND).register((t) => {
     if (t % 5 === 0) {
       table.push(createRecord(total - t));
     }
   });
-  ticker.triggers.find(EventType.OVER).register(onGameOver);
+  ticker.triggers.find(EventType.OVER).register(() => onGameOver());
   g.game.tick(false);
   g.game.scene().children[0].pointUp.fire();
   g.game.tick(false);
+  table.push(createRecord(0));
 };
 
 export const resetGame = () => {

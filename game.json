@@ -455,15 +455,15 @@
 		},
 		"score_negative": {
 			"type": "image",
-			"width": 192,
-			"height": 21,
+			"width": 220,
+			"height": 24,
 			"path": "image/score_negative.png",
 			"global": true
 		},
 		"score_positive": {
 			"type": "image",
-			"width": 192,
-			"height": 21,
+			"width": 220,
+			"height": 24,
 			"path": "image/score_positive.png",
 			"global": true
 		},
@@ -497,8 +497,8 @@
 		},
 		"score_main": {
 			"type": "image",
-			"width": 490,
-			"height": 28,
+			"width": 640,
+			"height": 31,
 			"path": "image/score_main.png",
 			"global": true
 		},
@@ -643,6 +643,81 @@
 		"waiter": {
 			"type": "script",
 			"path": "script/entities/waiter.js",
+			"global": true
+		},
+		"statics_view": {
+			"type": "script",
+			"path": "script/entities/statics_view.js",
+			"global": true
+		},
+		"ending_txt": {
+			"type": "image",
+			"width": 195,
+			"height": 91,
+			"path": "image/ending_txt.png",
+			"global": true
+		},
+		"replay_txt": {
+			"type": "image",
+			"width": 170,
+			"height": 60,
+			"path": "image/replay_txt.png",
+			"global": true
+		},
+		"statics_0_txt": {
+			"type": "image",
+			"width": 45,
+			"height": 30,
+			"path": "image/statics_0_txt.png",
+			"global": true
+		},
+		"statics_1_txt": {
+			"type": "image",
+			"width": 85,
+			"height": 30,
+			"path": "image/statics_1_txt.png",
+			"global": true
+		},
+		"statics_2_txt": {
+			"type": "image",
+			"width": 85,
+			"height": 30,
+			"path": "image/statics_2_txt.png",
+			"global": true
+		},
+		"statics_3_txt": {
+			"type": "image",
+			"width": 85,
+			"height": 30,
+			"path": "image/statics_3_txt.png",
+			"global": true
+		},
+		"statics_4_txt": {
+			"type": "image",
+			"width": 105,
+			"height": 30,
+			"path": "image/statics_4_txt.png",
+			"global": true
+		},
+		"statics_5_txt": {
+			"type": "image",
+			"width": 85,
+			"height": 30,
+			"path": "image/statics_5_txt.png",
+			"global": true
+		},
+		"statics_6_txt": {
+			"type": "image",
+			"width": 85,
+			"height": 30,
+			"path": "image/statics_6_txt.png",
+			"global": true
+		},
+		"statics_7_txt": {
+			"type": "image",
+			"width": 105,
+			"height": 30,
+			"path": "image/statics_7_txt.png",
 			"global": true
 		}
 	},

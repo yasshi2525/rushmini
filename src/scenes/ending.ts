@@ -1,4 +1,7 @@
+import createFrame from "../entities/frame";
 import createReplay from "../entities/replay";
+import { createSquareSprite } from "../entities/sprite";
+import createStaticsPanel from "../entities/statics_view";
 import { RPGAtsumaruWindow } from "../parameterObject";
 import scenes, { SceneType } from "../utils/scene";
 
@@ -11,7 +14,11 @@ const BOARD_ID = 1;
  */
 export const handleEnding = (prev: g.E) => {
   const scene = prev.scene;
-  prev.anchor(0, 0);
+  const frame = createFrame(scene);
+  prev.x = (frame.width - prev.width) / 2;
+  prev.y = (frame.height - prev.height) / 2;
+  frame.append(prev);
+  frame.anchor(0, 0);
 
   scene.loaded.add(() => {
     (g.game.assets["game_bgm"] as g.AudioAsset).stop();
@@ -21,16 +28,17 @@ export const handleEnding = (prev: g.E) => {
       if (scale < 0.66) {
         scene.update.remove(anim);
         scene.children[0].show();
+        scene.append(createStaticsPanel(scene));
         return;
       }
-      prev.scale(scale);
-      prev.modified();
+      frame.scale(scale);
+      frame.modified();
       scale -= 0.33 / g.game.fps;
-      prev.x -= (g.game.width * 0.05) / g.game.fps;
-      prev.y -= (g.game.height * 0.05) / g.game.fps;
+      frame.x -= (g.game.width * 0.05) / g.game.fps;
+      frame.y -= (g.game.height * 0.05) / g.game.fps;
     };
     scene.update.add(anim);
-    scene.append(prev);
+    scene.append(frame);
   });
 };
 
@@ -44,14 +52,10 @@ const createEndingScene = (isAtsumaru: boolean) => {
         .setRecord(BOARD_ID, g.game.vars.gameState.score)
         .then(() => window.RPGAtsumaru.scoreboards.display(BOARD_ID));
     } else {
-      panel = new g.SystemLabel({
-        scene,
-        fontSize: 60,
-        text: "終了！",
-        x: g.game.width - 100,
-        y: g.game.height - 30,
-        textAlign: g.TextAlign.Center,
-      });
+      panel = createSquareSprite(scene, "ending_txt");
+      panel.x = g.game.width - panel.width;
+      panel.y = g.game.height - panel.height;
+      panel.modified();
     }
     panel.hide();
     scene.append(panel);

@@ -1,4 +1,5 @@
 import { ScoreEvent } from "../utils/scorer";
+import { CommuteEvent, DieEvent, WaitEvent } from "../utils/statics";
 import ticker from "../utils/ticker";
 import Company from "./company";
 import DeptTask from "./dept_task";
@@ -75,6 +76,8 @@ class Human extends RoutableObject implements Steppable {
   private platform: Platform;
   private dept: DeptTask;
   private train: Train;
+  private isUsedTrain: boolean;
+  private wait: WaitEvent;
 
   constructor(departure: Residence, destination: Company) {
     super();
@@ -85,12 +88,16 @@ class Human extends RoutableObject implements Steppable {
     this.destination = destination;
     this.next = departure.nextFor(destination);
     this.payment = 0;
+    this.isUsedTrain = false;
+    this.wait = new WaitEvent(this._state);
     modelListener.add(EventType.CREATED, this);
   }
 
   public state(change?: HumanState) {
     if (change) {
+      this.wait.fire();
       this._state = change;
+      this.wait = new WaitEvent(this._state);
     }
     return this._state;
   }
@@ -202,6 +209,10 @@ class Human extends RoutableObject implements Steppable {
    * @param t
    */
   public _setTrain(t?: Train) {
+    if (!this.isUsedTrain) {
+      modelListener.add(EventType.CREATED, new CommuteEvent());
+    }
+    this.isUsedTrain = true;
     this.train = t;
   }
 
@@ -214,6 +225,7 @@ class Human extends RoutableObject implements Steppable {
   }
 
   public _step() {
+    this.wait.wait();
     this.next?._fire(this);
 
     // 会社についている場合、ダメージは喰らわない
@@ -240,6 +252,7 @@ class Human extends RoutableObject implements Steppable {
    * 死亡状態にし、関連タスクから自身を除外する。
    */
   private dead() {
+    modelListener.add(EventType.CREATED, new DieEvent(this._state));
     this._state = HumanState.DIED;
     this.next?._giveup(this);
     this.train?._giveup(this);
@@ -255,6 +268,7 @@ class Human extends RoutableObject implements Steppable {
     this.next = this.next.nextFor(this.destination);
     // 会社到着
     if (!this.next) {
+      modelListener.add(EventType.CREATED, new DieEvent(this._state));
       modelListener.add(EventType.DELETED, this);
     }
   }

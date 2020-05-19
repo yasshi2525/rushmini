@@ -81,6 +81,8 @@ const ticker = {
     return Math.max(remain, 0);
   },
 
+  getCurrentFrame: () => _initialRemainFrame - _remainFrame,
+
   step: () => {
     if (_remainFrame > 0) {
       const prev = ticker.getRemainGameTime();
