@@ -14,7 +14,7 @@ const getWidth = (opts: GetWidthOption) => {
   const w =
     opts.re.arrow.length() / 2 +
     (opts.re.isOutbound ? rn.left(opts.slide) : rn.right(opts.slide));
-  return Math.max(w, 0) + opts.band / 4;
+  return Math.max(w, 0) + Math.sqrt(opts.band);
 };
 
 type _GetOption = GetWidthOption & { fn: (n: number) => number; width: number };
@@ -159,8 +159,8 @@ export const createRailEdgeModuleModifier = (
 };
 
 const BORDERS: RailEdgeModuleOption[] = [
-  { band: 8, slide: 10, color: "#ffffff" },
-  { band: 4, slide: 10, color: "#000000" },
+  { band: 9, slide: 10, color: "#ffffff" },
+  { band: 3, slide: 10, color: "#444444" },
 ];
 
 export const defaultRailEdgeModifier: ModelModifier<
