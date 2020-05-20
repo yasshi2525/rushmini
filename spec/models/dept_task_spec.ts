@@ -8,16 +8,21 @@ import { distance } from "models/pointable";
 import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 const FPS = 15;
+const oldRAND = Human.RAND;
 
 beforeAll(() => {
   ticker.init(FPS);
+  random.init(new g.XorshiftRandomGenerator(0));
+  Human.RAND = 0;
 });
 
 afterAll(() => {
   modelListener.flush();
+  Human.RAND = oldRAND;
 });
 
 describe("dept_task", () => {
@@ -29,7 +34,7 @@ describe("dept_task", () => {
 
   beforeEach(() => {
     c = new Company(1, 3, 4);
-    r = new Residence([c], 0, 0);
+    r = new Residence([c], 0, 0, (min, max) => random.random().get(min, max));
     const rn = new RailNode(0, 0);
     p = rn._buildStation();
     g = p.station.gate;
@@ -42,7 +47,7 @@ describe("dept_task", () => {
   });
 
   it("queue on platform human", () => {
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
 
@@ -67,7 +72,7 @@ describe("dept_task", () => {
   });
 
   it("changing goal human on dept queue moves outQueue of platform", () => {
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     h._step();
@@ -88,9 +93,9 @@ describe("dept_task", () => {
 
   it("died human is removed on platform", () => {
     // gate が通行を許可し、Platformに入れたtickに死んだ場合が該当
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
-    for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS - 1; i++)
+    for (let i = 0; i < Human.LIFE_SPAN * (1 / Human.STAY_BUFF) * FPS - 2; i++)
       h._step();
 
     g._step();
@@ -106,7 +111,7 @@ describe("dept_task", () => {
   });
 
   it("died human is removed from queue", () => {
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     h._step();

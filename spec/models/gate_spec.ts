@@ -7,15 +7,19 @@ import { distance } from "models/pointable";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 const FPS = 15;
+const oldRAND = Human.RAND;
 const oldSPEED = Human.SPEED;
 const oldMOBILITY = Gate.MOBILITY_SEC;
 const oldCAPACITY = Gate.CAPACITY;
 
 beforeAll(() => {
   ticker.init(FPS);
+  random.init(new g.XorshiftRandomGenerator(0));
+  Human.RAND = 0;
   Human.SPEED = 1;
   Gate.CAPACITY = 5;
   Gate.MOBILITY_SEC = 5;
@@ -23,6 +27,7 @@ beforeAll(() => {
 
 afterAll(() => {
   modelListener.flush();
+  Human.RAND = oldRAND;
   Human.SPEED = oldSPEED;
   Gate.CAPACITY = oldCAPACITY;
   Gate.MOBILITY_SEC = oldMOBILITY;
@@ -35,7 +40,7 @@ describe("gate", () => {
 
   beforeEach(() => {
     c = new Company(1, 3, 4);
-    r = new Residence([c], 0, 0);
+    r = new Residence([c], 0, 0, (min, max) => random.random().get(min, max));
   });
 
   afterEach(() => {
@@ -54,7 +59,7 @@ describe("gate", () => {
     const g = st.gate;
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     // 改札まで移動
     for (let i = 0; i < 5; i++) {
       for (let j = 0; j < FPS; j++) {
@@ -81,7 +86,7 @@ describe("gate", () => {
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
     g._setNext(p, c, distance(c, r));
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
 
     h._step();
     expect(h._getNext()).toEqual(g);
@@ -107,7 +112,7 @@ describe("gate", () => {
     r._setNext(g, c, distance(c, r));
     g._setNext(p, c, distance(c, g));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     expect(h._getNext()).toEqual(p);
@@ -135,7 +140,7 @@ describe("gate", () => {
     g._setNext(p, c, distance(c, g));
     p._setNext(p, c, distance(c, p));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     h._step();
@@ -168,8 +173,8 @@ describe("gate", () => {
     const g = st.gate;
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
-    const h1 = new Human(r, c);
-    const h2 = new Human(r, c);
+    const h1 = new Human(r, c, (min, max) => random.random().get(min, max));
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     h1._step();
     h2._step();
 
@@ -193,13 +198,13 @@ describe("gate", () => {
     r._setNext(g, c, distance(c, r));
 
     for (let i = 0; i < Gate.CAPACITY; i++) {
-      const _h = new Human(r, c);
+      const _h = new Human(r, c, (min, max) => random.random().get(min, max));
       _h._step();
       g._step();
       for (let j = 0; j < FPS / Gate.MOBILITY_SEC; j++) g._step();
       expect(_h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
     }
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
@@ -212,11 +217,11 @@ describe("gate", () => {
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
 
-    const h1 = new Human(r, c);
+    const h1 = new Human(r, c, (min, max) => random.random().get(min, max));
     h1._step();
     g._step();
     expect(h1.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
-    const h2 = new Human(r, c);
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     h2._step();
     g._step();
     expect(h2.state()).toEqual(HumanState.WAIT_ENTER_GATE);
@@ -234,7 +239,7 @@ describe("gate", () => {
     g._setNext(p, c, distance(c, g));
     p._setNext(p, c, distance(c, p));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     h._step();
@@ -268,7 +273,7 @@ describe("gate", () => {
     p2._setNext(g2, c, distance(c, p2));
     g2._setNext(c, c, distance(c, g2));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
 
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
@@ -287,7 +292,7 @@ describe("gate", () => {
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
 
     h._step();
     expect(h._getNext()).toEqual(g);
@@ -318,7 +323,7 @@ describe("gate", () => {
     r._setNext(g, c, distance(c, r));
     g._setNext(p, c, distance(c, g));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     expect(h._getNext()).toEqual(p);
@@ -356,7 +361,7 @@ describe("gate", () => {
     r._setNext(g, c, distance(c, r));
     g._setNext(p, c, distance(c, g));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
 
@@ -400,7 +405,7 @@ describe("gate", () => {
     g._setNext(p, c, distance(c, g));
 
     // 改札に入らせる
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
 
@@ -449,7 +454,7 @@ describe("gate", () => {
     const g = st.gate;
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     // 改札まで移動
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
@@ -472,7 +477,7 @@ describe("gate", () => {
     g._setNext(p, c, distance(c, g));
     p._setNext(p, c, distance(c, p));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     h._step();

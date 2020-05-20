@@ -45,12 +45,14 @@ class Human extends RoutableObject implements Steppable {
   /**
    * 何秒間歩き続けたらゲームから除外されるか
    */
-  public static LIFE_SPAN: number = 8;
+  public static LIFE_SPAN: number = 8.5;
   /**
    * 歩いていない状態（ホーム、電車の中にいるなど）の場合、
    * 歩く場合の何倍の体力を消費するか
    */
-  public static STAY_BUFF: number = 0.2;
+  public static STAY_BUFF: number = 0.15;
+  public static RAND: number = 25;
+  private rand: (min: number, max: number) => number;
 
   public readonly departure: Residence;
   public readonly destination: Company;
@@ -79,11 +81,21 @@ class Human extends RoutableObject implements Steppable {
   private rideCount: number;
   private wait: WaitEvent;
 
-  constructor(departure: Residence, destination: Company) {
+  constructor(
+    departure: Residence,
+    destination: Company,
+    rand: (min: number, max: number) => number
+  ) {
     super();
+    this.rand = rand;
     this._state = HumanState.SPAWNED;
     this.stamina = 1;
-    this.pos = new Point(departure.loc());
+    const r = rand(0, Human.RAND);
+    const theta = (rand(0, 359) / 180) * Math.PI;
+    this.pos = new Point(
+      departure.loc().x + r * Math.cos(theta),
+      departure.loc().y + r * Math.sin(theta)
+    );
     this.departure = departure;
     this.destination = destination;
     this.next = departure.nextFor(destination);
@@ -148,6 +160,15 @@ class Human extends RoutableObject implements Steppable {
       );
       return false;
     }
+  }
+
+  public _random() {
+    const r = this.rand(0, Human.RAND);
+    const theta = (this.rand(0, 359) / 180) * Math.PI;
+    this._jump(
+      this.pos.x + r * Math.cos(theta),
+      this.pos.y + r * Math.sin(theta)
+    );
   }
 
   private damageByWalk(dist: number) {

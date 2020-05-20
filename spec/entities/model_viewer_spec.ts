@@ -8,15 +8,26 @@ import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
 import Train from "models/train";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 import { createLoadedScene } from "../_helper/scene";
 
+const oldRAND = Human.RAND;
 const WIDTH = 800;
 const HEIGHT = 640;
 const seed = 0;
 
 const B = 4;
+
+beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
+  Human.RAND = 0;
+});
+
+afterAll(() => {
+  Human.RAND = oldRAND;
+});
 
 describe("model_viewer", () => {
   let scene: g.Scene;
@@ -32,8 +43,8 @@ describe("model_viewer", () => {
     scene = await createLoadedScene();
     base = createModelViewer(scene);
     c = new Company(1, 3, 4);
-    r = new Residence([c], 6, 8);
-    h = new Human(r, c);
+    r = new Residence([c], 6, 8, (min, max) => random.random().get(min, max));
+    h = new Human(r, c, (min, max) => random.random().get(min, max));
     const rn = new RailNode(9, 12);
     re = rn._extend(11, 14);
     const p = rn._buildStation();

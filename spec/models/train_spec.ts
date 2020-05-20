@@ -11,19 +11,23 @@ import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Train from "models/train";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 const FPS = 15;
 const STAY_SEC = 1;
 const SPEED = 5;
 const CAPACITY = 100;
+const oldRAND = Human.RAND;
 const oldSPEED = Train.SPEED;
 const oldSTAY = Train.STAY_SEC;
 const oldCAPACITY = Train.CAPACITY;
 const oldWarn = console.warn;
 
 beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
+  Human.RAND = 0;
   Train.SPEED = SPEED;
   Train.STAY_SEC = STAY_SEC;
   Train.CAPACITY = CAPACITY;
@@ -31,6 +35,7 @@ beforeAll(() => {
 
 afterAll(() => {
   ticker.reset();
+  Human.RAND = oldRAND;
   Train.SPEED = oldSPEED;
   Train.STAY_SEC = oldSTAY;
   Train.CAPACITY = oldCAPACITY;
@@ -56,7 +61,7 @@ describe("train", () => {
     Train.SPEED = SPEED;
     Train.STAY_SEC = STAY_SEC;
     c = new Company(1, 3, 4);
-    r = new Residence([c], 0, 0);
+    r = new Residence([c], 0, 0, (min, max) => random.random().get(min, max));
     rn1 = new RailNode(0, 0);
     p1 = rn1._buildStation();
     g1 = p1.station.gate;
@@ -74,7 +79,7 @@ describe("train", () => {
     dept._setNext(p2, c, distance(c, p1) / 10);
     p2._setNext(g2, c, distance(c, g2));
     g2._setNext(c, c, distance(c, g2));
-    h = new Human(r, c);
+    h = new Human(r, c, (min, max) => random.random().get(min, max));
   });
 
   afterEach(() => {
@@ -130,7 +135,7 @@ describe("train", () => {
   });
 
   it("suspend to ride human", () => {
-    const h2 = new Human(r, c);
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     [h, h2].forEach((_h) => {
       _h._step();
       g1._step();
@@ -226,7 +231,7 @@ describe("train", () => {
   });
 
   it("suspend get off passenger", () => {
-    const h2 = new Human(r, c);
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     const t = new Train(l.top);
     [h, h2].forEach((_h) => {
       _h._step();
@@ -247,17 +252,14 @@ describe("train", () => {
   it("suspend departure because crowded", () => {
     const hs: Human[] = [];
     for (let j = 0; j < Train.STAY_SEC * Train.MOBILITY_SEC + 2; j++) {
-      hs.push(new Human(r, c));
+      hs.push(new Human(r, c, (min, max) => random.random().get(min, max)));
     }
     hs.forEach((_h) => {
       _h._step();
       expect(_h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
     });
-    for (let j = 0; j < (FPS / Gate.MOBILITY_SEC) * hs.length; j++) g1._step();
-    hs.forEach((_h) =>
-      expect(_h.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM)
-    );
     hs.forEach((_h) => {
+      for (let j = 0; j < FPS / Gate.MOBILITY_SEC; j++) g1._step();
       _h._step();
       _h._step();
       expect(_h.state()).toEqual(HumanState.WAIT_TRAIN_ARRIVAL);
@@ -271,7 +273,7 @@ describe("train", () => {
   });
 
   it("changing goal human on dept queue moves outQueue of platform", () => {
-    const h2 = new Human(r, c);
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     [h2, h].forEach((_h) => {
       _h._step();
       for (let i = 0; i < FPS / Gate.MOBILITY_SEC; i++) g1._step();
@@ -346,7 +348,7 @@ describe("train", () => {
   });
 
   it("changing goal human on outQueue keeps to ride", () => {
-    const h2 = new Human(r, c);
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     [h, h2].forEach((_h) => {
       _h._step();
       for (let j = 0; j < FPS / Gate.MOBILITY_SEC; j++) g1._step();
@@ -387,7 +389,7 @@ describe("train", () => {
   });
 
   it("died human is removed from entering queue", () => {
-    const h2 = new Human(r, c);
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     [h, h2].forEach((_h) => {
       _h._step();
       g1._step();
@@ -452,7 +454,7 @@ describe("train", () => {
   });
 
   it("died human is removed from exiting queue", () => {
-    const h2 = new Human(r, c);
+    const h2 = new Human(r, c, (min, max) => random.random().get(min, max));
     const t = new Train(l.top);
     [h, h2].forEach((_h) => {
       _h._step();

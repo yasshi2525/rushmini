@@ -9,13 +9,17 @@ import Residence from "models/residence";
 import Station from "models/station";
 import Train from "models/train";
 import userResource from "models/user_resource";
+import random from "utils/random";
 import stepper from "utils/stepper";
 import ticker from "utils/ticker";
 
 const FPS = 15;
 const oldINTERVAL = Residence.INTERVAL_SEC;
 
-beforeAll(() => ticker.init(FPS));
+beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
+  ticker.init(FPS);
+});
 
 afterAll(() => {
   ticker.reset();
@@ -31,7 +35,9 @@ describe("stepper", () => {
     stepper.init();
     userResource.init();
     const c = new Company(1, 3, 4);
-    const r = new Residence([c], 0, 0);
+    const r = new Residence([c], 0, 0, (min, max) =>
+      random.random().get(min, max)
+    );
     const rn = new RailNode(0, 0);
     const st = new Station();
     const g = st.gate;

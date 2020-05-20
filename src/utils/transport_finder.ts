@@ -34,13 +34,18 @@ const ts: Train[] = [];
  */
 const trainRouting = (f: PathFinder, t: Train) => {
   let current = t.current()._base();
-  let length = current.length() * DIST_RATIO;
+  let length = current.length();
   do {
     if (current.isDeptTask())
-      f.edge(t, current.stay, length, length * PAY_RATIO);
+      f.edge(
+        t,
+        current.stay,
+        length * DIST_RATIO,
+        Math.sqrt(length / current.parent.length()) * PAY_RATIO
+      );
 
     current = current.next;
-    length += current.length() * DIST_RATIO;
+    length += current.length();
   } while (t.current()._base() !== current);
 };
 
@@ -68,7 +73,7 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
           dept,
           current.stay,
           length * DIST_RATIO + RIDE_COST,
-          (length / l.length()) * PAY_RATIO
+          Math.sqrt(length / l.length()) * PAY_RATIO
         );
       }
     } while (dept !== current);

@@ -93,6 +93,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
         h._setGate(undefined);
         h._complete();
         h._pay();
+        h._random();
         h.state(HumanState.MOVE);
         this.waitFrame += ticker.fps() / Gate.MOBILITY_SEC;
         return true;

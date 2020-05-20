@@ -24,13 +24,6 @@ describe("_bootstrap", () => {
     expect(scene).not.toBeUndefined();
   });
 
-  it("with atsumaru", () => {
-    window.RPGAtsumaru = true;
-    bootstrap({});
-    const scene = g.game.scene();
-    expect(scene).not.toBeUndefined();
-  });
-
   it("load bootstrap scene by ticking", () => {
     bootstrap({});
     g.game.tick(false);
@@ -89,5 +82,21 @@ describe("_bootstrap", () => {
     expect(g.game.scene()).not.toBeUndefined();
     expect(ticker.getRemainGameTime()).toEqual(TOTAL - ENDING);
     expect(random.random()).not.toBeNull();
+  });
+
+  it("with atsumaru", () => {
+    bootstrap({});
+    const scene = g.game.scene();
+    expect(scene).not.toBeUndefined();
+    scene.message.fire(
+      new g.MessageEvent({
+        type: "start",
+        parameters: { totalTimeLimit: 0, randomSeed: 0 },
+      })
+    );
+    g.game.tick(false);
+    expect(g.game.scene()).not.toBeUndefined();
+    g.game.tick(false);
+    expect(g.game.scene()).not.toEqual(scene);
   });
 });

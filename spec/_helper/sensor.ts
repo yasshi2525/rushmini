@@ -2,6 +2,7 @@ import userResource, { ModelState } from "models/user_resource";
 import viewer, { ViewerType } from "utils/viewer";
 
 export const pointDown = (sensor: g.E, pos: g.CommonOffset) => {
+  if (!sensor) return;
   sensor.pointDown.fire({
     local: false,
     player: { id: "dummyPlayerID", name: "test" },
@@ -18,6 +19,7 @@ export const pointMove = (
   pos: g.CommonOffset,
   delta: g.CommonOffset
 ) => {
+  if (!sensor) return;
   sensor.pointMove.fire({
     local: false,
     player: { id: "dummyPlayerID", name: "test" },
@@ -36,6 +38,7 @@ export const pointUp = (
   pos: g.CommonOffset,
   delta: g.CommonOffset
 ) => {
+  if (!sensor) return;
   sensor.pointUp.fire({
     local: false,
     player: { id: "dummyPlayerID", name: "test" },

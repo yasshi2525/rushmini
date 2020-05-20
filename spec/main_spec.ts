@@ -1,5 +1,3 @@
-import { stringify } from "querystring";
-
 import { main } from "main";
 import ticker from "utils/ticker";
 
@@ -29,10 +27,6 @@ describe("main", () => {
     expect(ticker.getRemainGameTime()).toEqual(TOTAL - ENDING);
   });
 
-  it("do nothing API is not set", () => {
-    main({ sessionParameter: {}, isAtsumaru: true, random: g.game.random });
-  });
-
   it("handle screen shot", async () => {
     let cacheCallback: () => Promise<string>;
     window.RPGAtsumaru = {
@@ -46,7 +40,6 @@ describe("main", () => {
       return await cacheCallback();
     };
     main({ sessionParameter: {}, isAtsumaru: true, random: g.game.random });
-    window.RPGAtsumaru.screenshot;
     expect((await execute()).length).toBeGreaterThan(0);
   });
 });

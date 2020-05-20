@@ -3,19 +3,24 @@ import Human, { HumanState } from "models/human";
 import modelListener from "models/listener";
 import { distance } from "models/pointable";
 import Residence from "models/residence";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 const FPS = 15;
+const oldRAND = Human.RAND;
 const oldSpeed = Human.SPEED;
 
 beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
+  Human.RAND = 0;
   Human.SPEED = 1;
 });
 
 afterAll(() => {
   modelListener.flush();
   ticker.reset();
+  Human.RAND = oldRAND;
   Human.SPEED = oldSpeed;
 });
 
@@ -33,9 +38,11 @@ describe("company", () => {
 
   it("move human to close company", () => {
     const c = new Company(1, 3, 4);
-    const r = new Residence([c], 0, 0);
+    const r = new Residence([c], 0, 0, (min, max) =>
+      random.random().get(min, max)
+    );
     r._setNext(c, c, distance(c, r));
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < FPS; j++) h._step();
       expect(distance(c, h)).toBeCloseTo(5 - i - 1);

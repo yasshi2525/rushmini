@@ -1,5 +1,6 @@
 import DeptTask from "models/dept_task";
 import Gate from "models/gate";
+import Human from "models/human";
 import LineTask from "models/line_task";
 import modelListener, { EventType } from "models/listener";
 import Platform from "models/platform";
@@ -43,9 +44,11 @@ describe("transport_finder", () => {
       const dept2 = dept1.next.next as DeptTask;
       const p2 = dept2.departure().platform;
 
+      const cost = Math.sqrt(0.5) * 100;
+
       expect(p1.nextFor(p2)).toEqual(dept1);
       expect(p1.distanceFor(p2)).toEqual(1.5);
-      expect(p1.paymentFor(p2)).toEqual(50);
+      expect(p1.paymentFor(p2)).toEqual(cost);
       expect(p1.nextFor(p1)).toEqual(dept1);
       expect(p1.distanceFor(p1)).toEqual(0);
       expect(p1.paymentFor(p1)).toEqual(0);
@@ -55,18 +58,18 @@ describe("transport_finder", () => {
       expect(dept1.paymentFor(p1)).toEqual(0);
       expect(dept1.nextFor(p2)).toEqual(p2);
       expect(dept1.distanceFor(p2)).toEqual(1.5); // 乗車 +1
-      expect(dept1.paymentFor(p2)).toEqual(50);
+      expect(dept1.paymentFor(p2)).toEqual(cost);
 
       expect(p2.nextFor(p1)).toEqual(dept2);
       expect(p2.distanceFor(p1)).toEqual(1.5); // 乗車 +1
-      expect(p2.paymentFor(p1)).toEqual(50);
+      expect(p2.paymentFor(p1)).toEqual(cost);
       expect(p2.nextFor(p2)).toEqual(dept2);
       expect(p2.distanceFor(p2)).toEqual(0);
       expect(p2.paymentFor(p2)).toEqual(0);
 
       expect(dept2.nextFor(p1)).toEqual(p1);
       expect(dept2.distanceFor(p1)).toEqual(1.5); // 乗車 +1
-      expect(dept2.paymentFor(p1)).toEqual(50);
+      expect(dept2.paymentFor(p1)).toEqual(cost);
       expect(dept2.nextFor(p2)).toEqual(p2);
       expect(dept2.distanceFor(p2)).toEqual(0);
       expect(dept2.paymentFor(p2)).toEqual(0);
@@ -92,12 +95,14 @@ describe("transport_finder", () => {
         (t) => t.current()._base() === userResource.getPrimaryLine().top
       );
 
+      const cost = Math.sqrt(0.5) * 100;
+
       expect(t.nextFor(p1)).toEqual(p1);
       expect(t.nextFor(p2)).toEqual(p2);
       expect(t.distanceFor(p1)).toEqual(0);
       expect(t.distanceFor(p2)).toEqual(0.5);
       expect(t.paymentFor(p1)).toEqual(0);
-      expect(t.paymentFor(p2)).toEqual(50);
+      expect(t.paymentFor(p2)).toEqual(cost);
 
       for (let i = 0; i < FPS * Train.STAY_SEC; i++) t._step();
       expect(t.current()._base()).toEqual(dept1.next);
@@ -109,7 +114,7 @@ describe("transport_finder", () => {
       expect(t.distanceFor(p1)).toEqual(1);
       expect(t.distanceFor(p2)).toEqual(0.5);
       expect(t.paymentFor(p1)).toEqual(100);
-      expect(t.paymentFor(p2)).toEqual(50);
+      expect(t.paymentFor(p2)).toEqual(cost);
     });
 
     it("reset", () => {

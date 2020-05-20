@@ -3,6 +3,7 @@ import Human from "models/human";
 import modelListener, { EventType } from "models/listener";
 import { distance } from "models/pointable";
 import Residence from "models/residence";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 let oldWarn: (msg: string) => void;
@@ -12,6 +13,7 @@ const FPS = 60;
 
 beforeAll(() => {
   oldWarn = console.warn;
+  random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
 });
 
@@ -31,7 +33,9 @@ describe("residence", () => {
   });
 
   it("initialize", () => {
-    const r = new Residence([], 1, 2);
+    const r = new Residence([], 1, 2, (min, max) =>
+      random.random().get(min, max)
+    );
     expect(r.loc().x).toEqual(1);
     expect(r.loc().y).toEqual(2);
   });
@@ -39,7 +43,9 @@ describe("residence", () => {
   it("_fire", () => {
     console.warn = jest.fn();
     const c = new Company(1, 1, 2);
-    const r = new Residence([c], 3, 4);
+    const r = new Residence([c], 3, 4, (min, max) =>
+      random.random().get(min, max)
+    );
     r._fire(undefined);
     expect(console.warn).toHaveBeenCalled();
   });
@@ -47,7 +53,9 @@ describe("residence", () => {
   it("_giveup", () => {
     console.warn = jest.fn();
     const c = new Company(1, 1, 2);
-    const r = new Residence([c], 3, 4);
+    const r = new Residence([c], 3, 4, (min, max) =>
+      random.random().get(min, max)
+    );
     r._giveup(undefined);
     expect(console.warn).toHaveBeenCalled();
   });
@@ -76,7 +84,9 @@ describe("residence", () => {
 
     it("spawn single human destinating single target", () => {
       const c = new Company(1, 0, 0);
-      const r = new Residence([c], 0, 0);
+      const r = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       r._setNext(c, c, distance(c, r));
       for (let j = 0; j < FPS; j++) r._step();
       modelListener.fire(EventType.CREATED);
@@ -87,7 +97,9 @@ describe("residence", () => {
 
     it("spawn human iteratably", () => {
       const c = new Company(1, 0, 0);
-      const r = new Residence([c], 0, 0);
+      const r = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       r._setNext(c, c, distance(c, r));
       for (let i = 0; i < 5; i++) {
         for (let j = 0; j < FPS; j++) r._step();
@@ -101,7 +113,9 @@ describe("residence", () => {
     it("spawn human, swithing destination", () => {
       const c1 = new Company(1, 0, 0);
       const c2 = new Company(1, 0, 0);
-      const r = new Residence([c1, c2], 0, 0);
+      const r = new Residence([c1, c2], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       r._setNext(c1, c1, distance(c1, r));
       r._setNext(c2, c2, distance(c2, r));
 
@@ -134,7 +148,9 @@ describe("residence", () => {
       const c1 = new Company(1, 0, 0);
       const c2 = new Company(2, 0, 0);
       const c3 = new Company(3, 0, 0);
-      const r = new Residence([c1, c2, c3], 0, 0);
+      const r = new Residence([c1, c2, c3], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       r._setNext(c1, c1, distance(c1, r));
       r._setNext(c2, c2, distance(c2, r));
       r._setNext(c3, c3, distance(c3, r));
@@ -151,7 +167,9 @@ describe("residence", () => {
 
     it("forbit to spawn human when no company registered", () => {
       console.warn = jest.fn();
-      const r = new Residence([], 0, 0);
+      const r = new Residence([], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       for (let j = 0; j < FPS; j++) r._step();
       modelListener.fire(EventType.CREATED);
       expect(newHumans.length).toEqual(0);

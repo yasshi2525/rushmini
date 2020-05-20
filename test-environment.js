@@ -90,6 +90,9 @@ class FileSystemScriptAsset extends g.ScriptAsset {
   }
 
   _wrap() {
+    window.RPGAtsumaru = {
+      screenshot: { setScreenshotHandler: () => {}, setTweetMessage: () => {} },
+    };
     return new Function(
       "g",
       FileSystemScriptAsset.PRE_SCRIPT +
@@ -253,8 +256,6 @@ class AkashicEngineEnvironment extends NodeEnvironment {
       }
     }
     delete this.global.g;
-    delete this.global.recreateGame;
-    delete this.global.window;
     delete this.global.document;
     await super.teardown();
   }

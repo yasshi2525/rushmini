@@ -7,23 +7,28 @@ import RailLine from "models/rail_line";
 import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Train from "models/train";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 import { createLoadedScene } from "../_helper/scene";
 
 const FPS = 60;
 const LIFE_SPAN = 1;
+const oldRAND = Human.RAND;
 const oldLIFE_SPAN = Human.LIFE_SPAN;
 const oldBUFF = Human.STAY_BUFF;
 const ANIMATION_SEC = 1;
 
 beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
+  Human.RAND = 0;
   Human.LIFE_SPAN = LIFE_SPAN;
   Human.STAY_BUFF = 1;
 });
 
 afterAll(() => {
+  Human.RAND = oldRAND;
   Human.LIFE_SPAN = oldLIFE_SPAN;
   Human.STAY_BUFF = oldBUFF;
 });
@@ -36,7 +41,7 @@ describe("human_despawner", () => {
   beforeEach(async () => {
     scene = await createLoadedScene();
     c = new Company(1, 0, 0);
-    r = new Residence([c], 0, 0);
+    r = new Residence([c], 0, 0, (min, max) => random.random().get(min, max));
   });
 
   afterEach(async () => {
@@ -49,7 +54,7 @@ describe("human_despawner", () => {
     expect(panel.children).toBeUndefined();
     expect(scene.update.length).toEqual(0);
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     for (let i = 0; i < FPS * LIFE_SPAN + 1; i++) h._step();
     expect(h.state()).toEqual(HumanState.DIED);
     modelListener.fire(EventType.DELETED);
@@ -60,7 +65,7 @@ describe("human_despawner", () => {
 
   it("panel is disapear after ANIMATION_SEC sec", () => {
     const panel = createHumanDespawner(scene);
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     for (let i = 0; i < FPS * LIFE_SPAN + 1; i++) h._step();
     modelListener.fire(EventType.DELETED);
     const y = panel.children[0].y;
@@ -79,7 +84,7 @@ describe("human_despawner", () => {
   it("panel never moved when human is archived", () => {
     const panel = createHumanDespawner(scene);
     r._setNext(c, c, distance(c, r));
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     expect(h.state()).toEqual(HumanState.ARCHIVED);
     modelListener.fire(EventType.DELETED);
@@ -92,7 +97,7 @@ describe("human_despawner", () => {
 
   it("panel move with train", () => {
     const panel = createHumanDespawner(scene);
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     const p = new RailNode(0, 0)._buildStation();
     const l = new RailLine();
     l._start(p);

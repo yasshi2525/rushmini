@@ -20,9 +20,16 @@ class Residence extends PointableObject implements Steppable {
    * 残り remain frame 経過すると人を生成する
    */
   private remainFrame: number;
+  private rand: (min: number, max: number) => number;
 
-  constructor(destinations: Company[], x: number, y: number) {
+  constructor(
+    destinations: Company[],
+    x: number,
+    y: number,
+    rand: (min: number, max: number) => number
+  ) {
     super(x, y) /* istanbul ignore next */;
+    this.rand = rand;
     // 会社の魅力度に応じて行き先を比例配分する
     destinations.forEach((c) => {
       for (let i = 0; i < c.attractiveness; i++) {
@@ -40,7 +47,7 @@ class Residence extends PointableObject implements Steppable {
     }
     const dest = this.destinations.shift();
     this.destinations.push(dest);
-    return new Human(this, dest);
+    return new Human(this, dest, this.rand);
   }
 
   public _step() {

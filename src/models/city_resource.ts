@@ -152,7 +152,8 @@ export class CityResource {
     const r = new Residence(
       this.cs,
       CityResource.PADDING,
-      CityResource.PADDING
+      CityResource.PADDING,
+      rand
     );
     this.rs.push(r);
     this.buildings.push(r);
@@ -173,11 +174,11 @@ export class CityResource {
         rand: this.rand,
         others: this.buildings,
       });
-      const r = new Residence(this.cs, pos.x, pos.y);
+      const r = new Residence(this.cs, pos.x, pos.y, this.rand);
       this.rs.push(r);
       this.buildings.push(r);
     } else {
-      this.buildings.push(new Residence(this.cs, x, y));
+      this.buildings.push(new Residence(this.cs, x, y, this.rand));
     }
     modelListener.fire(EventType.CREATED);
   }

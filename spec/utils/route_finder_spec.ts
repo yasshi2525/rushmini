@@ -13,14 +13,22 @@ import { Routable } from "models/routable";
 import Train from "models/train";
 import userResource, { UserResource } from "models/user_resource";
 import { find } from "utils/common";
+import random from "utils/random";
 import routeFinder from "utils/route_finder";
 import ticker from "utils/ticker";
 import transportFinder from "utils/transport_finder";
 
 const FPS = 15;
+const oldRAND = Human.RAND;
 
 beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
+  Human.RAND = 0;
+});
+
+afterAll(() => {
+  Human.RAND = oldRAND;
 });
 
 describe("route_finder", () => {
@@ -45,7 +53,9 @@ describe("route_finder", () => {
       routeFinder.init();
 
       const c = new Company(1, 0, 0);
-      const r = new Residence([c], 12, 15);
+      const r = new Residence([c], 12, 15, (min, max) =>
+        random.random().get(min, max)
+      );
       modelListener.fire(EventType.CREATED);
 
       expect(r.nextFor(c)).toEqual(c);
@@ -56,7 +66,9 @@ describe("route_finder", () => {
       routeFinder.init();
 
       const c = new Company(1, 9, 12);
-      const r = new Residence([c], 0, 0);
+      const r = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       modelListener.fire(EventType.CREATED);
 
       userResource.start(3, 4);
@@ -77,10 +89,12 @@ describe("route_finder", () => {
       expect(p2.nextFor(c)).toEqual(g2);
       expect(g2.nextFor(c)).toEqual(c);
 
-      expect(r.paymentFor(c)).toEqual(50);
-      expect(g1.paymentFor(c)).toEqual(50);
-      expect(p1.paymentFor(c)).toEqual(50);
-      expect(dept1.paymentFor(c)).toEqual(50);
+      const cost = Math.sqrt(50 / 100) * 100;
+
+      expect(r.paymentFor(c)).toBeCloseTo(cost);
+      expect(g1.paymentFor(c)).toBeCloseTo(cost);
+      expect(p1.paymentFor(c)).toBeCloseTo(cost);
+      expect(dept1.paymentFor(c)).toBeCloseTo(cost);
       expect(p2.paymentFor(c)).toEqual(0);
       expect(g2.paymentFor(c)).toEqual(0);
     });
@@ -94,7 +108,9 @@ describe("route_finder", () => {
       userResource.end();
 
       const c = new Company(1, 9, 12);
-      const r = new Residence([c], 0, 0);
+      const r = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       modelListener.fire(EventType.CREATED);
 
       const dept1 = userResource.getPrimaryLine().top;
@@ -117,14 +133,18 @@ describe("route_finder", () => {
       routeFinder.init();
 
       const c = new Company(1, 9, 12);
-      const r1 = new Residence([c], 0, 0);
+      const r1 = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       modelListener.fire(EventType.CREATED);
 
       userResource.start(3, 4);
       userResource.extend(6, 8);
       userResource.end();
 
-      const r2 = new Residence([c], 0, 0);
+      const r2 = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       modelListener.fire(EventType.CREATED);
 
       const dept1 = userResource.getPrimaryLine().top;
@@ -147,9 +167,11 @@ describe("route_finder", () => {
       routeFinder.init();
 
       const c = new Company(1, 12, 15);
-      const r = new Residence([c], 0, 0);
+      const r = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
       modelListener.fire(EventType.CREATED);
-      const h = new Human(r, c);
+      const h = new Human(r, c, (min, max) => random.random().get(min, max));
       modelListener.fire(EventType.CREATED);
       expect(h.nextFor(c)).toBeUndefined();
 
@@ -177,8 +199,10 @@ describe("route_finder", () => {
       routeFinder.init();
 
       const c = new Company(1, 12, 15);
-      const r = new Residence([c], 0, 0);
-      const h = new Human(r, c);
+      const r = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
+      const h = new Human(r, c, (min, max) => random.random().get(min, max));
       modelListener.fire(EventType.CREATED);
 
       userResource.start(3, 4);
@@ -202,7 +226,9 @@ describe("route_finder", () => {
       routeFinder.init();
 
       const c = new Company(1, 30, 40);
-      const r = new Residence([c], 0, 0);
+      const r = new Residence([c], 0, 0, (min, max) =>
+        random.random().get(min, max)
+      );
 
       userResource.start(0, 0);
       userResource.extend(30, 40);
@@ -215,18 +241,24 @@ describe("route_finder", () => {
       const p2 = dept2.departure().platform;
       const g2 = p2.station.gate;
 
-      const onGround = new Human(r, c);
+      const onGround = new Human(r, c, (min, max) =>
+        random.random().get(min, max)
+      );
       expect(onGround.state()).toEqual(HumanState.SPAWNED);
       expect(onGround._getGate()).toBeUndefined();
 
-      const onGate = new Human(r, c);
+      const onGate = new Human(r, c, (min, max) =>
+        random.random().get(min, max)
+      );
       onGate._step();
       for (let i = 0; i < FPS / Gate.MOBILITY_SEC; i++) g1._step();
 
       expect(onGate.state()).toEqual(HumanState.WAIT_ENTER_PLATFORM);
       expect(onGate._getGate()).toEqual(g1);
 
-      const onPlatform = new Human(r, c);
+      const onPlatform = new Human(r, c, (min, max) =>
+        random.random().get(min, max)
+      );
       onPlatform._step();
       for (let i = 0; i < FPS / Gate.MOBILITY_SEC; i++) g1._step();
       onPlatform._step();
@@ -234,7 +266,9 @@ describe("route_finder", () => {
       expect(onPlatform.state()).toEqual(HumanState.WAIT_ENTER_DEPTQUEUE);
       expect(onPlatform._getPlatform()).toEqual(p1);
 
-      const onDept = new Human(r, c);
+      const onDept = new Human(r, c, (min, max) =>
+        random.random().get(min, max)
+      );
       onDept._step();
       for (let i = 0; i < FPS / Gate.MOBILITY_SEC; i++) g1._step();
       onDept._step();
@@ -321,7 +355,7 @@ describe("route_finder", () => {
         .register((rn) => rns.push(rn));
       modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
       c = new Company(1, 100, 0);
-      r = new Residence([c], 0, 0);
+      r = new Residence([c], 0, 0, (min, max) => random.random().get(min, max));
       userResource.start(0, 0);
       rn1 = rns[0];
       p1 = rn1.platform;
@@ -413,7 +447,7 @@ describe("route_finder", () => {
     });
 
     it("XXX human transfer train", () => {
-      const h = new Human(r, c);
+      const h = new Human(r, c, (min, max) => random.random().get(min, max));
       h._step();
       expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
       expect(h._getNext()).toEqual(g1);

@@ -10,19 +10,24 @@ import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
 import Train from "models/train";
+import random from "utils/random";
 import ticker from "utils/ticker";
 
 const FPS = 15;
+const oldRAND = Human.RAND;
 const oldSPEED = Human.SPEED;
 
 beforeAll(() => {
+  random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
+  Human.RAND = 0;
   Human.SPEED = 1;
 });
 
 afterAll(() => {
   modelListener.flush();
   ticker.reset();
+  Human.RAND = oldRAND;
   Human.SPEED = oldSPEED;
 });
 
@@ -36,7 +41,7 @@ describe("platform", () => {
 
   beforeEach(() => {
     c = new Company(1, 3, 4);
-    r = new Residence([c], 0, 0);
+    r = new Residence([c], 0, 0, (min, max) => random.random().get(min, max));
     rn = new RailNode(0, 0);
     st = new Station();
     g = st.gate;
@@ -60,7 +65,7 @@ describe("platform", () => {
     expect(g.station.gate).toEqual(g);
     expect(g).toEqual(p.station.gate);
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     expect(h.state()).toEqual(HumanState.WAIT_ENTER_GATE);
     g._step();
@@ -86,7 +91,7 @@ describe("platform", () => {
     p._setNext(dept, c, distance(c, p));
     dept._setNext(p, c, distance(c, p));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     h._step();
@@ -125,7 +130,7 @@ describe("platform", () => {
     r._setNext(g, c, distance(c, r));
     g._setNext(p, c, distance(c, g));
 
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     h._step();
@@ -150,7 +155,7 @@ describe("platform", () => {
     const p = new Platform(rn, st);
     r._setNext(g, c, distance(c, r));
     g._setNext(p, c, distance(c, g));
-    const h = new Human(r, c);
+    const h = new Human(r, c, (min, max) => random.random().get(min, max));
     h._step();
     g._step();
     expect(g._concourse[0]).toEqual(h);
@@ -158,7 +163,10 @@ describe("platform", () => {
 
     // platform is crowded
     expect(p.inQueue.length).toEqual(0);
-    for (let i = 0; i < Platform.CAPACITY; i++) p.inQueue.push(new Human(r, c));
+    for (let i = 0; i < Platform.CAPACITY; i++)
+      p.inQueue.push(
+        new Human(r, c, (min, max) => random.random().get(min, max))
+      );
     expect(p.inQueue.length).toEqual(Platform.CAPACITY);
 
     h._step();

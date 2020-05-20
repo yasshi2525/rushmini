@@ -2,6 +2,7 @@ import Company from "models/company";
 import Human from "models/human";
 import modelListener, { EventType } from "models/listener";
 import Residence from "models/residence";
+import { RPGAtsumaruWindow } from "parameterObject";
 import createGameScene from "scenes/game";
 import random from "utils/random";
 import scenes, { SceneType } from "utils/scene";
@@ -12,6 +13,8 @@ import viewer from "utils/viewer";
 const FPS = 15;
 const GAME = 30;
 const ENDING = 10;
+
+declare const window: RPGAtsumaruWindow;
 
 describe("game", () => {
   beforeEach(() => {
@@ -28,12 +31,12 @@ describe("game", () => {
   });
 
   it("create scene", () => {
-    const scene = createGameScene();
+    const scene = createGameScene(false);
     expect(scene).not.toBeUndefined();
   });
 
   it("load scene", () => {
-    const scene = createGameScene();
+    const scene = createGameScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(scene);
@@ -41,7 +44,7 @@ describe("game", () => {
 
   it("game over changes scene", () => {
     scenes.put(SceneType.ENDING, () => new g.Scene({ game: g.game }));
-    const scene = createGameScene();
+    const scene = createGameScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(scene);
@@ -52,6 +55,15 @@ describe("game", () => {
     }
     g.game.tick(false);
     expect(g.game.scene()).not.toEqual(scene);
+  });
+
+  it("tweet in atsumaru", () => {
+    let cnt = 0;
+    window.RPGAtsumaru = { screenshot: { setTweetMessage: () => cnt++ } };
+    const scene = createGameScene(true);
+    g.game.pushScene(scene);
+    g.game.tick(false);
+    expect(cnt).toEqual(1);
   });
 
   describe("init controller", () => {
@@ -77,7 +89,7 @@ describe("game", () => {
     });
 
     it("create residence and company in zero tick", () => {
-      const scene = createGameScene();
+      const scene = createGameScene(false);
       g.game.pushScene(scene);
       g.game.tick(false);
       expect(rs.length).toEqual(1);
