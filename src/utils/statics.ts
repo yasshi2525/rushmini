@@ -96,7 +96,7 @@ const emptySet = <T>(init: T) => {
 const findArray = <T>(
   obj: { [index: string]: any },
   cls: new (...args: any[]) => T
-) => obj[cls.name] as T[];
+) => (obj[cls.name] ?? []) as T[];
 
 const rate = <T>(arr: T[], num: (e: T) => number, cap: number) => {
   if (arr === undefined || arr.length === 0) return 0;
