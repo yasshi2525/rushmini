@@ -719,6 +719,13 @@
 			"height": 30,
 			"path": "image/statics_7_txt.png",
 			"global": true
+		},
+		"full_basic": {
+			"type": "image",
+			"width": 37,
+			"height": 37,
+			"path": "image/full_basic.png",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

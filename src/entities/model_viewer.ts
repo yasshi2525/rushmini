@@ -19,6 +19,7 @@ import ViewObjectFactory from "./factory";
 import { humanModifier } from "./human_view";
 import { defaultRailEdgeModifier } from "./rail_edge_view";
 import { createFramedRect, createWorkingArea } from "./rectangle";
+import { stationModifier } from "./station_view";
 import { riddenModifer, trainModifer } from "./train_view";
 
 const COLOR = "#ffffff";
@@ -36,7 +37,7 @@ const configs: Config<Pointable>[] = [
   { key: Company },
   { key: Human, desc: true, modifers: [humanModifier] },
   { key: RailEdge, modifers: defaultRailEdgeModifier },
-  { key: Station },
+  { key: Station, modifers: [stationModifier] },
   { key: Train, modifers: [trainModifer], rideModifers: [riddenModifer] },
 ];
 

@@ -83,3 +83,27 @@ export const appnedWarning = (parent: g.E) => {
   sprite.hide();
   return sprite;
 };
+
+const setFullPos = (sprite: g.E, parent: g.E, toggle: boolean) => {
+  sprite.x = parent.width - (toggle ? sprite.width / 2 : 0) - sprite.width / 2;
+  sprite.y = toggle ? -sprite.height / 2 : 0;
+  sprite.modified();
+};
+
+export const animateFull = (parent: g.E, shouldEnd: () => boolean) => {
+  if (parent.update.length > 0) return;
+  let cnt = 0;
+  const sp = createSquareSprite(parent.scene, "full_basic");
+  setFullPos(sp, parent, false);
+  const anim = () => {
+    if (shouldEnd()) {
+      parent.update.remove(anim);
+      sp.destroy();
+      return;
+    }
+    setFullPos(sp, parent, cnt % g.game.fps > g.game.fps / 2);
+    cnt++;
+  };
+  parent.append(sp);
+  parent.update.add(anim);
+};

@@ -3,6 +3,7 @@ import RailEdge from "../models/rail_edge";
 import Train from "../models/train";
 import creators from "./creator";
 import { ViewObject } from "./factory";
+import { animateFull } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
 const SLIDE = 20;
@@ -50,14 +51,19 @@ export const trainModifer = (vo: ViewObject<Train>) => {
   sprite.x = getX(e);
   sprite.y = getY(e);
   sprite.angle = getAngle(edge(t, false));
-
   sprite.modified();
+  if (t.passengers.length === Train.CAPACITY) {
+    animateFull(sprite, () => t.passengers.length < Train.CAPACITY);
+  }
 };
 
-const SHAKE = [2.5, 7.5, 15, 7.5, 2.5, 0, -2.5, -7.5, -15, -7.5, -2.5];
+const SHAKE = [2.5, 7.5, 15, 7.5, 2.5, 0, -2.5, -7.5, -15, -7.5, -2.5, 0];
 
 export const riddenModifer = (vo: ViewObject<Train>) => {
   const sprite = vo.viewer.children[0];
+  if (sprite.update.length > 0) {
+    return;
+  }
   let count = 0;
   const baseAngle = getAngle(edge(vo.subject, false));
   const shake = () => {

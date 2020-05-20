@@ -119,6 +119,10 @@ class StayTask extends TrainTask {
         h._setDeptTask(undefined);
         h._ride(dept);
         this.train.passengers.push(h);
+        // 電車が満員になったら通知
+        if (this.train.passengers.length === Train.CAPACITY) {
+          modelListener.add(EventType.MODIFIED, this.train);
+        }
         this.waitSec += 1 / Train.MOBILITY_SEC;
         modelListener.add(EventType.RIDDEN, this.train);
         return true;
