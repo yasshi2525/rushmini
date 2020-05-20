@@ -6,7 +6,9 @@ import { Point, drag, onResidence, onStation } from "./sensor";
 
 const main: Point[] = [
   { x: 150, y: 150 },
-  { x: 550, y: 400 },
+  { x: 500, y: 400 },
+  { x: 550, y: 350 },
+  { x: 200, y: 150 },
 ];
 
 const branch: Point[] = [
@@ -20,7 +22,7 @@ const onBranch = () => {
   drag(branch, sensor);
 };
 
-export const buildSlashModel = () => {
+export const buildVModel = () => {
   const sensor = viewer.viewers[ViewerType.BUILDER];
   expect(sensor.visible()).toBeTruthy();
   drag(main, sensor);

@@ -81,8 +81,13 @@ export const execute = async (opts: ExecOption) => {
   const csv: Record[] = [];
   let sig = false;
   const signal = () => sig;
+  if (opts.prepare) opts.prepare();
   startGame(opts.name, opts.suffix, csv, () => (sig = true));
   const handler = opts.builder();
   loop(signal, handler(opts.bonuses));
   await output(opts.name, opts.suffix, csv);
+};
+
+export const genParam = function* (min: number, max: number, step: number) {
+  for (let i = min; i <= max; i += step) yield i;
 };

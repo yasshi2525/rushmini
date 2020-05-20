@@ -1,8 +1,8 @@
 import { genBonus, toBonus, toSuffixString } from "../_helper/bonus";
 import { execute, resetGame } from "../_helper/game";
-import { buildSlashModel } from "../_helper/model_slash";
+import { buildCircleModel } from "../_helper/model_circle";
 
-describe("[e2e] slash model", () => {
+describe("[e2e] circle model", () => {
   afterEach(() => {
     resetGame();
   });
@@ -11,9 +11,9 @@ describe("[e2e] slash model", () => {
     "%s",
     async (key) =>
       execute({
-        name: "slash",
+        name: "model_circle",
         suffix: key,
-        builder: buildSlashModel,
+        builder: buildCircleModel,
         bonuses: toBonus(key),
       }),
     10000

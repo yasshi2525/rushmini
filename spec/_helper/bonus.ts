@@ -79,6 +79,28 @@ export const toBonus = (str: string) =>
 
 export type BonusHandler = { key: BONUS_TYPE; fn: () => void };
 
+export type HandlerOpts = {
+  onBranch: () => void;
+  onStation: () => void;
+  onResidence: () => void;
+};
+
+export const createHandler = (opts: HandlerOpts) => (
+  bonuses: BONUS_TYPE[]
+): BonusHandler[] =>
+  bonuses.map((bonus) => {
+    switch (bonus) {
+      case BONUS_TYPE.STATION:
+        return { key: bonus, fn: opts.onStation };
+      case BONUS_TYPE.BRANCH:
+        return { key: bonus, fn: opts.onBranch };
+      case BONUS_TYPE.TRAIN:
+        return { key: bonus, fn: () => {} };
+      case BONUS_TYPE.RESIDENCE:
+        return { key: bonus, fn: opts.onResidence };
+    }
+  });
+
 export const handleBonus = (handlers: BonusHandler[]) => {
   if (viewer.viewers[ViewerType.BONUS].visible()) {
     const handler = handlers.shift();

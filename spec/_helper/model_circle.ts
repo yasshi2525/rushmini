@@ -1,17 +1,21 @@
-import userResource, { ModelState } from "models/user_resource";
 import viewer, { ViewerType } from "utils/viewer";
 
 import { createHandler } from "./bonus";
 import { Point, drag, onResidence, onStation } from "./sensor";
 
-const main: Point[] = [
-  { x: 150, y: 150 },
-  { x: 550, y: 400 },
-];
+const genCircle = function* () {
+  for (let i = 0; i < 360; i += 10) {
+    yield {
+      x: 350 + 250 * Math.cos((i * Math.PI) / 180),
+      y: 250 + 150 * Math.sin((i * Math.PI) / 180),
+    } as Point;
+  }
+};
 
+const main = Array.from(genCircle());
 const branch: Point[] = [
-  { x: 365, y: 290 },
-  { x: 165, y: 400 },
+  { x: 600, y: 250 },
+  { x: 120, y: 250 },
 ];
 
 const onBranch = () => {
@@ -20,13 +24,12 @@ const onBranch = () => {
   drag(branch, sensor);
 };
 
-export const buildSlashModel = () => {
+export const buildCircleModel = () => {
   const sensor = viewer.viewers[ViewerType.BUILDER];
-  expect(sensor.visible()).toBeTruthy();
   drag(main, sensor);
   return createHandler({
     onBranch,
-    onStation: () => onStation({ x: 350, y: 275 }),
+    onStation: () => onStation({ x: 100, y: 250 }),
     onResidence: () => onResidence({ x: 0, y: 0 }),
   });
 };

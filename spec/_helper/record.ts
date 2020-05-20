@@ -4,7 +4,7 @@ import statics from "utils/statics";
 export type Record = {
   [index: string]: number | string;
   model: string;
-  bonuses: string;
+  suffix: string;
   time: number;
   score: number;
 };
@@ -25,12 +25,12 @@ const dump = (
 
 export const createRecord = (
   model: string,
-  bonuses: string,
+  suffix: string,
   time: number
 ): Record => {
   const obj: Record = {
     model,
-    bonuses,
+    suffix,
     time,
     score: scorer.get(),
   };

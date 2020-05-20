@@ -1,17 +1,20 @@
-import userResource, { ModelState } from "models/user_resource";
 import viewer, { ViewerType } from "utils/viewer";
 
 import { createHandler } from "./bonus";
 import { Point, drag, onResidence, onStation } from "./sensor";
 
-const main: Point[] = [
-  { x: 150, y: 150 },
-  { x: 550, y: 400 },
-];
+const genLong = function* () {
+  for (let y = 0; y < 5; y++) {
+    for (let x = 0; x < 5; x++) {
+      yield { x: 150 + x * 100, y: 150 + y * 50 };
+    }
+  }
+};
 
+const main = Array.from(genLong());
 const branch: Point[] = [
-  { x: 365, y: 290 },
-  { x: 165, y: 400 },
+  { x: 500, y: 250 },
+  { x: 220, y: 250 },
 ];
 
 const onBranch = () => {
@@ -20,13 +23,12 @@ const onBranch = () => {
   drag(branch, sensor);
 };
 
-export const buildSlashModel = () => {
+export const buildLongModel = () => {
   const sensor = viewer.viewers[ViewerType.BUILDER];
-  expect(sensor.visible()).toBeTruthy();
   drag(main, sensor);
   return createHandler({
     onBranch,
-    onStation: () => onStation({ x: 350, y: 275 }),
+    onStation: () => onStation({ x: 200, y: 250 }),
     onResidence: () => onResidence({ x: 0, y: 0 }),
   });
 };

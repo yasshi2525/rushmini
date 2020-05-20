@@ -99,7 +99,7 @@ const findArray = <T>(
 ) => obj[cls.name] as T[];
 
 const rate = <T>(arr: T[], num: (e: T) => number, cap: number) => {
-  if (arr.length === 0) return 0;
+  if (arr === undefined || arr.length === 0) return 0;
   return sum(arr, num) / arr.length / cap;
 };
 
