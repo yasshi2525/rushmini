@@ -4,8 +4,8 @@ import { createHandler } from "./bonus";
 import { Point, drag, onResidence, onStation } from "./sensor";
 
 const genLong = function* () {
-  for (let y = 0; y < 5; y++) {
-    for (let x = 0; x < 5; x++) {
+  for (let x = 0; x < 5; x++) {
+    for (let y = 0; y < 5; y++) {
       yield { x: 150 + x * 100, y: 150 + y * 50 };
     }
   }

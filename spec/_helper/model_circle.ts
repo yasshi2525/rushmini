@@ -6,7 +6,7 @@ import { Point, drag, onResidence, onStation } from "./sensor";
 const genCircle = function* () {
   for (let i = 0; i < 360; i += 10) {
     yield {
-      x: 350 + 250 * Math.cos((i * Math.PI) / 180),
+      x: 350 + 200 * Math.cos((i * Math.PI) / 180),
       y: 250 + 150 * Math.sin((i * Math.PI) / 180),
     } as Point;
   }
@@ -14,7 +14,7 @@ const genCircle = function* () {
 
 const main = Array.from(genCircle());
 const branch: Point[] = [
-  { x: 600, y: 250 },
+  { x: 550, y: 250 },
   { x: 120, y: 250 },
 ];
 
