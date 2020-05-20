@@ -47,7 +47,7 @@ const createStaticsPanel = (loadedSccene: g.Scene) => {
     height: UNITS.length * FONT_SIZE * PARAGRAPH,
   });
   panel.x = g.game.width * (1 - PADDING) - panel.width;
-  panel.y = (g.game.height * PADDING) / 2;
+  panel.y = (g.game.height * PADDING * 2) / 2;
   panel.modified();
 
   const dy = statics.collect();

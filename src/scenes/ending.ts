@@ -1,9 +1,9 @@
 import createFrame from "../entities/frame";
 import createReplay from "../entities/replay";
+import createScoreLabel from "../entities/score";
 import { createSquareSprite } from "../entities/sprite";
 import createStaticsPanel from "../entities/statics_view";
 import { RPGAtsumaruWindow } from "../parameterObject";
-import scenes, { SceneType } from "../utils/scene";
 
 declare const window: RPGAtsumaruWindow;
 const BOARD_ID = 1;
@@ -28,6 +28,10 @@ export const handleEnding = (prev: g.E) => {
       if (scale < 0.66) {
         scene.update.remove(anim);
         scene.children[0].show();
+        const score = createScoreLabel(scene);
+        score.x += 40;
+        score.modified();
+        scene.append(score);
         scene.append(createStaticsPanel(scene));
         return;
       }
