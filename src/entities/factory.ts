@@ -59,8 +59,6 @@ class ViewObjectFactory<T extends Pointable> {
       const object = this.children[index];
       this.panel.remove(object.viewer);
       this.children.splice(index, 1);
-    } else {
-      console.warn("subject was not found in array");
     }
   }
 }

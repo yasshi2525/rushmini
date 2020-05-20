@@ -22,12 +22,15 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run build
-      - uses: paambaati/codeclimate-action@v2.5.6
+      - name: test
+        uses: paambaati/codeclimate-action@v2.5.6
         env:
           CC_TEST_REPORTER_ID: 7019f43d55fc198fd89c9583fa26f439afef0c6644ca623865df1087a5739a9c
         with:
           coverageLocations: ./coverage/lcov.info:lcov
           coverageCommand: npm test
+      - name: report
+        run: npm run report
       - name: Upload score report
         uses: actions/upload-artifact@v1.0.0
         with:
