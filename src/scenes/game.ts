@@ -1,6 +1,7 @@
 import preserveEntityCreator from "../entities/loader";
 import { RPGAtsumaruWindow } from "../parameterObject";
 import scenes, { SceneType } from "../utils/scene";
+import scorer from "../utils/scorer";
 import statics from "../utils/statics";
 import ticker, { EventType as TickEventType } from "../utils/ticker";
 import viewer from "../utils/viewer";
@@ -17,7 +18,9 @@ const createGameScene = (isAtsumaru: boolean) => {
     viewer.init(scene);
     if (isAtsumaru) {
       window.RPGAtsumaru.screenshot.setTweetMessage({
-        tweetText: `私は ${statics._commute.length} 人の通勤客を電車で運びました。 #出勤のお時間です！`,
+        tweetText: `私は ${
+          statics._commute.length
+        } 人の通勤客を電車で運びました。(SCORE: ${scorer.get()}) #出勤のお時間です！`,
       });
     }
 
