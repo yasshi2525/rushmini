@@ -46,13 +46,11 @@ describe("factory", () => {
   });
 
   it("removeSubject remains un-related object", () => {
-    console.warn = jest.fn();
     const s1 = new Simple();
     const s2 = new Simple();
     const o2 = factory.createInstance(s2);
     factory.removeInstance(s1);
     expect(panel.children.length).toEqual(1);
     expect(panel.children[0]).toEqual(o2.viewer);
-    expect(console.warn).toHaveBeenCalled();
   });
 });
