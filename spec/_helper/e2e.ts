@@ -251,6 +251,7 @@ export const resetGame = () => {
   transportFinder.reset();
   routeFinder.reset();
   stepper.reset();
+  statics.reset();
   userResource.reset();
   cityResource.reset();
   modelListener.unregisterAll();
