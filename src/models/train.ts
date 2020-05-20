@@ -18,11 +18,11 @@ class Train extends RoutableObject implements Pointable, Steppable, Routable {
   /**
    * 何人乗車できるか
    */
-  public static CAPACITY: number = 40;
+  public static CAPACITY: number = 30;
   /**
    * 一秒間に何人乗り降りできるか
    */
-  public static MOBILITY_SEC: number = 10;
+  public static MOBILITY_SEC: number = 6;
 
   /**
    * 最低何秒間駅に停車するか

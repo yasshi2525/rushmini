@@ -12,7 +12,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
   /**
    * 1秒間に通過できる人数
    */
-  public static MOBILITY_SEC: number = 10;
+  public static MOBILITY_SEC: number = 5;
   /**
    * ホームへの入場待ち者が入れる最大数
    */

@@ -18,13 +18,16 @@ const RIDE_COST = 1; // 乗車コスト。これをしないと途中で乗り�
 /**
  * 総延長に対する移動距離の割合に対して乗ずる料金
  */
-const PAY_RATIO = 100;
+const PAY_RATIO = 4;
 
 const finders: PathFinder[] = [];
 const ls: RailLine[] = [];
 const lts: DeptTask[] = [];
 const ps: Platform[] = [];
 const ts: Train[] = [];
+
+const calcPay = (length: number, l: RailLine) =>
+  (length / Math.sqrt(l.length())) * PAY_RATIO;
 
 /**
  * 電車の現在地点から各駅へのedgeを貼る。
@@ -41,7 +44,7 @@ const trainRouting = (f: PathFinder, t: Train) => {
         t,
         current.stay,
         length * DIST_RATIO,
-        Math.sqrt(length / current.parent.length()) * PAY_RATIO
+        calcPay(length, current.parent)
       );
 
     current = current.next;
@@ -73,7 +76,7 @@ const scanRailLine = (f: PathFinder, l: RailLine) => {
           dept,
           current.stay,
           length * DIST_RATIO + RIDE_COST,
-          Math.sqrt(length / l.length()) * PAY_RATIO
+          calcPay(length, l)
         );
       }
     } while (dept !== current);

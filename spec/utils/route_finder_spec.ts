@@ -89,7 +89,7 @@ describe("route_finder", () => {
       expect(p2.nextFor(c)).toEqual(g2);
       expect(g2.nextFor(c)).toEqual(c);
 
-      const cost = Math.sqrt(50 / 100) * 100;
+      const cost = (5 / Math.sqrt(10)) * 4;
 
       expect(r.paymentFor(c)).toBeCloseTo(cost);
       expect(g1.paymentFor(c)).toBeCloseTo(cost);
