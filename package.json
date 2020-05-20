@@ -1,7 +1,7 @@
 {
   "name": "rushmini",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "",
   "scripts": {
     "build": "rimraf ./script ./tmp && tsc && akashic scan asset script",
@@ -14,8 +14,8 @@
     "test": "jest",
     "report": "rimraf ./report && jest --config jest-report.config.js"
   },
-  "author": "",
-  "license": "",
+  "author": "yasshi2525",
+  "license": "MIT License",
   "devDependencies": {
     "@akashic/akashic-engine": "^2.6.3",
     "@akashic/akashic-pdi": "^2.8.0",
