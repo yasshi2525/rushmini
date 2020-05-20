@@ -99,15 +99,22 @@ const loop = (
 };
 
 describe("[e2e] slash model", () => {
-  it.each(BONUS_SET.map((b) => toSuffixString(b)))("%s", async (key) => {
-    const csv: Record[] = [];
-    let sig = false;
-    const signal = () => sig;
-    const bonuses = toBonus(key);
-    startGame("slash", key, csv, () => (sig = true));
-    buildModel();
-    loop(signal, toHandler(bonuses));
-    await output("slash", key, csv);
+  afterEach(() => {
     resetGame();
   });
+
+  it.each(BONUS_SET.map((b) => toSuffixString(b)))(
+    "%s",
+    async (key) => {
+      const csv: Record[] = [];
+      let sig = false;
+      const signal = () => sig;
+      const bonuses = toBonus(key);
+      startGame("slash", key, csv, () => (sig = true));
+      buildModel();
+      loop(signal, toHandler(bonuses));
+      await output("slash", key, csv);
+    },
+    10000
+  );
 });

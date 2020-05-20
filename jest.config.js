@@ -191,6 +191,7 @@ module.exports = {
     "<rootDir>/node_modules/",
     "<rootDir>/script/",
     "<rootDir>/tmp/",
+    "<rootDir>/report/",
   ],
 
   // Whether to use watchman for file crawling
