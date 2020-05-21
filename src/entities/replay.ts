@@ -34,6 +34,7 @@ const replay = () => {
   ticker.reset();
   scorer.reset();
   scorer.init(g.game.vars.gameState);
+  tweet.init(true); // リプレイできる = アツマール環境
   g.game.pushScene(scenes._scenes[SceneType.TITLE]);
 };
 
