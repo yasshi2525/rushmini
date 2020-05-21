@@ -1,6 +1,6 @@
 # RushMini 出勤のお時間です！ ![CI](https://github.com/yasshi2525/rushmini/workflows/CI/badge.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/4c2f24fe6cc4bedd8093/maintainability)](https://codeclimate.com/github/yasshi2525/rushmini/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/4c2f24fe6cc4bedd8093/test_coverage)](https://codeclimate.com/github/yasshi2525/rushmini/test_coverage)
 
-ニコニコゲームアツマール、ニコ生新市場用ゲーム [URL](https://game.nicovideo.jp/atsumaru/games/gm14288?key=bc2bab90a8a78)
+ニコニコゲームアツマール、ニコ生新市場用ゲーム [URL](https://game.nicovideo.jp/atsumaru/games/gm14288)
 
 # 利用方法
 
