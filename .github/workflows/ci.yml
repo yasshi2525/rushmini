@@ -34,7 +34,7 @@ jobs:
       - name: Upload score report
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: score_report-v1.0.1
+          name: score_report-v1.0.3
           path: report
 
   archive:
@@ -49,9 +49,9 @@ jobs:
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
       - run: npm run build
-      - run: akashic export html --output rushmini-v1.0.2 --atsumaru
+      - run: akashic export html --output rushmini-v1.0.3 --atsumaru
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: rushmini-v1.0.2
-          path: rushmini-v1.0.2
+          name: rushmini-v1.0.3
+          path: rushmini-v1.0.3
