@@ -1,7 +1,7 @@
 {
   "name": "rushmini",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "scripts": {
     "build": "rimraf ./script ./tmp && tsc && akashic scan asset script",

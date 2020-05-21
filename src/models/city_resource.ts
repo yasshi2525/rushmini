@@ -108,6 +108,11 @@ export class CityResource {
   public readonly rs: Residence[];
   private readonly buildings: Pointable[];
 
+  /**
+   * 住宅を配置する候補地点
+   */
+  private chs: Chunk[];
+
   constructor() {
     this.cs = [];
     this.rs = [];
@@ -157,6 +162,7 @@ export class CityResource {
     );
     this.rs.push(r);
     this.buildings.push(r);
+    this.chs = [...RESIDENCES];
 
     modelListener.fire(EventType.CREATED);
   }
@@ -164,7 +170,7 @@ export class CityResource {
   public residence(x?: number, y?: number) {
     if (x === undefined || y === undefined) {
       // 追加住宅
-      const ch = RESIDENCES.shift();
+      const ch = this.chs.shift();
       const pos = toAreaRand({
         ch,
         w: this.width,
