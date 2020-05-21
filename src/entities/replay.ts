@@ -8,6 +8,7 @@ import statics from "../utils/statics";
 import stepper from "../utils/stepper";
 import ticker from "../utils/ticker";
 import transportFinder from "../utils/transport_finder";
+import tweet from "../utils/tweet";
 import viewer from "../utils/viewer";
 import { createSquareSprite } from "./sprite";
 
@@ -27,6 +28,7 @@ const replay = () => {
   userResource.reset();
   cityResource.reset();
   statics.reset();
+  tweet.reset();
   modelListener.unregisterAll();
   modelListener.flush();
   ticker.reset();
