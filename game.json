@@ -726,6 +726,11 @@
 			"height": 37,
 			"path": "image/full_basic.png",
 			"global": true
+		},
+		"tweet": {
+			"type": "script",
+			"path": "script/utils/tweet.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

@@ -6,6 +6,7 @@ import random from "./utils/random";
 import scenes, { SceneType } from "./utils/scene";
 import scorer from "./utils/scorer";
 import ticker from "./utils/ticker";
+import tweet from "./utils/tweet";
 
 declare const window: RPGAtsumaruWindow;
 
@@ -28,6 +29,8 @@ const init = (param: GameMainParameterObject) => {
   g.game.vars = { gameState: _gameState };
   // 得点計算機の初期化
   scorer.init(_gameState);
+  // つぶやき内容の初期化
+  tweet.init(param.isAtsumaru);
 };
 
 const createScenes = (isAtsumaru: boolean) => {
