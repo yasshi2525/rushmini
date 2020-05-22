@@ -440,14 +440,14 @@
 		},
 		"score_negative": {
 			"type": "image",
-			"width": 220,
+			"width": 242,
 			"height": 24,
 			"path": "image/score_negative.png",
 			"global": true
 		},
 		"score_positive": {
 			"type": "image",
-			"width": 220,
+			"width": 242,
 			"height": 24,
 			"path": "image/score_positive.png",
 			"global": true
@@ -482,7 +482,7 @@
 		},
 		"score_main": {
 			"type": "image",
-			"width": 640,
+			"width": 688,
 			"height": 31,
 			"path": "image/score_main.png",
 			"global": true
