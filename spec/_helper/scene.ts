@@ -9,5 +9,5 @@ export const createLoadedScene = () =>
       resolve(scene);
     });
     g.game.pushScene(scene);
-    while (!scene.isCurrentScene()) g.game.tick(false);
+    g.game.tick(false);
   });
