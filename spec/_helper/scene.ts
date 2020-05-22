@@ -4,9 +4,9 @@ export const createLoadedScene = () =>
     const scene = new g.Scene(opts);
 
     scene.loaded.add(() => {
+      expect(g.game.scene()).toEqual(scene);
       resolve(scene);
     });
     g.game.pushScene(scene);
     g.game.tick(false);
-    expect(g.game.scene()).toEqual(scene);
   });
