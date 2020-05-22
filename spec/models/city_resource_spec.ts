@@ -89,6 +89,5 @@ describe("city_resource", () => {
     expect(rs[4].loc().x).toBeLessThanOrEqual(WIDTH);
     expect(rs[4].loc().y).toBeGreaterThanOrEqual(HEIGHT / 2);
     expect(rs[4].loc().y).toBeLessThanOrEqual(HEIGHT);
-    model.residence();
   });
 });
