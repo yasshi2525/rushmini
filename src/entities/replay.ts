@@ -12,7 +12,7 @@ import tweet from "../utils/tweet";
 import viewer from "../utils/viewer";
 import { createSquareSprite } from "./sprite";
 
-const scale = 0.9;
+const scale = 0.85;
 const width = 250;
 const height = 75;
 
