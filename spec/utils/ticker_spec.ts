@@ -84,6 +84,7 @@ describe("ticker", () => {
       g.game.tick(true);
       expect(ticker.getRemainGameTime()).toEqual(GAME - 1);
       g.game.popScene();
+      g.game.tick(true);
     });
   });
 
