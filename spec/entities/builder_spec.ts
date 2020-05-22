@@ -57,6 +57,7 @@ describe("railbuilder", () => {
     expect(dept).toBeInstanceOf(DeptTask);
     expect(dept.departure().loc()).toEqual({ x: 10, y: 20 });
     expect(dept.next).toEqual(dept);
+    g.game.tick(false);
   });
 
   it("dragging extends rail", () => {
@@ -95,6 +96,7 @@ describe("railbuilder", () => {
     expect(inbound.destination().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept);
+    g.game.tick(false);
   });
 
   it("dragging ends rail", () => {
@@ -150,6 +152,7 @@ describe("railbuilder", () => {
     expect(inbound.next).toEqual(dept1);
 
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 
   it("rollback unused line", () => {
@@ -185,6 +188,7 @@ describe("railbuilder", () => {
       target: panel,
     });
     expect(userResource.getState()).toEqual(ModelState.INITED);
+    g.game.tick(false);
   });
 
   it("forbit multitouch", () => {
@@ -231,5 +235,6 @@ describe("railbuilder", () => {
       target: panel,
     });
     expect(userResource.getState()).toEqual(ModelState.STARTED);
+    g.game.tick(false);
   });
 });
