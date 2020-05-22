@@ -17,7 +17,7 @@ beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
 });
 
-describe("railbuilder", () => {
+describe("builder", () => {
   let scene: g.Scene;
   let panel: g.E;
 
