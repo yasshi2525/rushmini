@@ -10,4 +10,5 @@ export const createLoadedScene = () =>
     });
     g.game.pushScene(scene);
     g.game.tick(false);
+    if (g.game.scene() !== scene) g.game.tick(true);
   });
