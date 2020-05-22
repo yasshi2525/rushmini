@@ -42,6 +42,7 @@ describe("ending", () => {
     g.game.scene().children[0].pointUp.fire();
     g.game.tick(false);
     expect(g.game.scene()).not.toEqual(scene);
+    g.game.tick(false);
   });
 
   it("ending animation invoked from prev", () => {

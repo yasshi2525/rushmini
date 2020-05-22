@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import modelListener from "models/listener";
@@ -20,17 +21,22 @@ describe("branch_builder", () => {
   beforeEach(async () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BRANCH_BUILDER];
     shadow = viewer.viewers[ViewerType.SHADOW];
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    creators.reset();
     userResource.reset();
     cityResource.reset();
     modelListener.flush();
+    modelListener.unregisterAll();
+    g.game.popScene();
+    g.game.tick(true);
   });
 
   it("branch is started when candidate is selected", () => {
@@ -74,6 +80,7 @@ describe("branch_builder", () => {
     expect(isBranching).toBeTruthy();
     expect(endCounter).toEqual(0);
     expect(userResource.getState()).toEqual(ModelState.STARTED);
+    g.game.tick(true);
   });
 
   it("branch is fixed after point up", () => {
@@ -147,6 +154,7 @@ describe("branch_builder", () => {
     expect(endCounter).toEqual(1);
     expect(userResource.getState()).toEqual(ModelState.FIXED);
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(true);
   });
 
   it("rollback when dist is shorter", () => {
@@ -221,6 +229,7 @@ describe("branch_builder", () => {
     expect(userResource.getState()).toEqual(ModelState.FIXED);
     expect(panel.visible()).toBeTruthy();
     expect(shadow.visible()).toBeTruthy();
+    g.game.tick(true);
   });
 
   it("forbit to branch when unrelated point is clicked", () => {
@@ -290,6 +299,7 @@ describe("branch_builder", () => {
     expect(endCounter).toEqual(0);
     expect(userResource.getState()).toEqual(ModelState.FIXED);
     expect(panel.visible()).toBeTruthy();
+    g.game.tick(true);
   });
 
   it("forbit to re-open during branching", () => {
@@ -366,6 +376,7 @@ describe("branch_builder", () => {
     expect(bonus.visible()).toBeTruthy();
     expect(viewer.isBonusing).toBeTruthy();
     expect(bonusCounter).toEqual(2);
+    g.game.tick(true);
   });
 
   it("forbit multi touch", () => {
@@ -423,5 +434,6 @@ describe("branch_builder", () => {
       type: g.EventType.PointDown,
     });
     expect(userResource.getState()).toEqual(ModelState.STARTED);
+    g.game.tick(true);
   });
 });

@@ -92,6 +92,7 @@ class FileSystemScriptAsset extends g.ScriptAsset {
   _wrap() {
     window.RPGAtsumaru = {
       screenshot: { setScreenshotHandler: () => {}, setTweetMessage: () => {} },
+      scoreboards: { setRecord: async () => Promise.resolve() },
     };
     return new Function(
       "g",
@@ -240,6 +241,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
     this.global.g = g;
     this.driver = createDriver();
     g.game = await createGame(this.driver);
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   runScript(script) {
@@ -247,6 +249,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     if (this.driver) {
       try {
         await this.driver.destroy();

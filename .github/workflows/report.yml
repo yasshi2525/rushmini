@@ -1,0 +1,28 @@
+name: report
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  report:
+    name: report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+      - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
+      - run: npm install
+      - run: npm run build
+      - run: npm test
+      - name: report
+        run: npm run report
+      - name: Upload score report
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: score_report-v1.1.0
+          path: report

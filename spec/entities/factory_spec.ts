@@ -26,7 +26,9 @@ describe("factory", () => {
     factory = new ViewObjectFactory(panel, creator);
   });
 
-  afterEach(async () => {
+  afterEach(() => {
+    g.game.popScene();
+    g.game.tick(false);
     console.warn = oldWarn;
   });
 

@@ -167,4 +167,5 @@ export const defaultRailEdgeModifier: ModelModifier<
   RailEdge
 >[] = BORDERS.map((opts) => createRailEdgeModuleModifier(opts));
 
-BORDERS.forEach((opts) => creators.put(RailEdge, createRailEdgeModule(opts)));
+export const registerRailEdgeView = () =>
+  BORDERS.forEach((opts) => creators.put(RailEdge, createRailEdgeModule(opts)));

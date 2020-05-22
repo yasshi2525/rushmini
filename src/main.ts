@@ -1,6 +1,7 @@
 import { GameMainParameterObject, RPGAtsumaruWindow } from "./parameterObject";
 import createEndingScene, { handleEnding } from "./scenes/ending";
 import createGameScene from "./scenes/game";
+import createInstructionScene from "./scenes/instruction";
 import createTitleScene from "./scenes/title";
 import random from "./utils/random";
 import scenes, { SceneType } from "./utils/scene";
@@ -35,6 +36,7 @@ const init = (param: GameMainParameterObject) => {
 
 const createScenes = (isAtsumaru: boolean) => {
   scenes.put(SceneType.TITLE, createTitleScene);
+  scenes.put(SceneType.INSTRUCTION, createInstructionScene);
   scenes.put(SceneType.GAME, () => createGameScene(isAtsumaru));
   scenes.put(SceneType.ENDING, () => createEndingScene(isAtsumaru));
   scenes.register(SceneType.ENDING, handleEnding);

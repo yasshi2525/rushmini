@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import DeptTask from "models/dept_task";
@@ -16,13 +17,14 @@ beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
 });
 
-describe("railbuilder", () => {
+describe("builder", () => {
   let scene: g.Scene;
   let panel: g.E;
 
   beforeEach(async () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BUILDER];
@@ -30,11 +32,15 @@ describe("railbuilder", () => {
 
   afterEach(() => {
     viewer.reset();
+    creators.reset();
     transportFinder.reset();
     routeFinder.reset();
     userResource.reset();
     cityResource.reset();
     modelListener.flush();
+    modelListener.unregisterAll();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("dragging starts rail building", () => {
@@ -51,6 +57,7 @@ describe("railbuilder", () => {
     expect(dept).toBeInstanceOf(DeptTask);
     expect(dept.departure().loc()).toEqual({ x: 10, y: 20 });
     expect(dept.next).toEqual(dept);
+    g.game.tick(false);
   });
 
   it("dragging extends rail", () => {
@@ -89,6 +96,7 @@ describe("railbuilder", () => {
     expect(inbound.destination().loc()).toEqual({ x: 10, y: 20 });
 
     expect(inbound.next).toEqual(dept);
+    g.game.tick(false);
   });
 
   it("dragging ends rail", () => {
@@ -144,6 +152,7 @@ describe("railbuilder", () => {
     expect(inbound.next).toEqual(dept1);
 
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 
   it("rollback unused line", () => {
@@ -179,6 +188,7 @@ describe("railbuilder", () => {
       target: panel,
     });
     expect(userResource.getState()).toEqual(ModelState.INITED);
+    g.game.tick(false);
   });
 
   it("forbit multitouch", () => {
@@ -225,5 +235,6 @@ describe("railbuilder", () => {
       target: panel,
     });
     expect(userResource.getState()).toEqual(ModelState.STARTED);
+    g.game.tick(false);
   });
 });

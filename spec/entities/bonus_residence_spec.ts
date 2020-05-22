@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import modelListener from "models/listener";
@@ -26,6 +27,7 @@ describe("bonus_residence", () => {
   beforeEach(async () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BONUS];
@@ -34,8 +36,9 @@ describe("bonus_residence", () => {
     residence_builder = viewer.viewers[ViewerType.RESIDENCE_BUILDER];
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    creators.reset();
     userResource.reset();
     cityResource.reset();
     routeFinder.reset();
@@ -43,6 +46,8 @@ describe("bonus_residence", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     scorer.reset();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("button can be pushed after bonus panel is opened", () => {
@@ -58,6 +63,7 @@ describe("bonus_residence", () => {
     residence.children[1].pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 
   it("viewer mask is disabled after click bonus panel", () => {
@@ -70,5 +76,6 @@ describe("bonus_residence", () => {
     residence.children[1].pointUp.fire();
 
     expect(shadow.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 });

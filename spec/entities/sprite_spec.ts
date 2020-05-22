@@ -15,6 +15,11 @@ describe("sprite", () => {
     );
   });
 
+  afterEach(() => {
+    g.game.popScene();
+    g.game.tick(false);
+  });
+
   it("1x", () => {
     const p = createSquareSprite(scene, "hoge", 512);
     expect(p).not.toBeUndefined();

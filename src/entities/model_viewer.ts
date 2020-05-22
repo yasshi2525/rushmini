@@ -1,7 +1,3 @@
-import "./company_view";
-import "./residence_view";
-import "./station_view";
-
 import Company from "../models/company";
 import Human from "../models/human";
 import { EventType as ModelEventType } from "../models/listener";

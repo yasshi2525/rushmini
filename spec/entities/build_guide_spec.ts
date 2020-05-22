@@ -18,9 +18,11 @@ describe("railbuild_guide", () => {
     userResource.init();
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     userResource.reset();
     modelListener.flush();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("guide listen to model", () => {

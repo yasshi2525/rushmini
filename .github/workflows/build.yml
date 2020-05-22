@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: CI
+name: build
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: coverage
+    name: unit test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,13 +29,6 @@ jobs:
         with:
           coverageLocations: ./coverage/lcov.info:lcov
           coverageCommand: npm test
-      - name: report
-        run: npm run report
-      - name: Upload score report
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: score_report-v1.0.3
-          path: report
 
   archive:
     needs: [test]
@@ -49,9 +42,9 @@ jobs:
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
       - run: npm run build
-      - run: akashic export html --output rushmini-v1.0.3 --atsumaru
+      - run: akashic export html --output rushmini-v1.1.0 --atsumaru
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: rushmini-v1.0.3
-          path: rushmini-v1.0.3
+          name: rushmini-v1.1.0
+          path: rushmini-v1.1.0

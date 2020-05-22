@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import modelListener, { EventType } from "models/listener";
@@ -24,20 +25,24 @@ describe("station_builder", () => {
     ps = [];
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.STATION_BUILDER];
     modelListener.find(EventType.CREATED, Platform).register((p) => ps.push(p));
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    creators.reset();
     userResource.reset();
     cityResource.reset();
     transportFinder.reset();
     routeFinder.reset();
     modelListener.flush();
     modelListener.unregisterAll();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("station creation is started when rail edge is cliked", () => {

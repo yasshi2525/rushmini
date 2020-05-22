@@ -41,7 +41,9 @@ const startGame = (
   });
   ticker.triggers.find(EventType.OVER).register(() => onGameOver());
   g.game.tick(false);
-  g.game.scene().children[0].pointUp.fire();
+  g.game.scene().pointUpCapture.fire();
+  g.game.tick(false);
+  g.game.scene().pointUpCapture.fire();
   g.game.tick(false);
   table.push(createRecord(model, suffix, 0));
 };

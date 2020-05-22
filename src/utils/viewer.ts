@@ -1,3 +1,4 @@
+import creators from "../entities/creator";
 import cityResource from "../models/city_resource";
 import modelListener, {
   EventType as ModelEventType,
@@ -89,6 +90,10 @@ export enum ViewerType {
    * 獲得点数の表示
    */
   SCORE,
+  /**
+   * ヘルプの表示
+   */
+  HELP,
 }
 
 export enum ViewerEvent {

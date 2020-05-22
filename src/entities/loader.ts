@@ -8,6 +8,7 @@ import createBranchBuilder from "./branch_builder";
 import createRailBuildGuide from "./build_guide";
 import createBuilder from "./builder";
 import createFrame from "./frame";
+import createHelp from "./help";
 import createHumanDespawner from "./human_despawner";
 import createModelViewer from "./model_viewer";
 import createResidenceBuilder from "./residence_builder";
@@ -32,6 +33,7 @@ const preserveEntityCreator = () => {
   viewer.put(ViewerType.BUILD_GUIDE, createRailBuildGuide);
   viewer.put(ViewerType.BUILDER, createBuilder);
   viewer.put(ViewerType.DESPAWNER, createHumanDespawner);
+  viewer.put(ViewerType.HELP, createHelp);
   viewer.put(ViewerType.MODEL, createModelViewer);
   viewer.put(ViewerType.RESIDENCE_BUILDER, createResidenceBuilder);
   viewer.put(ViewerType.SCORE, createScoreLabel);

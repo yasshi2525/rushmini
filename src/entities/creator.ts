@@ -1,6 +1,14 @@
+import Company from "../models/company";
+import Human from "../models/human";
 import { Pointable } from "../models/pointable";
+import Residence from "../models/residence";
+import Station from "../models/station";
+import Train from "../models/train";
 import { find } from "../utils/common";
 import createPointableView from "./point_view";
+import { registerRailEdgeView } from "./rail_edge_view";
+import { createSquareSprite } from "./sprite";
+import { generateTrainCreator } from "./train_view";
 
 export type ViewCreator<T extends Pointable> = (
   scene: g.Scene,
@@ -38,6 +46,10 @@ export const adjust = <T extends Pointable>(
 };
 
 const creators = {
+  reset: () => {
+    _storage.length = 0;
+  },
+
   /**
    * 指定されたクラスに対応するビューア作成関数を返します。
    * ビューアはモデルの座標に位置合わせしています
@@ -59,6 +71,21 @@ const creators = {
     key: new (...args: any[]) => T,
     creator: ViewCreator<T>
   ) => _storage.push({ key, creator }),
+
+  init: () => {
+    creators.put(Company, (scene, _) =>
+      createSquareSprite(scene, "company_basic")
+    );
+    creators.put(Residence, (scene, _) =>
+      createSquareSprite(scene, "residence_basic")
+    );
+    creators.put(Station, (scene, _) =>
+      createSquareSprite(scene, "station_basic")
+    );
+    creators.put(Train, generateTrainCreator);
+    creators.put(Human, (scene, _) => createSquareSprite(scene, "human_basic"));
+    registerRailEdgeView();
+  },
 };
 
 export default creators;
