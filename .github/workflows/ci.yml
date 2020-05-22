@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: coverage
+    name: unit test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,6 +29,14 @@ jobs:
         with:
           coverageLocations: ./coverage/lcov.info:lcov
           coverageCommand: npm test
+
+  report:
+    needs: [test]
+    name: report
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
+      - run: npm install
       - name: report
         run: npm run report
       - name: Upload score report
