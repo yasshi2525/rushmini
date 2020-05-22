@@ -8,7 +8,6 @@ export const createLoadedScene = () =>
       resolve(scene);
     });
     g.game.pushScene(scene);
-    g.game.tick(false);
-    if (g.game.scene() === scene) resolve(scene);
-    else setTimeout(() => resolve(scene), 1000);
+
+    while (!scene.isCurrentScene()) g.game.tick(false);
   });
