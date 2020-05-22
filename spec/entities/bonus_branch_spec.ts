@@ -46,7 +46,7 @@ describe("bonus_branch", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     scorer.reset();
-    g.game.tick(false);
+    g.game.tick(true);
     g.game.popScene();
     g.game.tick(true);
   });
@@ -64,6 +64,7 @@ describe("bonus_branch", () => {
     branch.children[1].pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(true);
   });
 
   it("viewer mask is enabled after click bonus panel", () => {
@@ -76,6 +77,7 @@ describe("bonus_branch", () => {
     branch.pointUp.fire();
 
     expect(shadow.visible()).toBeTruthy();
+    g.game.tick(true);
   });
 
   it("candidate station is enabled after click bonus panel", () => {
@@ -92,6 +94,7 @@ describe("bonus_branch", () => {
     expect(branch_builder.visible()).toBeTruthy();
 
     expect(branch_builder.children[1].children.length).toEqual(2);
+    g.game.tick(true);
   });
 
   it("mask is hidden after candidate station is clicked", () => {
@@ -110,7 +113,7 @@ describe("bonus_branch", () => {
       type: g.EventType.PointDown,
     });
     expect(shadow.visible()).toBeFalsy();
-    g.game.tick(false);
+    g.game.tick(true);
   });
 
   it("isBonusing is false after station is branched", () => {
@@ -167,6 +170,6 @@ describe("bonus_branch", () => {
     });
 
     expect(viewer.isBonusing).toBeFalsy();
-    g.game.tick(false);
+    g.game.tick(true);
   });
 });

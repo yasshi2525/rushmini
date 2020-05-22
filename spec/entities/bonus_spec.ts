@@ -34,7 +34,7 @@ describe("bonus", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     g.game.popScene();
-    g.game.tick(false);
+    g.game.tick(true);
   });
 
   it("pop up modal when 1st bonus score is god", () => {
@@ -65,7 +65,7 @@ describe("bonus", () => {
     component.children[1].pointUp.fire();
     expect(bonus.visible()).toBeFalsy();
     expect(counter).toEqual(1);
-    g.game.tick(false);
+    g.game.tick(true);
   });
 
   it("forbit to re-open during bonus panel is opened", () => {

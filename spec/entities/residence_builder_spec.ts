@@ -45,7 +45,7 @@ describe("residence_builder", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     g.game.popScene();
-    g.game.tick(false);
+    g.game.tick(true);
   });
 
   it("click builds residence", () => {
@@ -68,5 +68,6 @@ describe("residence_builder", () => {
     expect(rs[0].loc().y).toBeCloseTo(100);
 
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(true);
   });
 });
