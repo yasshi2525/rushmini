@@ -9,11 +9,6 @@
 			"path": "script/main.js",
 			"global": true
 		},
-		"instraction": {
-			"type": "script",
-			"path": "script/entities/instraction.js",
-			"global": true
-		},
 		"rail_edge_view": {
 			"type": "script",
 			"path": "script/entities/rail_edge_view.js",
@@ -730,6 +725,59 @@
 		"tweet": {
 			"type": "script",
 			"path": "script/utils/tweet.js",
+			"global": true
+		},
+		"instruction_img": {
+			"type": "image",
+			"width": 734,
+			"height": 561,
+			"path": "image/instruction_img.png",
+			"global": true
+		},
+		"start_txt": {
+			"type": "image",
+			"width": 331,
+			"height": 37,
+			"path": "image/start_txt.png",
+			"global": true
+		},
+		"start": {
+			"type": "script",
+			"path": "script/entities/start.js",
+			"global": true
+		},
+		"logo": {
+			"type": "script",
+			"path": "script/entities/logo.js",
+			"global": true
+		},
+		"instruction_guide": {
+			"type": "script",
+			"path": "script/entities/instruction_guide.js",
+			"global": true
+		},
+		"instruction": {
+			"type": "script",
+			"path": "script/scenes/instruction.js",
+			"global": true
+		},
+		"help": {
+			"type": "script",
+			"path": "script/entities/help.js",
+			"global": true
+		},
+		"help_basic": {
+			"type": "image",
+			"width": 92,
+			"height": 92,
+			"path": "image/help_basic.png",
+			"global": true
+		},
+		"close_basic": {
+			"type": "image",
+			"width": 92,
+			"height": 92,
+			"path": "image/close_basic.png",
 			"global": true
 		}
 	},

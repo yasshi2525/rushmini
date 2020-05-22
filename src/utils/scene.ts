@@ -2,6 +2,7 @@ import { TriggerContainer } from "../models/listener";
 
 export enum SceneType {
   TITLE,
+  INSTRUCTION,
   GAME,
   ENDING,
 }

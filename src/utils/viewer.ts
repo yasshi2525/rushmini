@@ -89,6 +89,10 @@ export enum ViewerType {
    * 獲得点数の表示
    */
   SCORE,
+  /**
+   * ヘルプの表示
+   */
+  HELP,
 }
 
 export enum ViewerEvent {
