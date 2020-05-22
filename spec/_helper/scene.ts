@@ -10,5 +10,10 @@ export const createLoadedScene = () =>
     });
     g.game.pushScene(scene);
     g.game.tick(false);
-    while (g.game.scene() !== scene) g.game.tick(true);
+    let cnt = 0;
+    while (g.game.scene() !== scene && cnt < 10) {
+      g.game.tick(true);
+      cnt++;
+    }
+    resolve(scene);
   });
