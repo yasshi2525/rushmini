@@ -92,6 +92,7 @@ class FileSystemScriptAsset extends g.ScriptAsset {
   _wrap() {
     window.RPGAtsumaru = {
       screenshot: { setScreenshotHandler: () => {}, setTweetMessage: () => {} },
+      scoreboards: { setRecord: async () => Promise.resolve() },
     };
     return new Function(
       "g",
