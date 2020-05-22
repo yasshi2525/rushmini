@@ -247,7 +247,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-    // 下記のエラーの対策。原因不明
+    await new Promise((resolve) => setTimeout(resolve, 500));
     if (this.driver) {
       try {
         await this.driver.destroy();
