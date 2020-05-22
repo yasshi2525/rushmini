@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import createModelViewer from "entities/model_viewer";
 import Company from "models/company";
 import Human, { HumanState } from "models/human";
@@ -41,6 +42,7 @@ describe("model_viewer", () => {
 
   beforeEach(async () => {
     scene = await createLoadedScene();
+    creators.init();
     base = createModelViewer(scene);
     c = new Company(1, 3, 4);
     r = new Residence([c], 6, 8, (min, max) => random.random().get(min, max));
@@ -54,9 +56,12 @@ describe("model_viewer", () => {
     t = new Train(l.top);
   });
 
-  afterEach(async () => {
+  afterEach(() => {
+    creators.reset();
     modelListener.unregisterAll();
     modelListener.flush();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("panel has 6 type panel", () => {

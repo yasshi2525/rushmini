@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import random from "utils/random";
 import scorer from "utils/scorer";
@@ -12,7 +13,14 @@ describe("controller", () => {
     random.init(new g.XorshiftRandomGenerator(0));
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
+  });
+
+  afterEach(() => {
+    creators.reset();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("init creates panels", () => {

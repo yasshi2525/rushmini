@@ -27,6 +27,11 @@ describe("connetor", () => {
     factory = new ViewObjectFactory(panel, (_scene, _) => new g.E({ scene }));
   });
 
+  afterEach(() => {
+    g.game.popScene();
+    g.game.tick(false);
+  });
+
   it("viewer object is created after onDone event", () => {
     const subject = new Simple();
     connect(factory, Simple);

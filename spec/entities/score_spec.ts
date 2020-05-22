@@ -13,6 +13,11 @@ describe("score", () => {
     panel = createScoreLabel(scene);
   });
 
+  afterEach(() => {
+    g.game.popScene();
+    g.game.tick(false);
+  });
+
   it("observe", () => {
     const label = panel.children[0];
     expect(label).toBeInstanceOf(g.Label);

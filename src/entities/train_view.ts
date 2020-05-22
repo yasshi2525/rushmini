@@ -1,7 +1,6 @@
 import EdgeTask from "../models/edge_task";
 import RailEdge from "../models/rail_edge";
 import Train from "../models/train";
-import creators from "./creator";
 import { ViewObject } from "./factory";
 import { animateFull } from "./rectangle";
 import { createSquareSprite } from "./sprite";
@@ -78,7 +77,7 @@ export const riddenModifer = (vo: ViewObject<Train>) => {
   sprite.update.add(shake);
 };
 
-creators.put(Train, (scene, t) => {
+export const generateTrainCreator = (scene: g.Scene, t: Train) => {
   const sprite = createSquareSprite(scene, "train_basic");
   const e = edge(t, true);
   sprite.x = getX(e);
@@ -86,4 +85,4 @@ creators.put(Train, (scene, t) => {
   sprite.angle = getAngle(edge(t, false));
   sprite.modified();
   return sprite;
-});
+};

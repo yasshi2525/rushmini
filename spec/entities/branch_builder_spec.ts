@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import modelListener from "models/listener";
@@ -20,17 +21,22 @@ describe("branch_builder", () => {
   beforeEach(async () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BRANCH_BUILDER];
     shadow = viewer.viewers[ViewerType.SHADOW];
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    creators.reset();
     userResource.reset();
     cityResource.reset();
     modelListener.flush();
+    modelListener.unregisterAll();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("branch is started when candidate is selected", () => {

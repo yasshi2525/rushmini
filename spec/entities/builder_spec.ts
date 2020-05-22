@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import DeptTask from "models/dept_task";
@@ -23,6 +24,7 @@ describe("railbuilder", () => {
   beforeEach(async () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BUILDER];
@@ -30,11 +32,15 @@ describe("railbuilder", () => {
 
   afterEach(() => {
     viewer.reset();
+    creators.reset();
     transportFinder.reset();
     routeFinder.reset();
     userResource.reset();
     cityResource.reset();
     modelListener.flush();
+    modelListener.unregisterAll();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("dragging starts rail building", () => {

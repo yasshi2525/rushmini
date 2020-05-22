@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import modelListener from "models/listener";
@@ -23,6 +24,7 @@ describe("bonus_train", () => {
   beforeEach(async () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BONUS];
@@ -30,8 +32,9 @@ describe("bonus_train", () => {
     train = viewer.viewers[ViewerType.BONUS_TRAIN];
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    creators.reset();
     userResource.reset();
     cityResource.reset();
     routeFinder.reset();
@@ -39,6 +42,8 @@ describe("bonus_train", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     scorer.reset();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("press increases train", () => {

@@ -23,7 +23,7 @@ describe("game", () => {
     scorer.init({ score: 0 });
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
     scenes.reset();
     modelListener.flush();
@@ -97,7 +97,7 @@ describe("game", () => {
       expect(hs.length).toEqual(0);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       scenes.reset();
     });
   });

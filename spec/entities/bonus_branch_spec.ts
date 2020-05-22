@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import cityResource from "models/city_resource";
 import modelListener from "models/listener";
@@ -26,6 +27,7 @@ describe("bonus_branch", () => {
   beforeEach(async () => {
     scorer.init({ score: 0 });
     scene = await createLoadedScene();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     panel = viewer.viewers[ViewerType.BONUS];
@@ -34,8 +36,9 @@ describe("bonus_branch", () => {
     branch_builder = viewer.viewers[ViewerType.BRANCH_BUILDER];
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    creators.reset();
     userResource.reset();
     cityResource.reset();
     routeFinder.reset();
@@ -43,6 +46,9 @@ describe("bonus_branch", () => {
     modelListener.flush();
     modelListener.unregisterAll();
     scorer.reset();
+    g.game.tick(false);
+    g.game.popScene();
+    g.game.tick(true);
   });
 
   it("button can be pushed after bonus panel is opened", () => {

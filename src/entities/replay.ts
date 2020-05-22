@@ -10,6 +10,7 @@ import ticker from "../utils/ticker";
 import transportFinder from "../utils/transport_finder";
 import tweet from "../utils/tweet";
 import viewer from "../utils/viewer";
+import creators from "./creator";
 import { createSquareSprite } from "./sprite";
 
 const scale = 0.85;
@@ -22,6 +23,7 @@ const inactiveOpacity = 0.5;
 const replay = () => {
   scenes.reset();
   viewer.reset();
+  creators.reset();
   transportFinder.reset();
   routeFinder.reset();
   stepper.reset();

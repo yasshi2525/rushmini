@@ -1,3 +1,4 @@
+import creators from "../entities/creator";
 import preserveEntityCreator from "../entities/loader";
 import { RPGAtsumaruWindow } from "../parameterObject";
 import scenes, { SceneType } from "../utils/scene";
@@ -14,6 +15,7 @@ const createGameScene = (isAtsumaru: boolean) => {
   scene.loaded.add(() => {
     (g.game.assets["start_sound"] as g.AudioAsset).stop();
     (g.game.assets["game_bgm"] as g.AudioAsset).play();
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     if (isAtsumaru) {

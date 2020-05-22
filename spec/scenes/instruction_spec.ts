@@ -9,7 +9,7 @@ describe("instruction", () => {
     ticker.init(FPS);
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     scenes.reset();
   });
 

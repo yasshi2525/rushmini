@@ -18,6 +18,11 @@ describe("help", () => {
     panel = createHelp(scene);
   });
 
+  afterEach(() => {
+    g.game.popScene();
+    g.game.tick(false);
+  });
+
   it("click show detail", () => {
     const button = panel.children[0];
     const instruction = panel.children[1];

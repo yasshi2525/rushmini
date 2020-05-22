@@ -1,3 +1,4 @@
+import creators from "../entities/creator";
 import cityResource from "../models/city_resource";
 import modelListener, {
   EventType as ModelEventType,

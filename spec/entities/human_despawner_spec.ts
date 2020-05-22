@@ -44,9 +44,11 @@ describe("human_despawner", () => {
     r = new Residence([c], 0, 0, (min, max) => random.random().get(min, max));
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     modelListener.flush();
     modelListener.unregisterAll();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("panel is created when human is died", () => {

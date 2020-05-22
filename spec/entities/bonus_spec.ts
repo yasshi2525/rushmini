@@ -1,4 +1,5 @@
 import createBonusComponent from "entities/bonus_component";
+import creators from "entities/creator";
 import preserveEntityCreator from "entities/loader";
 import modelListener from "models/listener";
 import random from "utils/random";
@@ -21,15 +22,19 @@ describe("bonus", () => {
   beforeEach(async () => {
     scene = await createLoadedScene();
     scorer.init({ score: 0 });
+    creators.init();
     preserveEntityCreator();
     viewer.init(scene);
     bonus = viewer.viewers[ViewerType.BONUS];
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     viewer.reset();
+    creators.reset();
     modelListener.flush();
     modelListener.unregisterAll();
+    g.game.popScene();
+    g.game.tick(false);
   });
 
   it("pop up modal when 1st bonus score is god", () => {
