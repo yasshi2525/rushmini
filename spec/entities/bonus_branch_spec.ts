@@ -110,6 +110,7 @@ describe("bonus_branch", () => {
       type: g.EventType.PointDown,
     });
     expect(shadow.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 
   it("isBonusing is false after station is branched", () => {
@@ -166,5 +167,6 @@ describe("bonus_branch", () => {
     });
 
     expect(viewer.isBonusing).toBeFalsy();
+    g.game.tick(false);
   });
 });

@@ -29,6 +29,7 @@ describe("help", () => {
     expect(instruction.visible()).toBeFalsy();
     button.pointUp.fire();
     expect(instruction.visible()).toBeTruthy();
+    g.game.tick(false);
   });
 
   it("touch hide detail", () => {
@@ -38,5 +39,6 @@ describe("help", () => {
     expect(instruction.visible()).toBeTruthy();
     instruction.pointUp.fire();
     expect(instruction.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 });

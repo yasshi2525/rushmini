@@ -63,6 +63,7 @@ describe("bonus_station", () => {
     station.children[1].pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 
   it("viewer mask is enabled after click bonus panel", () => {
@@ -75,5 +76,6 @@ describe("bonus_station", () => {
     station.pointUp.fire();
 
     expect(shadow.visible()).toBeTruthy();
+    g.game.tick(false);
   });
 });

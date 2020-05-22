@@ -47,6 +47,7 @@ describe("bonus_residence", () => {
     modelListener.unregisterAll();
     scorer.reset();
     g.game.popScene();
+    g.game.tick(false);
   });
 
   it("button can be pushed after bonus panel is opened", () => {
@@ -62,6 +63,7 @@ describe("bonus_residence", () => {
     residence.children[1].pointUp.fire();
 
     expect(panel.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 
   it("viewer mask is disabled after click bonus panel", () => {
@@ -74,5 +76,6 @@ describe("bonus_residence", () => {
     residence.children[1].pointUp.fire();
 
     expect(shadow.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 });

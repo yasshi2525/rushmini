@@ -65,6 +65,7 @@ describe("bonus", () => {
     component.children[1].pointUp.fire();
     expect(bonus.visible()).toBeFalsy();
     expect(counter).toEqual(1);
+    g.game.tick(false);
   });
 
   it("forbit to re-open during bonus panel is opened", () => {

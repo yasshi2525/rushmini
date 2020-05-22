@@ -62,5 +62,6 @@ describe("bonus_train", () => {
     train.children[1].pointUp.fire();
     expect(panel.visible()).toBeFalsy();
     expect(shadow.visible()).toBeFalsy();
+    g.game.tick(false);
   });
 });
