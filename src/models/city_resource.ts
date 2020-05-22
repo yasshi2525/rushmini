@@ -109,9 +109,9 @@ export class CityResource {
   private readonly buildings: Pointable[];
 
   /**
-   * 住宅を配置する候補地点
+   * 住宅を自動配置する地点
    */
-  private chs: Chunk[];
+  private rsPos: Point[];
 
   constructor() {
     this.cs = [];
@@ -162,16 +162,9 @@ export class CityResource {
     );
     this.rs.push(r);
     this.buildings.push(r);
-    this.chs = [...RESIDENCES];
-
-    modelListener.fire(EventType.CREATED);
-  }
-
-  public residence(x?: number, y?: number) {
-    if (x === undefined || y === undefined) {
-      // 追加住宅
-      const ch = this.chs.shift();
-      const pos = toAreaRand({
+    // 住宅の配置場所は予め決める。人の生成後だと乱数がずれ、人によって違う場所に生成されるため
+    this.rsPos = RESIDENCES.map((ch) =>
+      toAreaRand({
         ch,
         w: this.width,
         h: this.height,
@@ -179,7 +172,16 @@ export class CityResource {
         dist: CityResource.AREA,
         rand: this.rand,
         others: this.buildings,
-      });
+      })
+    );
+
+    modelListener.fire(EventType.CREATED);
+  }
+
+  public residence(x?: number, y?: number) {
+    if (x === undefined || y === undefined) {
+      // 追加住宅
+      const pos = this.rsPos.shift();
       const r = new Residence(this.cs, pos.x, pos.y, this.rand);
       this.rs.push(r);
       this.buildings.push(r);
