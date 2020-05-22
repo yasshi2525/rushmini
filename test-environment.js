@@ -241,6 +241,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
     this.global.g = g;
     this.driver = createDriver();
     g.game = await createGame(this.driver);
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   runScript(script) {
@@ -248,7 +249,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     if (this.driver) {
       try {
         await this.driver.destroy();
