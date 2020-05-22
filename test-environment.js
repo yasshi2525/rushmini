@@ -247,6 +247,9 @@ class AkashicEngineEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
+    // 下記のエラーの対策。原因不明
+    // TypeError: 'set' on proxy: trap returned falsish for property 'Symbol(impl)'
+    await new Promise((resolve) => setTimeout(() => resolve(), 1000));
     if (this.driver) {
       try {
         await this.driver.destroy();
