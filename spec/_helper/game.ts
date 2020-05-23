@@ -1,3 +1,4 @@
+import creators from "entities/creator";
 import { main } from "main";
 import cityResource from "models/city_resource";
 import modelListener from "models/listener";
@@ -51,6 +52,7 @@ const startGame = (
 export const resetGame = () => {
   scenes.reset();
   viewer.reset();
+  creators.reset();
   transportFinder.reset();
   routeFinder.reset();
   stepper.reset();
