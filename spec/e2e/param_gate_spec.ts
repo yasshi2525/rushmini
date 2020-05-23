@@ -22,7 +22,7 @@ describe("[e2e] param gate", () => {
   it.each(Array.from(genParam(1, 20, 1)))(
     `Gate.CAPACITY (%i)`,
     async (v) =>
-      execute({
+      await execute({
         name: "gate_capacity",
         suffix: `${v}`,
         prepare: () => {
@@ -37,7 +37,7 @@ describe("[e2e] param gate", () => {
   it.each(Array.from(genParam(1, 20, 1)))(
     `Gate.MOBILITY_SEC (%i)`,
     async (v) =>
-      execute({
+      await execute({
         name: "gate_mobility",
         suffix: `${v}`,
         prepare: () => {

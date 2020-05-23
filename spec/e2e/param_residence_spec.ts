@@ -18,9 +18,9 @@ describe("[e2e] param residence", () => {
   });
 
   it.each(Array.from(genParam(0.1, 2, 0.1)))(
-    `Residence.INTERVAL_SEC (%i)`,
+    `Residence.INTERVAL_SEC (%d)`,
     async (v) =>
-      execute({
+      await execute({
         name: "residence_interval",
         suffix: `${v}`,
         prepare: () => {

@@ -20,7 +20,7 @@ describe("[e2e] param platform", () => {
   it.each(Array.from(genParam(2, 40, 2)))(
     `Platform.CAPACITY (%i)`,
     async (v) =>
-      execute({
+      await execute({
         name: "platform_capacity",
         suffix: `${v}`,
         prepare: () => {
