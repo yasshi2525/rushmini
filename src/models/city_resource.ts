@@ -1,5 +1,6 @@
 import { find } from "../utils/common";
 import random from "../utils/random";
+import ticker from "../utils/ticker";
 import Company from "./company";
 import modelListener, { EventType } from "./listener";
 import Point, { distance } from "./point";
@@ -181,7 +182,17 @@ export class CityResource {
   public residence(x?: number, y?: number) {
     if (x === undefined || y === undefined) {
       // 追加住宅
-      const pos = this.rsPos.shift();
+      const pos =
+        this.rsPos.shift() ??
+        toAreaRand({
+          ch: undefined,
+          w: this.width,
+          h: this.height,
+          pad: CityResource.PADDING,
+          dist: CityResource.AREA,
+          rand: this.rand,
+          others: this.buildings,
+        });
       const r = new Residence(this.cs, pos.x, pos.y, this.rand);
       this.rs.push(r);
       this.buildings.push(r);

@@ -22,7 +22,7 @@ describe("[e2e] param human", () => {
   it.each(Array.from(genParam(1, 20, 1)))(
     `Human.LIFE_SPAN (%i)`,
     async (v) =>
-      execute({
+      await execute({
         name: "human_life_span",
         suffix: `${v}`,
         prepare: () => {
@@ -35,9 +35,9 @@ describe("[e2e] param human", () => {
   );
 
   it.each(Array.from(genParam(0.05, 1, 0.05)))(
-    `Human.STAY_BUFF (%i)`,
+    `Human.STAY_BUFF (%d)`,
     async (v) =>
-      execute({
+      await execute({
         name: "human_stay_buff",
         suffix: `${v}`,
         prepare: () => {

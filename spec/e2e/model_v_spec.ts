@@ -10,7 +10,7 @@ describe("[e2e] v model", () => {
   it.each(Array.from(genBonus()).map((b) => toSuffixString(b)))(
     "%s",
     async (key) =>
-      execute({
+      await execute({
         name: "model_v",
         suffix: key,
         builder: buildVModel,

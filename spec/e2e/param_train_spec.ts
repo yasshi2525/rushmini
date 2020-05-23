@@ -22,7 +22,7 @@ describe("[e2e] param train", () => {
   it.each(Array.from(genParam(4, 80, 4)))(
     `Train.CAPACITY (%i)`,
     async (v) =>
-      execute({
+      await execute({
         name: "train_capacity",
         suffix: `${v}`,
         prepare: () => {
@@ -37,7 +37,7 @@ describe("[e2e] param train", () => {
   it.each(Array.from(genParam(2, 40, 2)))(
     `Train.MOBILITY (%i)`,
     async (v) =>
-      execute({
+      await execute({
         name: "train_mobility",
         suffix: `${v}`,
         prepare: () => {
