@@ -788,6 +788,11 @@
 			"type": "script",
 			"path": "script/entities/bonus_badge.js",
 			"global": true
+		},
+		"measure": {
+			"type": "script",
+			"path": "script/utils/measure.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

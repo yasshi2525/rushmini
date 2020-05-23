@@ -8,6 +8,7 @@ import { Routable } from "../models/routable";
 import Train from "../models/train";
 import userResource from "../models/user_resource";
 import { remove } from "./common";
+import { shouldBreak, startMeasure } from "./measure";
 
 /**
  * 徒歩に比べて鉄道の移動がどれほど優位か
@@ -115,12 +116,21 @@ const handler = {
     train: (t: Train) => _remove(t, ts),
   },
   onFixed: () => {
-    finders.forEach((f) => {
+    startMeasure();
+    for (let f of finders) {
+      if (shouldBreak()) break;
       f.unedgeAll();
-      ts.forEach((t) => trainRouting(f, t));
-      ls.forEach((l) => scanRailLine(f, l));
+      for (let t of ts) {
+        if (shouldBreak()) break;
+        trainRouting(f, t);
+      }
+      for (let l of ls) {
+        if (shouldBreak()) break;
+        scanRailLine(f, l);
+      }
+      if (shouldBreak()) break;
       f.execute();
-    });
+    }
   },
 };
 
