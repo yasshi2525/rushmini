@@ -769,6 +769,25 @@
 			"height": 92,
 			"path": "image/close_basic.png",
 			"global": true
+		},
+		"bonus_icon": {
+			"type": "image",
+			"width": 92,
+			"height": 92,
+			"path": "image/bonus_icon.png",
+			"global": true
+		},
+		"minimize_img": {
+			"type": "image",
+			"width": 92,
+			"height": 92,
+			"path": "image/minimize_img.png",
+			"global": true
+		},
+		"bonus_badge": {
+			"type": "script",
+			"path": "script/entities/bonus_badge.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
