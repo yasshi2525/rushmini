@@ -91,6 +91,10 @@ export enum ViewerType {
    */
   SCORE,
   /**
+   * ボーナスアイコンの表示
+   */
+  BONUS_BADGE,
+  /**
    * ヘルプの表示
    */
   HELP,
@@ -153,6 +157,14 @@ export enum ViewerEvent {
    * 住宅の建設完了
    */
   RESIDENCE_ENDED,
+  /**
+   * ボーナス画面の最小化
+   */
+  BONUS_MINIMIZED,
+  /**
+   * ボーナス画面の再オープン
+   */
+  BONUS_REACTIVED,
 }
 
 /**
@@ -275,12 +287,14 @@ const handleBonusStarted = (_c: Controller) => {
   _c.viewers[ViewerType.WAITER].hide();
   _c.viewers[ViewerType.BONUS].show();
   _c.viewers[ViewerType.SHADOW].show();
+  _c.viewers[ViewerType.BONUS_BADGE].show();
   _c.userBonuses.shift();
   _c.isBonusing = true;
 };
 
 const handleBranchStarted = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].hide();
+  _c.viewers[ViewerType.BONUS_BADGE].hide();
   _c.viewers[ViewerType.BRANCH_BUILDER].show();
 };
 
@@ -299,6 +313,7 @@ const handleBranchRollbacked = (_c: Controller) => {
 
 const handleStationStarted = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].hide();
+  _c.viewers[ViewerType.BONUS_BADGE].hide();
   _c.viewers[ViewerType.STATION_BUILDER].show();
 };
 
@@ -311,18 +326,30 @@ const handleStationEnded = (_c: Controller) => {
 const handleTrainEnded = (_c: Controller) => {
   _c.viewers[ViewerType.SHADOW].hide();
   _c.viewers[ViewerType.BONUS].hide();
+  _c.viewers[ViewerType.BONUS_BADGE].hide();
   _c.isBonusing = false;
 };
 
 const handleResidenceStarted = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].hide();
   _c.viewers[ViewerType.SHADOW].hide();
+  _c.viewers[ViewerType.BONUS_BADGE].hide();
   _c.viewers[ViewerType.RESIDENCE_BUILDER].show();
 };
 
 const handleResidenceEnded = (_c: Controller) => {
   _c.viewers[ViewerType.RESIDENCE_BUILDER].hide();
   _c.isBonusing = false;
+};
+
+const handleBonusMinimized = (_c: Controller) => {
+  _c.viewers[ViewerType.BONUS].hide();
+  _c.viewers[ViewerType.SHADOW].hide();
+};
+
+const handleBonusReactived = (_c: Controller) => {
+  _c.viewers[ViewerType.BONUS].show();
+  _c.viewers[ViewerType.SHADOW].show();
 };
 
 /**
@@ -345,6 +372,8 @@ const initListener = (_c: Controller, scene: g.Scene) => {
     { key: ViewerEvent.TRAIN_ENDED, value: handleTrainEnded },
     { key: ViewerEvent.RESIDENCE_STARTED, value: handleResidenceStarted },
     { key: ViewerEvent.RESIDENCE_ENDED, value: handleResidenceEnded },
+    { key: ViewerEvent.BONUS_MINIMIZED, value: handleBonusMinimized },
+    { key: ViewerEvent.BONUS_REACTIVED, value: handleBonusReactived },
   ];
   list.forEach((entry) => {
     _c._trackers[entry.key] = new Tracker(_c);
