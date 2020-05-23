@@ -1,6 +1,7 @@
 import Station from "../models/station";
 import userResource from "../models/user_resource";
 import { find } from "../utils/common";
+import routeFinder from "../utils/route_finder";
 import viewer, { ViewerEvent } from "../utils/viewer";
 import connect from "./connector";
 import { adjust } from "./creator";
@@ -36,6 +37,18 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
 
   let pointerId: number = undefined;
   let pivot: g.E = undefined;
+
+  userResource.stateListeners.push({
+    onRollback: () => {
+      if (panel.visible()) {
+        warning.show();
+        started = false;
+        container.show();
+        pivot.destroy();
+        viewer.fire(ViewerEvent.BRANCH_ROLLBACKED);
+      }
+    },
+  });
 
   panel.pointDown.add((ev) => {
     if (pointerId === undefined) {
@@ -74,13 +87,10 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
       pointerId = undefined;
       if (started) {
         userResource.end();
-        if (userResource.shouldRollaback()) {
-          warning.show();
+        if (routeFinder.isBroken()) {
           userResource.rollback();
-          started = false;
-          container.show();
-          pivot.destroy();
-          viewer.fire(ViewerEvent.BRANCH_ROLLBACKED);
+        } else if (userResource.shouldRollaback()) {
+          userResource.rollback();
         } else {
           userResource.commit();
           viewer.fire(ViewerEvent.BRANCHED);

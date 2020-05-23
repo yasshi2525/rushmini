@@ -1,4 +1,5 @@
 import userResource from "../models/user_resource";
+import routeFinder from "../utils/route_finder";
 import viewer, { ViewerEvent } from "../utils/viewer";
 import { appnedWarning, createWorkingArea } from "./rectangle";
 import { createSquareSprite } from "./sprite";
@@ -13,6 +14,9 @@ const createBuilder = (loadedScene: g.Scene) => {
   const builder = createWorkingArea(loadedScene, { touchable: true });
 
   const warning = appnedWarning(builder);
+  userResource.stateListeners.push({
+    onRollback: () => warning.show(),
+  });
 
   let pointerId: number = undefined;
 
@@ -39,9 +43,10 @@ const createBuilder = (loadedScene: g.Scene) => {
   builder.pointUp.add((ev) => {
     if (ev.pointerId === pointerId) {
       userResource.end();
-      if (userResource.shouldRollaback()) {
+      if (routeFinder.isBroken()) {
         userResource.rollback();
-        warning.show();
+      } else if (userResource.shouldRollaback()) {
+        userResource.rollback();
       } else {
         userResource.commit();
         viewer.fire(ViewerEvent.BUILT);

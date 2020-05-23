@@ -11,6 +11,7 @@ import { Routable } from "../models/routable";
 import Train from "../models/train";
 import userResource, { ModelState } from "../models/user_resource";
 import { find, remove } from "./common";
+import { shouldBreak } from "./measure";
 
 const finders: PathFinder[] = [];
 const rs: Residence[] = [];
@@ -32,8 +33,10 @@ const transport = (f: PathFinder) => {
     f.node(dept);
     f.edge(dept.stay, dept, 0);
   });
-  ps.forEach((dest) => {
-    lts.forEach((dept) => {
+  for (let dest of ps) {
+    if (shouldBreak()) break;
+    for (let dept of lts) {
+      if (shouldBreak()) break;
       let prev: Routable = dept;
       do {
         const next = prev.nextFor(dest);
@@ -45,8 +48,8 @@ const transport = (f: PathFinder) => {
         }
         prev = next;
       } while (prev && prev !== dest);
-    });
-  });
+    }
+  }
 };
 
 /**
@@ -152,6 +155,7 @@ const addPtoGrelation = (f: PathFinder, g: Gate) => {
 };
 
 const handler = {
+  isBroken: false,
   onCreated: {
     residence: (r: Residence) => {
       finders.forEach((f) => {
@@ -273,15 +277,21 @@ const handler = {
     human: (h: Human) => remove(hs, h),
   },
   onFixed: () => {
-    finders.forEach((f) => {
-      // 鉄道による移動距離を計算 (前提: transport_finder が実行済み)
-      // Lt => P
-      transport(f);
-      const n = f.node(lts[0]);
-      humanRouting(f);
-      f.execute();
-      hs.forEach((h) => h._reroute());
-    });
+    if (!shouldBreak()) {
+      for (let f of finders) {
+        if (shouldBreak()) break;
+        // 鉄道による移動距離を計算 (前提: transport_finder が実行済み)
+        // Lt => P
+        transport(f);
+        if (shouldBreak()) break;
+        humanRouting(f);
+        if (shouldBreak()) break;
+        f.execute();
+        if (shouldBreak()) break;
+        hs.forEach((h) => h._reroute());
+      }
+    }
+    handler.isBroken = shouldBreak();
   },
 };
 
@@ -305,6 +315,7 @@ const routeFinder = {
       onRollback: handler.onFixed,
     });
   },
+  isBroken: () => handler.isBroken,
 };
 
 export default routeFinder;

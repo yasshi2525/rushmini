@@ -16,6 +16,7 @@ requestAnimationFrame = window.requestAnimationFrame;
 cancelAnimationFrame = window.cancelAnimationFrame;
 navigator = window.navigator;
 window.AudioContext = require("web-audio-test-api").AudioContext;
+const { performance } = require("perf_hooks");
 const pdi = require("@akashic/pdi-browser");
 const gdr = require("@akashic/game-driver");
 const g = require("@akashic/akashic-engine");
@@ -239,6 +240,7 @@ class AkashicEngineEnvironment extends NodeEnvironment {
     this.global.window = window;
     this.global.document = window.document;
     this.global.g = g;
+    this.global.performance = performance;
     this.driver = createDriver();
     g.game = await createGame(this.driver);
     await new Promise((resolve) => setTimeout(resolve, 500));
