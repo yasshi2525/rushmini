@@ -1,4 +1,3 @@
-import { createFramedRect } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
 const WIDTH = 0.7;

@@ -119,7 +119,7 @@ export const createRailEdgeModule = (opts: RailEdgeModuleOption) => (
   return e;
 };
 
-type RailEdgeModiferOption = { band: number; slide: number };
+export type RailEdgeModiferOption = { band: number; slide: number };
 
 export const createRailEdgeModuleModifier = (
   opts: RailEdgeModiferOption

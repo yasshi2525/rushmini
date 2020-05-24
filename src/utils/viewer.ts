@@ -1,4 +1,3 @@
-import creators from "../entities/creator";
 import cityResource from "../models/city_resource";
 import modelListener, {
   EventType as ModelEventType,
@@ -197,9 +196,9 @@ const USER_BONUSES = [1000, 3000, 7000, 15000];
  */
 const AUTOBUILD_BONUSES = [500, 2000, 5000, 11000];
 
-type ViewerCreator = (scene: g.Scene) => g.E;
+export type ViewerCreator = (scene: g.Scene) => g.E;
 
-type Controller = {
+export type Controller = {
   isBonusing: boolean;
   userBonuses: number[];
   autoBldBonuses: number[];

@@ -1,7 +1,7 @@
 import { find } from "../utils/common";
 import Human from "./human";
 
-type Route = {
+export type Route = {
   readonly goal: Routable;
   next: Routable;
   distance: number;
@@ -52,7 +52,7 @@ export interface Routable {
 }
 
 abstract class RoutableObject implements Routable {
-  private readonly table: Route[] = [];
+  protected readonly table: Route[] = [];
 
   public nextFor(goal: Routable) {
     return find(this.table, (r) => r.goal === goal)?.next;

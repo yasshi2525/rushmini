@@ -14,7 +14,7 @@ export class Tracker<S> {
   /**
    * イベント発火時にコールするハンドラ群
    */
-  private readonly handlers: ((e: S) => void)[];
+  protected readonly handlers: ((e: S) => void)[];
   /**
    * 追跡対象
    */
@@ -55,17 +55,17 @@ export class EventTrigger<S> {
   /**
    * イベント発火時にコールするハンドラ群
    */
-  private readonly handlers: ((e: S) => void)[] = [];
+  protected readonly handlers: ((e: S) => void)[] = [];
 
   /**
    * イベント発火待ちの監視対象リスト
    */
-  private readonly queue: S[] = [];
+  protected readonly queue: S[] = [];
 
   /**
    * 追跡対象
    */
-  private readonly trackers: Tracker<S>[] = [];
+  protected readonly trackers: Tracker<S>[] = [];
 
   /**
    * 指定した関数をイベントリスナとして追加します
@@ -92,7 +92,7 @@ export class EventTrigger<S> {
     this.trackers.push(tracker);
   }
 
-  private _fireToTracker(target: S) {
+  protected _fireToTracker(target: S) {
     this.trackers.filter((t) => t.target === target).forEach((t) => t.fire());
   }
 
@@ -141,7 +141,7 @@ export class EventTrigger<S> {
   }
 }
 
-type Mapper<S> = { [index: number]: EventTrigger<S> };
+export type Mapper<S> = { [index: number]: EventTrigger<S> };
 
 const each = <S>(mapper: Mapper<S>, fn: (t: EventTrigger<S>) => void) =>
   Object.keys(mapper)
@@ -149,7 +149,7 @@ const each = <S>(mapper: Mapper<S>, fn: (t: EventTrigger<S>) => void) =>
     .forEach((t) => fn(t));
 
 export class TriggerContainer<T extends number, S> {
-  private readonly mapper: Mapper<S> = {};
+  protected readonly mapper: Mapper<S> = {};
 
   /**
    * 指定されたイベントが発火されたとき動作するトリガを返します
@@ -215,11 +215,11 @@ export class ModelListener<T extends number> {
   /**
    * クラス名をキーとするトリガ管理群
    */
-  private readonly mapper: {
+  protected readonly mapper: {
     [index: string]: TriggerContainer<T, any>;
   } = {};
 
-  private _find<S>(key: string) {
+  protected _find<S>(key: string) {
     if (!(key in this.mapper)) {
       this.mapper[key] = new TriggerContainer<T, S>();
     }
@@ -270,7 +270,7 @@ export class ModelListener<T extends number> {
       );
   }
 
-  private foreach(fn: (t: TriggerContainer<T, any>) => void) {
+  protected foreach(fn: (t: TriggerContainer<T, any>) => void) {
     Object.keys(this.mapper).forEach((key) => fn(this.mapper[key]));
   }
 

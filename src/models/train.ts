@@ -34,7 +34,7 @@ class Train extends RoutableObject implements Pointable, Steppable, Routable {
    */
   public readonly passengers: Human[];
 
-  private readonly executor: TrainExecutor;
+  protected readonly executor: TrainExecutor;
 
   constructor(current: LineTask) {
     super();

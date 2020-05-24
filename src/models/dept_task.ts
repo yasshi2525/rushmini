@@ -11,9 +11,9 @@ import RoutableObject, { Routable } from "./routable";
 /**
  * 列車移動のための乗車タスクを経路中継点で表したもの
  */
-class DeptTaskRouter extends RoutableObject {
-  readonly queue: Human[];
-  private readonly parent: DeptTask;
+export class DeptTaskRouter extends RoutableObject {
+  public readonly queue: Human[];
+  protected readonly parent: DeptTask;
 
   constructor(parent: DeptTask) {
     super();
@@ -46,8 +46,8 @@ class DeptTaskRouter extends RoutableObject {
   }
 }
 
-export class DeptTask extends LineTask implements Routable {
-  private readonly router: DeptTaskRouter;
+class DeptTask extends LineTask implements Routable {
+  protected readonly router: DeptTaskRouter;
   public readonly stay: Platform;
 
   constructor(parent: RailLine, stay: Platform, prev?: LineTask) {

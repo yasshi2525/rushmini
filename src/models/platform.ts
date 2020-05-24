@@ -19,7 +19,7 @@ class Platform extends RoutableObject {
   /**
    * 電車から降りた人
    */
-  readonly outQueue: Human[];
+  public readonly outQueue: Human[];
 
   public readonly depts: DeptTask[];
 
@@ -56,7 +56,7 @@ class Platform extends RoutableObject {
    * 乗車列にならんでいたが、経路再探索で別のホーム/改札への移動が決まった
    * @param subject
    */
-  private tryLeaveDeptQueue(subject: Human) {
+  protected tryLeaveDeptQueue(subject: Human) {
     if (subject._getDeptTask()) {
       remove(subject._getDeptTask()._queue(), subject);
       subject.state(HumanState.WAIT_EXIT_PLATFORM);
@@ -73,7 +73,7 @@ class Platform extends RoutableObject {
    * ホームへ移動するときだったが、経路再探索で別のホーム/改札への移動が決まった
    * @param subject
    */
-  private tryLeaveInQueue(subject: Human) {
+  protected tryLeaveInQueue(subject: Human) {
     if (this.inQueue.indexOf(subject) !== -1) {
       remove(this.inQueue, subject);
       subject.state(HumanState.WAIT_EXIT_PLATFORM);
@@ -87,7 +87,7 @@ class Platform extends RoutableObject {
    * 改札に向かっていたが経路再探索でホーム入場にかわった
    * @param subject
    */
-  private tryLeaveOutQueue(subject: Human) {
+  protected tryLeaveOutQueue(subject: Human) {
     const gate = this.station.gate;
     if (gate.outQueue.indexOf(subject) !== -1) {
       // コンコースに行きたいが満員で移動できない
@@ -108,7 +108,7 @@ class Platform extends RoutableObject {
    * 駅入場者をプラットフォーム上にならばせる。
    * @param subject
    */
-  private tryInQueue(subject: Human) {
+  protected tryInQueue(subject: Human) {
     const gate = this.station.gate;
     if (
       gate._concourse.indexOf(subject) !== -1 &&
@@ -133,7 +133,7 @@ class Platform extends RoutableObject {
    * 到着した人を改札/コンコースに向かわせる
    * @param subject
    */
-  private tryOutQueue(subject: Human) {
+  protected tryOutQueue(subject: Human) {
     const gate = this.station.gate;
     if (this.outQueue.indexOf(subject) !== -1) {
       remove(this.outQueue, subject);

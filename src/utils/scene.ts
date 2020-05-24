@@ -7,7 +7,7 @@ export enum SceneType {
   ENDING,
 }
 
-type Controller = {
+export type Controller = {
   _scenes: { [key in SceneType]?: g.Scene };
   _preserves: { [key in SceneType]?: g.E };
   _creators: { [key in SceneType]?: () => g.Scene };

@@ -10,7 +10,7 @@ abstract class TrainTask implements Pointable {
   protected isFirstExecute: boolean;
   protected progress: number;
   protected readonly train: Train;
-  private readonly onCompleted: () => void;
+  protected readonly onCompleted: () => void;
 
   constructor(train: Train, onCompleted: () => void) {
     this.train = train;

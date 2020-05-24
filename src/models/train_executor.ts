@@ -16,8 +16,8 @@ const newTask = (train: Train, lt: LineTask, onComplete: () => void) =>
     : new MoveTask(train, lt as EdgeTask, onComplete);
 
 class TrainExecutor implements Steppable, Pointable {
-  private readonly train: Train;
-  private _current: TrainTask;
+  protected readonly train: Train;
+  protected _current: TrainTask;
 
   constructor(train: Train, initialTask: LineTask) {
     this.train = train;
@@ -48,7 +48,7 @@ class TrainExecutor implements Steppable, Pointable {
     this._current = newTask(this.train, to, () => this.next());
   }
 
-  private next() {
+  protected next() {
     remove(this._current._base().trains, this.train);
     const nxt = this._current._base().next;
     this._current = newTask(this.train, nxt, () => this.next());

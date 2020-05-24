@@ -33,8 +33,8 @@ export enum HumanState {
 const DELTA = 0.000001;
 
 class Human extends RoutableObject implements Steppable {
-  private _state: HumanState;
-  private pos: Point;
+  protected _state: HumanState;
+  protected pos: Point;
   /**
    * 1秒間に何pixcel進むか
    */
@@ -52,7 +52,7 @@ class Human extends RoutableObject implements Steppable {
    */
   public static STAY_BUFF: number = 0.15;
   public static RAND: number = 25;
-  private rand: (min: number, max: number) => number;
+  protected rand: (min: number, max: number) => number;
 
   public readonly departure: Residence;
   public readonly destination: Company;
@@ -60,26 +60,26 @@ class Human extends RoutableObject implements Steppable {
   /**
    * 残り体力。0-1
    */
-  private stamina: number;
+  protected stamina: number;
 
   /**
    * 次に向かう経由点
    */
-  private next: Routable;
+  protected next: Routable;
 
-  private rideFrom: DeptTask;
+  protected rideFrom: DeptTask;
 
   /**
    * 改札を出るときに支払う運賃
    */
-  private payment: number;
+  protected payment: number;
 
-  private gate: Gate;
-  private platform: Platform;
-  private dept: DeptTask;
-  private train: Train;
-  private rideCount: number;
-  private wait: WaitEvent;
+  protected gate: Gate;
+  protected platform: Platform;
+  protected dept: DeptTask;
+  protected train: Train;
+  protected rideCount: number;
+  protected wait: WaitEvent;
 
   constructor(
     departure: Residence,
@@ -171,13 +171,13 @@ class Human extends RoutableObject implements Steppable {
     );
   }
 
-  private damageByWalk(dist: number) {
+  protected damageByWalk(dist: number) {
     const time = dist / Human.SPEED;
     // stay の分まで引かないようにする
     this.stamina -= ((1 - Human.STAY_BUFF) * time) / Human.LIFE_SPAN;
   }
 
-  private damageByStay(time: number) {
+  protected damageByStay(time: number) {
     this.stamina -= (Human.STAY_BUFF * time) / Human.LIFE_SPAN;
   }
 
@@ -269,7 +269,7 @@ class Human extends RoutableObject implements Steppable {
   /**
    * 死亡状態にし、関連タスクから自身を除外する。
    */
-  private dead() {
+  protected dead() {
     modelListener.add(EventType.CREATED, new DieEvent(this._state));
     this._state = HumanState.DIED;
     this.next?._giveup(this);

@@ -6,7 +6,6 @@ import RailEdge from "../models/rail_edge";
 import Residence from "../models/residence";
 import Station from "../models/station";
 import Train from "../models/train";
-import { find } from "../utils/common";
 import scenes, { SceneType } from "../utils/scene";
 import ticker, { EventType as TickEventType } from "../utils/ticker";
 import connect, { ModelModifier } from "./connector";
@@ -14,14 +13,11 @@ import creators from "./creator";
 import ViewObjectFactory from "./factory";
 import { humanModifier } from "./human_view";
 import { defaultRailEdgeModifier } from "./rail_edge_view";
-import { createFramedRect, createWorkingArea } from "./rectangle";
+import { createWorkingArea } from "./rectangle";
 import { stationModifier } from "./station_view";
 import { riddenModifer, trainModifer } from "./train_view";
 
-const COLOR = "#ffffff";
-const BORDER = 5;
-
-type Config<T extends Pointable> = {
+export type Config<T extends Pointable> = {
   key: new (...args: any[]) => T;
   desc?: boolean;
   modifers?: ModelModifier<T>[];

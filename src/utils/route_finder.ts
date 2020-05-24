@@ -5,11 +5,10 @@ import Human from "../models/human";
 import listener, { EventType as Ev } from "../models/listener";
 import PathFinder from "../models/path_finder";
 import Platform from "../models/platform";
-import { Pointable, distance } from "../models/pointable";
+import { distance } from "../models/pointable";
 import Residence from "../models/residence";
 import { Routable } from "../models/routable";
-import Train from "../models/train";
-import userResource, { ModelState } from "../models/user_resource";
+import userResource from "../models/user_resource";
 import { find, remove } from "./common";
 import { shouldBreak } from "./measure";
 

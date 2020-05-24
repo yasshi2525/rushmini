@@ -1,11 +1,9 @@
 import ActionProxy from "./action";
 import cityResource from "./city_resource";
-import DeptTask from "./dept_task";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import Point, { distance } from "./point";
 import RailNode from "./rail_node";
-import Train from "./train";
 
 export enum ModelState {
   INITED,
@@ -16,7 +14,7 @@ export enum ModelState {
 const DELTA = 0.0001;
 const SHORT_THRESHOLD = 100;
 
-type StateListener = {
+export type StateListener = {
   onStarted?: (ev: UserResource) => void;
   onFixed?: (ev: UserResource) => void;
   onRollback?: (ev: UserResource) => void;
@@ -37,11 +35,11 @@ const find = (state: ModelState, l: StateListener) => {
 export class UserResource {
   public static STATION_INTERVAL: number = 250;
   public static TRAIN_INTERVAL: number = 500;
-  private action: ActionProxy;
+  protected action: ActionProxy;
 
-  private state: ModelState;
-  private committed_state: ModelState;
-  private committed_length: number;
+  protected state: ModelState;
+  protected committed_state: ModelState;
+  protected committed_length: number;
 
   /**
    * 最低この距離離れないと、RailEdgeを作成しない (じぐざぐ防止)
@@ -51,15 +49,15 @@ export class UserResource {
   /**
    * end() 時に、このポイントまで伸ばす
    */
-  private lastPos: Point;
+  protected lastPos: Point;
 
   public readonly stateListeners: StateListener[];
 
   /**
    * 駅を一定間隔で設置するため、最後に駅を作ってからextendした距離を保持するカウンター
    */
-  private distRail: number;
-  private distTrain: number;
+  protected distRail: number;
+  protected distTrain: number;
 
   constructor() {
     this.stateListeners = [];
@@ -75,7 +73,7 @@ export class UserResource {
     this.action = new ActionProxy();
   }
 
-  private setState(state: ModelState) {
+  protected setState(state: ModelState) {
     this.state = state;
     this.stateListeners
       .map((l) => find(state, l))
@@ -119,7 +117,7 @@ export class UserResource {
   /**
    * 一定間隔で駅を作成する
    */
-  private interviseStation(dist: number) {
+  protected interviseStation(dist: number) {
     this.distRail += dist;
     if (this.distRail >= UserResource.STATION_INTERVAL) {
       this.action.buildStation();
@@ -130,7 +128,7 @@ export class UserResource {
   /**
    * 一定間隔で電車を作成する
    */
-  private interviseTrain(dist: number) {
+  protected interviseTrain(dist: number) {
     this.distTrain += dist;
     if (this.distTrain >= UserResource.TRAIN_INTERVAL) {
       this.action
@@ -176,7 +174,7 @@ export class UserResource {
     }
   }
 
-  private insertTerminal() {
+  protected insertTerminal() {
     // 建設抑止していた場合、最後にクリックした地点まで延伸する
     if (this.lastPos && distance(this.lastPos, this.action.tail().loc()) > 0) {
       this.action.extendRail(this.lastPos.x, this.lastPos.y);

@@ -4,7 +4,6 @@ import { Pointable } from "../models/pointable";
 import Residence from "../models/residence";
 import Station from "../models/station";
 import Train from "../models/train";
-import { find } from "../utils/common";
 import createPointableView from "./point_view";
 import { registerRailEdgeView } from "./rail_edge_view";
 import { createSquareSprite } from "./sprite";
@@ -18,7 +17,7 @@ export type ViewCreator<T extends Pointable> = (
 /**
  * クラスとビューア作成関数のマッピング
  */
-type CreatorMapper<T extends Pointable> = {
+export type CreatorMapper<T extends Pointable> = {
   key: new (...args: any[]) => T;
   /**
    * 指定されたモデルに対応するビューアを作成する関数

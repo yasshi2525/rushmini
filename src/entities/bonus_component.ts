@@ -1,5 +1,4 @@
 import viewer, { ViewerEvent } from "../utils/viewer";
-import { createFramedRect } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
 const SIZE = 128;

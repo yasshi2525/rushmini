@@ -1,7 +1,5 @@
 import { appendInstruction, createWorkingArea } from "./rectangle";
 
-const INSTRUCTION_Y = 120;
-
 const createWaitPanel = (loadedScene: g.Scene) => {
   const panel = createWorkingArea(loadedScene, {});
   appendInstruction(panel, "available_txt");

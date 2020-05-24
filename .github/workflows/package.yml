@@ -1,14 +1,12 @@
-name: report
+name: package
 
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
-  report:
-    name: report
+  package:
+    name: packaging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,12 +15,10 @@ jobs:
           node-version: "14"
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
+      - run: npm run lint
       - run: npm run build
       - run: npm test
-      - name: report
-        run: npm run report
-      - name: Upload score report
-        uses: actions/upload-artifact@v1.0.0
-        with:
-          name: score_report-v1.3.2
-          path: report
+      - run: npm run package
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

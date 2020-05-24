@@ -16,11 +16,11 @@ import ticker from "./ticker";
 
 let resourceTypes: any[] = [];
 
-type ResourceSet<T> = { [index: string]: T };
-type StateStatics = { [key in HumanState]: number };
-type CrowdStatics = { [index: string]: number };
+export type ResourceSet<T> = { [index: string]: T };
+export type StateStatics = { [key in HumanState]: number };
+export type CrowdStatics = { [index: string]: number };
 
-type DynamicStatics = {
+export type DynamicStatics = {
   human: StateStatics;
   crowd: CrowdStatics;
   wait: StateStatics;
@@ -61,7 +61,7 @@ export class DieEvent {
   }
 }
 
-type Controller = {
+export type Controller = {
   _objs: ResourceSet<Array<any>>;
   numResource: ResourceSet<number>;
   numSpawn: number;
