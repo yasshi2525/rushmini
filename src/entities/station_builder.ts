@@ -34,6 +34,7 @@ const handleOnSelected = (ev: g.PointUpEvent, rns: RailNode[]) => {
   rns.sort((a, b) => distance(a.loc(), pos) - distance(b.loc(), pos));
   if (distance(rns[0].loc(), pos) < DIST) {
     userResource.station(rns[0]);
+    userResource.commit();
     viewer.fire(ViewerEvent.STATION_ENDED);
   }
 };
