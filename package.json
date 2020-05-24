@@ -34,9 +34,6 @@
   "bugs": {
     "url": "https://github.com/yasshi2525/rushmini/issues"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/yasshi2525"
-  },
   "devDependencies": {
     "@akashic/akashic-pdi": "^2.8.0",
     "@akashic/akashic-sandbox": "^0.16.8",
