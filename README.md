@@ -1,4 +1,4 @@
-# RushMini 出勤のお時間です！ ![CI](https://github.com/yasshi2525/rushmini/workflows/CI/badge.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/4c2f24fe6cc4bedd8093/maintainability)](https://codeclimate.com/github/yasshi2525/rushmini/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/4c2f24fe6cc4bedd8093/test_coverage)](https://codeclimate.com/github/yasshi2525/rushmini/test_coverage)
+# RushMini 出勤のお時間です！　[![npm version](https://badge.fury.io/js/%40yasshi2525%2Frushmini.svg)](https://badge.fury.io/js/%40yasshi2525%2Frushmini) ![CI](https://github.com/yasshi2525/rushmini/workflows/CI/badge.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/4c2f24fe6cc4bedd8093/maintainability)](https://codeclimate.com/github/yasshi2525/rushmini/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/4c2f24fe6cc4bedd8093/test_coverage)](https://codeclimate.com/github/yasshi2525/rushmini/test_coverage)
 
 ニコニコゲームアツマール、ニコ生新市場用ゲーム [URL](https://game.nicovideo.jp/atsumaru/games/gm14288)
 
@@ -42,6 +42,12 @@ npm start
 docker build .
 <image id>
 docker run -p 3000:3000 -d <image id>
+```
+
+## ライブラリとして利用
+
+```
+npm install @yasshi2525/rushmini
 ```
 
 # 開発者向け
