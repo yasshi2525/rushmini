@@ -805,6 +805,11 @@
 			"type": "script",
 			"path": "script/entities/bonus_undo.js",
 			"global": true
+		},
+		"index": {
+			"type": "script",
+			"path": "script/index.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
