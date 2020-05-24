@@ -23,6 +23,7 @@ describe("bonus_branch", () => {
   let branch: g.E;
   let shadow: g.E;
   let branch_builder: g.E;
+  let undo: g.E;
 
   beforeEach(async () => {
     scorer.init({ score: 0 });
@@ -34,6 +35,7 @@ describe("bonus_branch", () => {
     branch = viewer.viewers[ViewerType.BONUS_BRANCH];
     shadow = viewer.viewers[ViewerType.SHADOW];
     branch_builder = viewer.viewers[ViewerType.BRANCH_BUILDER];
+    undo = viewer.viewers[ViewerType.BONUS_UNDO];
   });
 
   afterEach(() => {
@@ -113,6 +115,7 @@ describe("bonus_branch", () => {
       type: g.EventType.PointDown,
     });
     expect(shadow.visible()).toBeFalsy();
+    expect(undo.visible()).toBeFalsy();
     g.game.tick(true);
   });
 
@@ -170,6 +173,23 @@ describe("bonus_branch", () => {
     });
 
     expect(viewer.isBonusing).toBeFalsy();
+    expect(undo.visible()).toBeFalsy();
+    g.game.tick(true);
+  });
+
+  it("undo canceled action", () => {
+    expect(undo.visible()).toBeFalsy();
+    scorer.add(scoreBorders[0]);
+    expect(undo.visible()).toBeFalsy();
+    branch.children[1].pointUp.fire();
+    expect(undo.visible()).toBeTruthy();
+    undo.pointUp.fire();
+    expect(undo.visible()).toBeFalsy();
+    expect(viewer.isBonusing).toBeTruthy();
+    expect(panel.visible()).toBeTruthy();
+    expect(branch.children[1].visible()).toBeTruthy();
+    expect(shadow.visible()).toBeTruthy();
+    expect(branch_builder.visible()).toBeFalsy();
     g.game.tick(true);
   });
 });

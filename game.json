@@ -793,6 +793,18 @@
 			"type": "script",
 			"path": "script/utils/measure.js",
 			"global": true
+		},
+		"undo_img": {
+			"type": "image",
+			"width": 92,
+			"height": 92,
+			"path": "image/undo_img.png",
+			"global": true
+		},
+		"bonus_undo": {
+			"type": "script",
+			"path": "script/entities/bonus_undo.js",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
