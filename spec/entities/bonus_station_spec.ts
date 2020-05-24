@@ -23,6 +23,7 @@ describe("bonus_station", () => {
   let station: g.E;
   let shadow: g.E;
   let station_builder: g.E;
+  let undo: g.E;
 
   beforeEach(async () => {
     scorer.init({ score: 0 });
@@ -34,6 +35,7 @@ describe("bonus_station", () => {
     station = viewer.viewers[ViewerType.BONUS_STATION];
     shadow = viewer.viewers[ViewerType.SHADOW];
     station_builder = viewer.viewers[ViewerType.STATION_BUILDER];
+    undo = viewer.viewers[ViewerType.BONUS_UNDO];
   });
 
   afterEach(() => {
@@ -77,5 +79,21 @@ describe("bonus_station", () => {
 
     expect(shadow.visible()).toBeTruthy();
     g.game.tick(false);
+  });
+
+  it("undo canceled action", () => {
+    expect(undo.visible()).toBeFalsy();
+    scorer.add(scoreBorders[0]);
+    expect(undo.visible()).toBeFalsy();
+    station.children[1].pointUp.fire();
+    expect(undo.visible()).toBeTruthy();
+    undo.pointUp.fire();
+    expect(undo.visible()).toBeFalsy();
+    expect(viewer.isBonusing).toBeTruthy();
+    expect(panel.visible()).toBeTruthy();
+    expect(station.children[1].visible()).toBeTruthy();
+    expect(shadow.visible()).toBeTruthy();
+    expect(station_builder.visible()).toBeFalsy();
+    g.game.tick(true);
   });
 });

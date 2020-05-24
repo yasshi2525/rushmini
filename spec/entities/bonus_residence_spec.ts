@@ -23,6 +23,7 @@ describe("bonus_residence", () => {
   let residence: g.E;
   let shadow: g.E;
   let residence_builder: g.E;
+  let undo: g.E;
 
   beforeEach(async () => {
     scorer.init({ score: 0 });
@@ -34,6 +35,7 @@ describe("bonus_residence", () => {
     residence = viewer.viewers[ViewerType.BONUS_RESIDENCE];
     shadow = viewer.viewers[ViewerType.SHADOW];
     residence_builder = viewer.viewers[ViewerType.RESIDENCE_BUILDER];
+    undo = viewer.viewers[ViewerType.BONUS_UNDO];
   });
 
   afterEach(() => {
@@ -77,5 +79,21 @@ describe("bonus_residence", () => {
 
     expect(shadow.visible()).toBeFalsy();
     g.game.tick(false);
+  });
+
+  it("undo canceled action", () => {
+    expect(undo.visible()).toBeFalsy();
+    scorer.add(scoreBorders[0]);
+    expect(undo.visible()).toBeFalsy();
+    residence.children[1].pointUp.fire();
+    expect(undo.visible()).toBeTruthy();
+    undo.pointUp.fire();
+    expect(undo.visible()).toBeFalsy();
+    expect(viewer.isBonusing).toBeTruthy();
+    expect(panel.visible()).toBeTruthy();
+    expect(residence.children[1].visible()).toBeTruthy();
+    expect(shadow.visible()).toBeTruthy();
+    expect(residence_builder.visible()).toBeFalsy();
+    g.game.tick(true);
   });
 });

@@ -91,6 +91,10 @@ export enum ViewerType {
    */
   SCORE,
   /**
+   * ボーナス選択画面に戻るアイコンの表示
+   */
+  BONUS_UNDO,
+  /**
    * ボーナスアイコンの表示
    */
   BONUS_BADGE,
@@ -138,6 +142,10 @@ export enum ViewerEvent {
    */
   BRANCH_ROLLBACKED,
   /**
+   * 支線建設キャンセル
+   */
+  BRANCH_CANCELED,
+  /**
    * 新駅ボーナスが選ばれた（立地を探し中）
    */
   STATION_STARTED,
@@ -145,6 +153,10 @@ export enum ViewerEvent {
    * 新駅の建設完了
    */
   STATION_ENDED,
+  /**
+   * 新駅建設キャンセル
+   */
+  STATION_CANCELED,
   /**
    * 列車の増発完了
    */
@@ -158,6 +170,10 @@ export enum ViewerEvent {
    */
   RESIDENCE_ENDED,
   /**
+   * 住宅建設キャンセル
+   */
+  RESIDENCE_CANCELED,
+  /**
    * ボーナス画面の最小化
    */
   BONUS_MINIMIZED,
@@ -165,6 +181,10 @@ export enum ViewerEvent {
    * ボーナス画面の再オープン
    */
   BONUS_REACTIVED,
+  /**
+   * ボーナス選択画面に戻る
+   */
+  BONUS_UNDONE,
 }
 
 /**
@@ -296,31 +316,47 @@ const handleBranchStarted = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].hide();
   _c.viewers[ViewerType.BONUS_BADGE].hide();
   _c.viewers[ViewerType.BRANCH_BUILDER].show();
+  _c.viewers[ViewerType.BONUS_UNDO].show();
 };
 
 const handleBranching = (_c: Controller) => {
   _c.viewers[ViewerType.SHADOW].hide();
+  _c.viewers[ViewerType.BONUS_UNDO].hide();
 };
 
 const handleBranchEnded = (_c: Controller) => {
   _c.viewers[ViewerType.BRANCH_BUILDER].hide();
+  _c.viewers[ViewerType.BONUS_UNDO].hide();
   _c.isBonusing = false;
 };
 
 const handleBranchRollbacked = (_c: Controller) => {
   _c.viewers[ViewerType.SHADOW].show();
+  _c.viewers[ViewerType.BONUS_UNDO].show();
+};
+
+const handleBranchCanceled = (_c: Controller) => {
+  _c.viewers[ViewerType.BRANCH_BUILDER].hide();
+  _c.viewers[ViewerType.BONUS_BRANCH].children[1].show();
 };
 
 const handleStationStarted = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].hide();
   _c.viewers[ViewerType.BONUS_BADGE].hide();
   _c.viewers[ViewerType.STATION_BUILDER].show();
+  _c.viewers[ViewerType.BONUS_UNDO].show();
 };
 
 const handleStationEnded = (_c: Controller) => {
   _c.viewers[ViewerType.STATION_BUILDER].hide();
   _c.viewers[ViewerType.SHADOW].hide();
+  _c.viewers[ViewerType.BONUS_UNDO].hide();
   _c.isBonusing = false;
+};
+
+const handleStationCanceled = (_c: Controller) => {
+  _c.viewers[ViewerType.STATION_BUILDER].hide();
+  _c.viewers[ViewerType.BONUS_STATION].children[1].show();
 };
 
 const handleTrainEnded = (_c: Controller) => {
@@ -335,11 +371,18 @@ const handleResidenceStarted = (_c: Controller) => {
   _c.viewers[ViewerType.SHADOW].hide();
   _c.viewers[ViewerType.BONUS_BADGE].hide();
   _c.viewers[ViewerType.RESIDENCE_BUILDER].show();
+  _c.viewers[ViewerType.BONUS_UNDO].show();
 };
 
 const handleResidenceEnded = (_c: Controller) => {
   _c.viewers[ViewerType.RESIDENCE_BUILDER].hide();
+  _c.viewers[ViewerType.BONUS_UNDO].hide();
   _c.isBonusing = false;
+};
+
+const handleResidenceCanceled = (_c: Controller) => {
+  _c.viewers[ViewerType.RESIDENCE_BUILDER].hide();
+  _c.viewers[ViewerType.BONUS_RESIDENCE].children[1].show();
 };
 
 const handleBonusMinimized = (_c: Controller) => {
@@ -350,6 +393,19 @@ const handleBonusMinimized = (_c: Controller) => {
 const handleBonusReactived = (_c: Controller) => {
   _c.viewers[ViewerType.BONUS].show();
   _c.viewers[ViewerType.SHADOW].show();
+};
+
+const handleBonusUndone = (_c: Controller) => {
+  if (_c.viewers[ViewerType.BRANCH_BUILDER].visible()) {
+    _c.fire(ViewerEvent.BRANCH_CANCELED);
+  } else if (_c.viewers[ViewerType.STATION_BUILDER].visible()) {
+    _c.fire(ViewerEvent.STATION_CANCELED);
+  } else if (_c.viewers[ViewerType.RESIDENCE_BUILDER].visible()) {
+    _c.fire(ViewerEvent.RESIDENCE_CANCELED);
+  }
+  _c.viewers[ViewerType.SHADOW].show();
+  _c.viewers[ViewerType.BONUS].show();
+  _c.viewers[ViewerType.BONUS_BADGE].show();
 };
 
 /**
@@ -367,13 +423,17 @@ const initListener = (_c: Controller, scene: g.Scene) => {
     { key: ViewerEvent.BRANCHING, value: handleBranching },
     { key: ViewerEvent.BRANCHED, value: handleBranchEnded },
     { key: ViewerEvent.BRANCH_ROLLBACKED, value: handleBranchRollbacked },
+    { key: ViewerEvent.BRANCH_CANCELED, value: handleBranchCanceled },
     { key: ViewerEvent.STATION_STARTED, value: handleStationStarted },
     { key: ViewerEvent.STATION_ENDED, value: handleStationEnded },
+    { key: ViewerEvent.STATION_CANCELED, value: handleStationCanceled },
     { key: ViewerEvent.TRAIN_ENDED, value: handleTrainEnded },
     { key: ViewerEvent.RESIDENCE_STARTED, value: handleResidenceStarted },
     { key: ViewerEvent.RESIDENCE_ENDED, value: handleResidenceEnded },
+    { key: ViewerEvent.RESIDENCE_CANCELED, value: handleResidenceCanceled },
     { key: ViewerEvent.BONUS_MINIMIZED, value: handleBonusMinimized },
     { key: ViewerEvent.BONUS_REACTIVED, value: handleBonusReactived },
+    { key: ViewerEvent.BONUS_UNDONE, value: handleBonusUndone },
   ];
   list.forEach((entry) => {
     _c._trackers[entry.key] = new Tracker(_c);
