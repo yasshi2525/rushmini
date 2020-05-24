@@ -44,7 +44,7 @@ export const createFramedRect = (
   return frame;
 };
 
-type Option = {
+export type Option = {
   touchable?: boolean;
   isPane?: boolean;
 };

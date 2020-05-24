@@ -20,7 +20,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
   /**
    * 後、どれくらいのフレーム数経過すれば、人が1人通れるか
    */
-  private waitFrame: number;
+  protected waitFrame: number;
   /**
    * 改札内に入りたい人たち
    */
@@ -57,7 +57,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
    * 入場待ちをプラットフォーム移動待ちにさせます
    * 一人移動できたなら、trueを返します
    */
-  private tryEnter() {
+  protected tryEnter() {
     // 入場規制
     if (this._concourse.length >= Gate.CAPACITY) {
       return false;
@@ -84,7 +84,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
    * 出場待ちを改札外に移動させます。
    * 一人移動できたなら、trueを返します
    */
-  private tryExit() {
+  protected tryExit() {
     let ignoreCnt = 0;
     while (this.outQueue.length > 0 && this.outQueue.length > ignoreCnt) {
       const h = this.outQueue.shift();

@@ -10,7 +10,7 @@ class Residence extends PointableObject implements Steppable {
    * 会社の魅力度に応じて住民をスポーンするため、
    * 魅力度の数だけ同じ会社を行き先に設定する
    */
-  private readonly destinations: Company[] = [];
+  protected readonly destinations: Company[] = [];
 
   /**
    * 人の生成速度。INTERVAL_SEC 秒 経過すると1人生成する
@@ -19,8 +19,8 @@ class Residence extends PointableObject implements Steppable {
   /**
    * 残り remain frame 経過すると人を生成する
    */
-  private remainFrame: number;
-  private rand: (min: number, max: number) => number;
+  protected remainFrame: number;
+  protected rand: (min: number, max: number) => number;
 
   constructor(
     destinations: Company[],
@@ -40,7 +40,7 @@ class Residence extends PointableObject implements Steppable {
     modelListener.add(EventType.CREATED, this);
   }
 
-  private _spawn() {
+  protected _spawn() {
     if (this.destinations.length === 0) {
       console.warn("no destination candinate");
       return undefined;

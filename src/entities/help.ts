@@ -1,4 +1,4 @@
-import { createFramedRect, createWorkingArea } from "./rectangle";
+import { createFramedRect } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
 const MARGIN_RATE = 0.1;

@@ -8,22 +8,22 @@ import TrainTask from "./train_task";
 const DELTA = 0.0001;
 
 class StayTask extends TrainTask {
-  private readonly base: DeptTask;
+  protected readonly base: DeptTask;
   /**
    * 降車待ちの人
    */
-  private readonly outQueue: Human[];
+  protected readonly outQueue: Human[];
 
   /**
    * 乗車待ちの人
    */
-  private readonly inQueue: Human[];
+  protected readonly inQueue: Human[];
 
   /**
    * 後、何秒待機すれば次の乗降を許可するか。
    * 移動タスクを秒単位で消費していくため、frameと同期がとれない。そのため秒単位で管理している
    */
-  private waitSec: number;
+  protected waitSec: number;
 
   constructor(train: Train, base: DeptTask, onCompleted: () => void) {
     const wrapOnCompleted = () => {
@@ -102,7 +102,7 @@ class StayTask extends TrainTask {
       });
   }
 
-  private tryRide() {
+  protected tryRide() {
     const dept = this.base;
     const p = dept.stay;
     // 満員
@@ -134,7 +134,7 @@ class StayTask extends TrainTask {
     return false;
   }
 
-  private tryGetOff() {
+  protected tryGetOff() {
     const dept = this.base;
     const p = dept.stay;
     const psngr = this.train.passengers;

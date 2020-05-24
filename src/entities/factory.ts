@@ -14,10 +14,10 @@ export type ViewObject<T> = {
  * モデルとビューアが紐付いたViewObjectを作成します
  */
 class ViewObjectFactory<T extends Pointable> {
-  private readonly panel: g.E;
-  private readonly creator: ViewCreator<T>;
+  protected readonly panel: g.E;
+  protected readonly creator: ViewCreator<T>;
   public readonly children: ViewObject<T>[];
-  private readonly desc: boolean;
+  protected readonly desc: boolean;
 
   /**
    * ファクトリーを作ります

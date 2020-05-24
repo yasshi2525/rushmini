@@ -1,9 +1,7 @@
 import { find, remove } from "../utils/common";
-import DeptTask from "./dept_task";
-import { Pointable } from "./pointable";
 import { Routable } from "./routable";
 
-class PathNode {
+export class PathNode {
   public readonly origin: Routable;
   /**
    * ゴールに行くまでのコスト
@@ -29,7 +27,7 @@ class PathNode {
   /**
    * 自身に隣接する点をコスト昇順で返します
    */
-  private sortNeighbors(): PathNode[] {
+  protected sortNeighbors(): PathNode[] {
     return this._in
       .map((e) => {
         e.from.cost = e.cost;
@@ -71,7 +69,7 @@ class PathNode {
   }
 }
 
-class PathEdge {
+export class PathEdge {
   public readonly from: PathNode;
   public readonly to: PathNode;
   /**
@@ -95,8 +93,8 @@ class PathEdge {
 
 class PathFinder {
   readonly goal: PathNode;
-  private readonly nodes: PathNode[] = [];
-  private readonly edges: PathEdge[] = [];
+  protected readonly nodes: PathNode[] = [];
+  protected readonly edges: PathEdge[] = [];
 
   constructor(goal: Routable) {
     this.goal = this.node(goal);

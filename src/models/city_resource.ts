@@ -1,6 +1,4 @@
 import { find } from "../utils/common";
-import random from "../utils/random";
-import ticker from "../utils/ticker";
 import Company from "./company";
 import modelListener, { EventType } from "./listener";
 import Point, { distance } from "./point";
@@ -101,18 +99,18 @@ export class CityResource {
   public static AREA: number = 100;
   public static PADDING: number = 70;
 
-  private width: number;
-  private height: number;
-  private rand: (min: number, max: number) => number;
+  protected width: number;
+  protected height: number;
+  protected rand: (min: number, max: number) => number;
 
   public readonly cs: Company[];
   public readonly rs: Residence[];
-  private readonly buildings: Pointable[];
+  protected readonly buildings: Pointable[];
 
   /**
    * 住宅を自動配置する地点
    */
-  private rsPos: Point[];
+  protected rsPos: Point[];
 
   constructor() {
     this.cs = [];

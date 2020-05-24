@@ -3,7 +3,6 @@ import LineTask from "./line_task";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
-import RailNode from "./rail_node";
 
 /**
  * 指定した条件にあうタスクを絞り込みます

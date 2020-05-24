@@ -2,9 +2,6 @@ import userResource from "../models/user_resource";
 import routeFinder from "../utils/route_finder";
 import viewer, { ViewerEvent } from "../utils/viewer";
 import { appnedWarning, createWorkingArea } from "./rectangle";
-import { createSquareSprite } from "./sprite";
-
-const WARNING_Y = 160;
 
 /**
  * カーソルの動きに沿って路線を作成します

@@ -10,7 +10,7 @@ export interface Pointable {
 }
 
 abstract class PointableObject extends RoutableObject implements Pointable {
-  private readonly _location: Point;
+  protected readonly _location: Point;
 
   constructor(x: number, y: number) {
     super();

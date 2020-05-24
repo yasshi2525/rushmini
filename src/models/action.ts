@@ -1,4 +1,3 @@
-import DeptTask from "./dept_task";
 import LineTask from "./line_task";
 import Platform from "./platform";
 import RailEdge from "./rail_edge";
@@ -10,10 +9,10 @@ export interface Transactional {
   rollback(): void;
 }
 
-class StartRailAction implements Transactional {
-  private readonly prevTail: RailNode;
-  private readonly rollbackFn: (rn: RailNode) => void;
-  private rn: RailNode;
+export class StartRailAction implements Transactional {
+  protected readonly prevTail: RailNode;
+  protected readonly rollbackFn: (rn: RailNode) => void;
+  protected rn: RailNode;
 
   constructor(prevTail: RailNode, rollbackFn: (prevTail: RailNode) => void) {
     this.prevTail = prevTail;
@@ -31,10 +30,10 @@ class StartRailAction implements Transactional {
   }
 }
 
-class BuildStationAction implements Transactional {
-  private readonly prevTail: RailNode;
-  private readonly rollbackFn: (rn: RailNode) => void;
-  private p: Platform;
+export class BuildStationAction implements Transactional {
+  protected readonly prevTail: RailNode;
+  protected readonly rollbackFn: (rn: RailNode) => void;
+  protected p: Platform;
 
   constructor(tail: RailNode, rollbackFn: (prevTail: RailNode) => void) {
     this.prevTail = tail;
@@ -54,10 +53,10 @@ class BuildStationAction implements Transactional {
   }
 }
 
-class ExtendRailAction implements Transactional {
-  private readonly prevTail: RailNode;
-  private readonly rollbackFn: (rn: RailNode) => void;
-  private re: RailEdge;
+export class ExtendRailAction implements Transactional {
+  protected readonly prevTail: RailNode;
+  protected readonly rollbackFn: (rn: RailNode) => void;
+  protected re: RailEdge;
 
   constructor(prevTail: RailNode, rollbackFn: (prevTail: RailNode) => void) {
     this.prevTail = prevTail;
@@ -77,8 +76,8 @@ class ExtendRailAction implements Transactional {
   }
 }
 
-class StartLineAction implements Transactional {
-  private readonly l: RailLine;
+export class StartLineAction implements Transactional {
+  protected readonly l: RailLine;
 
   constructor(l: RailLine) {
     this.l = l;
@@ -94,10 +93,10 @@ class StartLineAction implements Transactional {
   }
 }
 
-class InsertEdgeAction implements Transactional {
-  private readonly l: RailLine;
-  private pivot: LineTask;
-  private prevNext: LineTask;
+export class InsertEdgeAction implements Transactional {
+  protected readonly l: RailLine;
+  protected pivot: LineTask;
+  protected prevNext: LineTask;
 
   constructor(l: RailLine) {
     this.l = l;
@@ -112,9 +111,9 @@ class InsertEdgeAction implements Transactional {
   }
 }
 
-class InsertPlatformAction implements Transactional {
-  private readonly l: RailLine;
-  private p: Platform;
+export class InsertPlatformAction implements Transactional {
+  protected readonly l: RailLine;
+  protected p: Platform;
 
   constructor(l: RailLine) {
     this.l = l;
@@ -134,8 +133,8 @@ class InsertPlatformAction implements Transactional {
   }
 }
 
-class DeployTrainAction implements Transactional {
-  private t: Train;
+export class DeployTrainAction implements Transactional {
+  protected t: Train;
 
   act(lt: LineTask) {
     const t = new Train(lt);
@@ -148,9 +147,9 @@ class DeployTrainAction implements Transactional {
   }
 }
 
-class StartBranchAction implements Transactional {
-  private readonly prevTail: RailNode;
-  private readonly rollbackFn: (rn: RailNode) => void;
+export class StartBranchAction implements Transactional {
+  protected readonly prevTail: RailNode;
+  protected readonly rollbackFn: (rn: RailNode) => void;
 
   constructor(prevTail: RailNode, rollbackFn: (prevTail: RailNode) => void) {
     this.prevTail = prevTail;
@@ -166,9 +165,9 @@ class StartBranchAction implements Transactional {
   }
 }
 
-class IncreaseTrain implements Transactional {
-  private readonly ts: Train[];
-  static INTERVAL: number = 2;
+export class IncreaseTrain implements Transactional {
+  protected readonly ts: Train[];
+  public static INTERVAL: number = 2;
   constructor() {
     this.ts = [];
   }
@@ -216,10 +215,10 @@ class IncreaseTrain implements Transactional {
 }
 
 class ActionProxy {
-  private readonly actions: Transactional[];
-  private readonly _line: RailLine;
-  private _tailNode: RailNode;
-  private _tailEdge: RailEdge;
+  protected readonly actions: Transactional[];
+  protected readonly _line: RailLine;
+  protected _tailNode: RailNode;
+  protected _tailEdge: RailEdge;
 
   constructor() {
     this.actions = [];
