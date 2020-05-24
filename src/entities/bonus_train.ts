@@ -11,7 +11,10 @@ const createBonusTrain = (loadedScene: g.Scene) => {
     INDEX,
     ViewerEvent.TRAIN_ENDED
   );
-  panel.children[1].pointUp.add(() => userResource.train());
+  panel.children[1].pointUp.add(() => {
+    userResource.train();
+    userResource.commit();
+  });
   return panel;
 };
 
