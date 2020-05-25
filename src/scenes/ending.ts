@@ -4,6 +4,7 @@ import createScoreLabel from "../entities/score";
 import { createSquareSprite } from "../entities/sprite";
 import createStaticsPanel from "../entities/statics_view";
 import { RPGAtsumaruWindow } from "../parameterObject";
+import scenes from "../utils/scene";
 
 declare const window: RPGAtsumaruWindow;
 const BOARD_ID = 1;
@@ -21,8 +22,10 @@ export const handleEnding = (prev: g.E) => {
   frame.anchor(0, 0);
 
   scene.loaded.add(() => {
-    (g.game.assets["game_bgm"] as g.AudioAsset).stop();
-    (g.game.assets["end_sound"] as g.AudioAsset).play();
+    if (!scenes.isMute) {
+      (g.game.assets["game_bgm"] as g.AudioAsset).stop();
+      (g.game.assets["end_sound"] as g.AudioAsset).play();
+    }
     let scale = 1;
     const anim = () => {
       if (scale < 0.66) {

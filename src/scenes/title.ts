@@ -1,4 +1,5 @@
 import createLogo from "../entities/logo";
+import createSpeakerButton from "../entities/speaker";
 import { createSquareSprite } from "../entities/sprite";
 import scenes, { SceneType } from "../utils/scene";
 import ticker from "../utils/ticker";
@@ -9,11 +10,13 @@ const createTitleScene = () => {
   const scene = new g.Scene({ game: g.game, name: "title" });
   ticker.register(scene);
   scene.loaded.add(() => {
-    (g.game.assets["start_sound"] as g.AudioAsset).play();
-    scene.pointUpCapture.add(() => {
-      scenes.replace(SceneType.INSTRUCTION);
+    if (!scenes.isMute) (g.game.assets["start_sound"] as g.AudioAsset).play();
+    scene.pointUpCapture.add((ev) => {
+      // ミュートボタンが押された際は遷移しない
+      if (!ev?.target?.touchable) scenes.replace(SceneType.INSTRUCTION);
     });
     scene.append(createLogo(scene));
+    scene.append(createSpeakerButton(scene));
     const trainlostbugBg = new g.FilledRect({
       scene,
       x: (g.game.width - 650) / 2,

@@ -12,6 +12,7 @@ export type Controller = {
   _preserves: { [key in SceneType]?: g.E };
   _creators: { [key in SceneType]?: () => g.Scene };
   _listener: TriggerContainer<SceneType, g.E>;
+  isMute: boolean;
   put: (key: SceneType, creator: () => g.Scene) => void;
   register: (key: SceneType, listener: (prev: g.E) => void) => void;
   preserve: (key: SceneType, entity: (scene: g.Scene) => g.E) => void;
@@ -25,6 +26,7 @@ const scenes: Controller = {
   _creators: {},
   _listener: new TriggerContainer<SceneType, g.E>(),
 
+  isMute: false,
   put: (key, creator: () => g.Scene) => {
     scenes._creators[key] = creator;
     scenes._scenes[key] = creator();
@@ -49,6 +51,7 @@ const scenes: Controller = {
   reset: () => {
     scenes._scenes = {};
     scenes._preserves = {};
+    // isMute は リプレイ時も引き継ぐため初期化しない
     Object.keys(scenes._creators)
       .map((v) => parseInt(v, 10))
       .filter((v) => !isNaN(v))

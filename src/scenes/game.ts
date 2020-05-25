@@ -13,8 +13,10 @@ const createGameScene = (isAtsumaru: boolean) => {
   const scene = new g.Scene({ game: g.game });
   ticker.register(scene);
   scene.loaded.add(() => {
-    (g.game.assets["start_sound"] as g.AudioAsset).stop();
-    (g.game.assets["game_bgm"] as g.AudioAsset).play();
+    if (!scenes.isMute) {
+      (g.game.assets["start_sound"] as g.AudioAsset).stop();
+      (g.game.assets["game_bgm"] as g.AudioAsset).play();
+    }
     creators.init();
     preserveEntityCreator();
     viewer.init(scene);

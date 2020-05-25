@@ -611,7 +611,7 @@
 		"start_sound": {
 			"type": "audio",
 			"path": "audio/start_sound",
-			"systemId": "sound",
+			"systemId": "music",
 			"duration": 37674,
 			"global": true
 		},
@@ -830,6 +830,25 @@
 			"width": 170,
 			"height": 22,
 			"path": "image/traindiscardbug_20200525_3_txt.png",
+			"global": true
+		},
+		"speaker_off_img": {
+			"type": "image",
+			"width": 92,
+			"height": 92,
+			"path": "image/speaker_off_img.png",
+			"global": true
+		},
+		"speaker_on_img": {
+			"type": "image",
+			"width": 92,
+			"height": 92,
+			"path": "image/speaker_on_img.png",
+			"global": true
+		},
+		"speaker": {
+			"type": "script",
+			"path": "script/entities/speaker.js",
 			"global": true
 		}
 	},

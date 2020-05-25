@@ -52,6 +52,7 @@ export { default as createResidenceBuilder } from "./entities/residence_builder"
 export { default as createScoreViewer } from "./entities/score_view";
 export { default as createScoreLabel } from "./entities/score";
 export { default as createShadow } from "./entities/shadow";
+export { default as createSpeakerButton } from "./entities/speaker";
 export { createSquareSprite } from "./entities/sprite";
 export { default as createStartButton } from "./entities/start";
 export { default as createStaticsPanel } from "./entities/statics_view";
