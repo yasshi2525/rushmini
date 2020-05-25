@@ -810,10 +810,32 @@
 			"type": "script",
 			"path": "script/index.js",
 			"global": true
+		},
+		"traindiscardbug_20200525_1_txt": {
+			"type": "image",
+			"width": 572,
+			"height": 37,
+			"path": "image/traindiscardbug_20200525_1_txt.png",
+			"global": true
+		},
+		"traindiscardbug_20200525_2_txt": {
+			"type": "image",
+			"width": 581,
+			"height": 37,
+			"path": "image/traindiscardbug_20200525_2_txt.png",
+			"global": true
+		},
+		"traindiscardbug_20200525_3_txt": {
+			"type": "image",
+			"width": 170,
+			"height": 22,
+			"path": "image/traindiscardbug_20200525_3_txt.png",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {
-		"@akashic/amflow": "node_modules/@akashic/amflow/lib/index.js"
+		"@akashic/amflow": "node_modules/@akashic/amflow/lib/index.js",
+		"@akashic/akashic-engine": "node_modules/@akashic/akashic-engine/index.js"
 	},
 	"environment": {
 		"sandbox-runtime": "2",
@@ -828,6 +850,8 @@
 		}
 	},
 	"globalScripts": [
+		"node_modules/@akashic/akashic-engine/index.js",
+		"node_modules/@akashic/akashic-engine/lib/main.node.js",
 		"node_modules/@akashic/amflow/lib/index.js"
 	]
 }

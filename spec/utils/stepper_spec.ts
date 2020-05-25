@@ -8,22 +8,25 @@ import RailNode from "models/rail_node";
 import Residence from "models/residence";
 import Station from "models/station";
 import Train from "models/train";
-import userResource from "models/user_resource";
+import userResource, { UserResource } from "models/user_resource";
 import random from "utils/random";
 import stepper from "utils/stepper";
 import ticker from "utils/ticker";
 
 const FPS = 15;
 const oldINTERVAL = Residence.INTERVAL_SEC;
+const oldDIST = UserResource.DIST;
 
 beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
+  UserResource.DIST = 1;
 });
 
 afterAll(() => {
   ticker.reset();
   Residence.INTERVAL_SEC = oldINTERVAL;
+  UserResource.DIST = oldDIST;
 });
 
 describe("stepper", () => {

@@ -1,4 +1,5 @@
 import createLogo from "../entities/logo";
+import { createSquareSprite } from "../entities/sprite";
 import scenes, { SceneType } from "../utils/scene";
 import ticker from "../utils/ticker";
 
@@ -13,6 +14,40 @@ const createTitleScene = () => {
       scenes.replace(SceneType.INSTRUCTION);
     });
     scene.append(createLogo(scene));
+    const trainlostbugBg = new g.FilledRect({
+      scene,
+      x: (g.game.width - 650) / 2,
+      y: 5,
+      width: 650,
+      height: 100,
+      cssColor: "#444444",
+      opacity: 0.8,
+    });
+    scene.append(trainlostbugBg);
+    const trainlostbug1 = createSquareSprite(
+      scene,
+      "traindiscardbug_20200525_1_txt"
+    );
+    trainlostbug1.x = 30;
+    trainlostbug1.y = 5;
+    trainlostbug1.modified();
+    trainlostbugBg.append(trainlostbug1);
+    const trainlostbug2 = createSquareSprite(
+      scene,
+      "traindiscardbug_20200525_2_txt"
+    );
+    trainlostbug2.x = 30;
+    trainlostbug2.y = 37;
+    trainlostbug2.modified();
+    trainlostbugBg.append(trainlostbug2);
+    const trainlostbug3 = createSquareSprite(
+      scene,
+      "traindiscardbug_20200525_3_txt"
+    );
+    trainlostbug3.x = 440;
+    trainlostbug3.y = 70;
+    trainlostbug3.modified();
+    trainlostbugBg.append(trainlostbug3);
 
     let cnt = 0;
     const counter = () => {

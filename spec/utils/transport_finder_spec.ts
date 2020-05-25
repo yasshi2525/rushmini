@@ -9,15 +9,21 @@ import { Pointable } from "models/pointable";
 import RailNode from "models/rail_node";
 import { Routable } from "models/routable";
 import Train from "models/train";
-import userResource from "models/user_resource";
+import userResource, { UserResource } from "models/user_resource";
 import { find } from "utils/common";
 import ticker from "utils/ticker";
 import transportFinder from "utils/transport_finder";
 
 const FPS = 15;
+const oldDIST = UserResource.DIST;
 
 beforeAll(() => {
   ticker.init(FPS);
+  UserResource.DIST = 1;
+});
+
+afterAll(() => {
+  UserResource.DIST = oldDIST;
 });
 
 describe("transport_finder", () => {
