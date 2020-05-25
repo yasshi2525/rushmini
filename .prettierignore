@@ -1,4 +1,5 @@
 script
 coverage
 tmp
+lib
 game.json

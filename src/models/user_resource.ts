@@ -34,7 +34,7 @@ const find = (state: ModelState, l: StateListener) => {
 
 export class UserResource {
   public static STATION_INTERVAL: number = 250;
-  public static TRAIN_INTERVAL: number = 500;
+  public static TRAIN_INTERVAL: number = 2;
   protected action: ActionProxy;
 
   protected state: ModelState;
@@ -57,7 +57,10 @@ export class UserResource {
    * 駅を一定間隔で設置するため、最後に駅を作ってからextendした距離を保持するカウンター
    */
   protected distRail: number;
-  protected distTrain: number;
+  /**
+   * 電車の配置をスキップした駅の数
+   */
+  protected intervalTrain: number;
 
   constructor() {
     this.stateListeners = [];
@@ -65,7 +68,7 @@ export class UserResource {
 
   public init() {
     this.distRail = 0;
-    this.distTrain = 0;
+    this.intervalTrain = 0;
     this.lastPos = undefined;
     this.setState(ModelState.INITED);
     this.committed_state = ModelState.INITED;
@@ -122,6 +125,7 @@ export class UserResource {
     if (this.distRail >= UserResource.STATION_INTERVAL) {
       this.action.buildStation();
       this.distRail = 0;
+      this.intervalTrain++;
     }
   }
 
@@ -129,13 +133,12 @@ export class UserResource {
    * 一定間隔で電車を作成する
    */
   protected interviseTrain(dist: number) {
-    this.distTrain += dist;
-    if (this.distTrain >= UserResource.TRAIN_INTERVAL) {
+    if (this.intervalTrain >= UserResource.TRAIN_INTERVAL) {
       this.action
         .line()
         .filter((lt) => lt.departure() === this.action.tail())
         .forEach((lt) => this.action.deployTrain(lt));
-      this.distTrain = 0;
+      this.intervalTrain = 0;
     }
   }
 
@@ -176,21 +179,35 @@ export class UserResource {
 
   protected insertTerminal() {
     // 建設抑止していた場合、最後にクリックした地点まで延伸する
-    if (this.lastPos && distance(this.lastPos, this.action.tail().loc()) > 0) {
+    // ただし直前に駅がある場合は二重にできて不便のため延伸しない
+    // 本当はもっと手前をみるべきだが、ロールバックを要するので対応見送り
+
+    if (!this.lastPos) {
+      // extendしていない場合は何もしない
+      return;
+    }
+
+    // 保留分 tail -> lastPos を延伸する
+    // ただし、tailが駅で、lastPosまで近ければ延伸しない
+    if (
+      distance(this.lastPos, this.action.tail().loc()) > 0 &&
+      (!this.action.tail().platform ||
+        distance(this.lastPos, this.action.tail().loc()) > UserResource.DIST)
+    ) {
       this.action.extendRail(this.lastPos.x, this.lastPos.y);
       this.action.insertEdge();
     }
-    // 終点に駅をつくる
+
+    // 終点には駅があるようする
     if (!this.action.tail().platform) {
       this.action.buildStation();
       this.action.insertPlatform();
-      this.action.deployTrain(
-        this.action
-          .line()
-          .filter(
-            (lt) => lt.isDeptTask() && lt.stay === this.action.tail().platform
-          )[0]
-      );
+    }
+
+    // 終駅にはかならず電車を配置する
+    let dept = this.action.tail().platform.depts[0];
+    if (dept.trains.length === 0) {
+      this.action.deployTrain(dept);
     }
   }
 
@@ -228,7 +245,7 @@ export class UserResource {
       return;
     }
     this.distRail = 0;
-    this.distTrain = 0;
+    this.intervalTrain = 0;
     this.lastPos = undefined;
     this.action.startBranch(p);
     this.setState(ModelState.STARTED);
@@ -240,7 +257,7 @@ export class UserResource {
     this.committed_length = 0;
     this.stateListeners.length = 0;
     this.distRail = 0;
-    this.distTrain = 0;
+    this.intervalTrain = 0;
   }
 
   public station(rn: RailNode) {
@@ -276,7 +293,7 @@ export class UserResource {
     modelListener.fire(EventType.MODIFIED);
     modelListener.fire(EventType.DELETED);
     this.distRail = 0;
-    this.distTrain = 0;
+    this.intervalTrain = 0;
     this.setState(this.committed_state);
     this.stateListeners
       .filter((l) => l.onRollback)

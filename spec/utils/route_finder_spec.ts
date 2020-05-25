@@ -20,15 +20,18 @@ import transportFinder from "utils/transport_finder";
 
 const FPS = 15;
 const oldRAND = Human.RAND;
+const oldDIST = UserResource.DIST;
 
 beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
   Human.RAND = 0;
+  UserResource.DIST = 1;
 });
 
 afterAll(() => {
   Human.RAND = oldRAND;
+  UserResource.DIST = oldDIST;
 });
 
 describe("route_finder", () => {

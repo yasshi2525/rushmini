@@ -94,17 +94,23 @@ describe("user_resource", () => {
   describe("extend", () => {
     let instance: UserResource;
     let ts: Train[];
+    let sts: Station[];
 
     beforeEach(() => {
       instance = new UserResource();
       instance.init();
       ts = [];
+      sts = [];
       modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
+      modelListener
+        .find(EventType.CREATED, Station)
+        .register((st) => sts.push(st));
     });
 
     afterEach(() => {
       console.warn = oldWarn;
       modelListener.unregisterAll();
+      modelListener.flush();
     });
 
     it("extend", () => {
@@ -145,23 +151,6 @@ describe("user_resource", () => {
       expect(dept1.departure().loc()).toEqual({ x: X1, y: Y1 });
       expect(dept1.destination().loc()).toEqual({ x: X1, y: Y1 });
       expect(dept1.next).toEqual(dept1);
-
-      instance.end();
-
-      const outbound = instance.getPrimaryLine().top.next;
-      expect(outbound.departure().loc()).toEqual({ x: X1, y: Y1 });
-      expect(outbound.destination().loc()).toEqual({ x: X2, y: Y2 });
-
-      const dept2 = outbound.next;
-      expect(dept2.departure().loc()).toEqual({ x: X2, y: Y2 });
-      expect(dept2.destination().loc()).toEqual({ x: X2, y: Y2 });
-
-      const inbound = dept2.next;
-      expect(inbound.departure().loc()).toEqual({ x: X2, y: Y2 });
-      expect(inbound.destination().loc()).toEqual({ x: X1, y: Y1 });
-
-      expect(inbound.next).toEqual(dept1);
-      expect(instance.getState()).toEqual(ModelState.FIXED);
     });
 
     it("build station at regular interval", () => {
@@ -195,9 +184,10 @@ describe("user_resource", () => {
       let tail: LineTask = instance.getPrimaryLine().top;
       expect(ts[0].loc()).toEqual(tail.departure().loc());
 
+      // 駅を2個たてるまでは電車を置かない
       for (
         let i = 0;
-        i < UserResource.TRAIN_INTERVAL / UserResource.DIST - 1;
+        i < (UserResource.STATION_INTERVAL * 2) / UserResource.DIST - 1;
         i++
       ) {
         instance.extend((i + 1) * UserResource.DIST, 0);
@@ -208,16 +198,25 @@ describe("user_resource", () => {
         expect(ts.length).toEqual(1);
       }
 
-      instance.extend((UserResource.TRAIN_INTERVAL + 1) * UserResource.DIST, 0);
+      instance.extend(
+        (UserResource.STATION_INTERVAL * 2 + 1) * UserResource.DIST,
+        0
+      );
       tail = tail.next;
       tail = tail.next;
       expect(ts.length).toEqual(3);
       expect(ts[1].loc()).toEqual(tail.departure().loc());
       expect(ts[2].loc()).toEqual(tail.departure().loc());
-
-      instance.extend(UserResource.TRAIN_INTERVAL, 0);
-      expect(ts.length).toEqual(5);
       expect(instance.getState()).toEqual(ModelState.STARTED);
+    });
+
+    it("deploy 2 train in intervaled station", () => {
+      instance.start(0, 0);
+      for (let i = 0; i < 1000; i++) {
+        instance.extend(i, i);
+        const expected = 1 + Math.floor((sts.length - 1) / 2) * 2;
+        expect(ts.length).toBeCloseTo(expected);
+      }
     });
 
     it("forbit to extend when initial state", () => {
@@ -242,22 +241,58 @@ describe("user_resource", () => {
 
   describe("end", () => {
     let instance: UserResource;
+    let ts: Train[];
+    let sts: Station[];
     beforeEach(() => {
       instance = new UserResource();
       instance.init();
+      ts = [];
+      sts = [];
+      modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
+      modelListener
+        .find(EventType.CREATED, Station)
+        .register((st) => sts.push(st));
     });
 
     afterEach(() => {
       console.warn = oldWarn;
+      modelListener.flush();
+      modelListener.unregisterAll();
     });
 
-    it("end with building station", () => {
+    it("skipping extend ends does nothing", () => {
       instance.start(0, 0);
-      instance.extend(1, 1);
       instance.end();
-      const dept = instance.getPrimaryLine().top.next.next;
-      expect(dept).toBeInstanceOf(DeptTask);
-      expect(dept.departure().loc()).toEqual({ x: 1, y: 1 });
+      expect(sts.length).toEqual(1);
+      expect(ts.length).toEqual(1);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
+    });
+
+    it("end discards lastPos", () => {
+      instance.start(0, 0);
+      instance.extend(1, 1); // lastPos = (1, 1)
+      instance.end();
+      expect(sts.length).toEqual(1);
+      expect(ts.length).toEqual(1);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
+    });
+
+    it("end not discards long distance lastPos", () => {
+      instance.start(0, 0);
+      instance.extend(50, 50); // lastPos = (50, 50)
+      instance.end();
+      expect(sts.length).toEqual(2);
+      expect(ts.length).toEqual(2);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
+    });
+
+    it("end builds station in lastPos", () => {
+      instance.start(0, 0);
+      instance.extend(11, 0);
+      instance.extend(12, 0); // lastPos = (12, 0)
+      instance.end();
+      expect(sts.length).toEqual(2);
+      expect(ts.length).toEqual(2);
       expect(instance.getState()).toEqual(ModelState.FIXED);
     });
 
@@ -547,7 +582,7 @@ describe("user_resource", () => {
 
     it("rollback delete branching", () => {
       userResource.start(0, 0);
-      userResource.extend(3, 4);
+      userResource.extend(13, 4);
       userResource.end();
 
       expect(rns.length).toEqual(2);
