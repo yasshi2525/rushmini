@@ -10,7 +10,6 @@ const createLogo = (loadedScene: g.Scene) => {
     scene: loadedScene,
     width: g.game.width,
     height: g.game.height,
-    touchable: true,
   });
   const title = createSquareSprite(loadedScene, "title_txt");
   title.x = (panel.width - title.width) / 2;
