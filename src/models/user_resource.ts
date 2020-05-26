@@ -208,6 +208,10 @@ export class UserResource {
     let dept = this.action.tail().platform.depts[0];
     if (dept.trains.length === 0) {
       this.action.deployTrain(dept);
+    } else if (!dept.next.isDeptTask()) {
+      // 終駅がある状態で end に入ると、すでに2台おかれている。1台を撤去する
+      // 1点nodeのときは撤去しない
+      dept.next.trains.forEach((t) => t._remove());
     }
   }
 
@@ -224,6 +228,7 @@ export class UserResource {
         // 作成した結果を通知する
         modelListener.fire(EventType.CREATED);
         modelListener.fire(EventType.MODIFIED);
+        modelListener.fire(EventType.DELETED); // 終点に2台電車があるときは1つ消す
         this.setState(ModelState.FIXED);
         break;
       case ModelState.FIXED:
