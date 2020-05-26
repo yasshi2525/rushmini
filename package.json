@@ -1,6 +1,6 @@
 {
   "name": "@yasshi2525/rushmini",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "commuters simulation game",
   "scripts": {
     "build": "rimraf ./script ./tmp && tsc && akashic scan asset script",
