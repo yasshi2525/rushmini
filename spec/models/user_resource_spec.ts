@@ -250,6 +250,9 @@ describe("user_resource", () => {
       sts = [];
       modelListener.find(EventType.CREATED, Train).register((t) => ts.push(t));
       modelListener
+        .find(EventType.DELETED, Train)
+        .register((t) => remove(ts, t));
+      modelListener
         .find(EventType.CREATED, Station)
         .register((st) => sts.push(st));
     });
@@ -292,6 +295,16 @@ describe("user_resource", () => {
       instance.extend(12, 0); // lastPos = (12, 0)
       instance.end();
       expect(sts.length).toEqual(2);
+      expect(ts.length).toEqual(2);
+      expect(instance.getState()).toEqual(ModelState.FIXED);
+    });
+
+    it("end remove double train", () => {
+      instance.start(0, 0);
+      instance.extend(UserResource.STATION_INTERVAL, 0);
+      instance.extend(UserResource.STATION_INTERVAL * 2, 0);
+      instance.end();
+      expect(sts.length).toEqual(3);
       expect(ts.length).toEqual(2);
       expect(instance.getState()).toEqual(ModelState.FIXED);
     });
