@@ -1,4 +1,5 @@
 import cityResource from "../models/city_resource";
+import modelListener, { EventType } from "../models/listener";
 import Point from "../models/point";
 import viewer, { ViewerEvent } from "../utils/viewer";
 import { appendInstruction, createWorkingArea } from "./rectangle";
@@ -9,6 +10,7 @@ const handleOnSelected = (ev: g.PointUpEvent) => {
     ev.point.y + ev.startDelta.y
   );
   cityResource.residence(pos.x, pos.y);
+  modelListener.fire(EventType.CREATED);
   viewer.fire(ViewerEvent.RESIDENCE_ENDED);
 };
 

@@ -173,8 +173,6 @@ export class CityResource {
         others: this.buildings,
       })
     );
-
-    modelListener.fire(EventType.CREATED);
   }
 
   public residence(x?: number, y?: number) {
@@ -197,7 +195,6 @@ export class CityResource {
     } else {
       this.buildings.push(new Residence(this.cs, x, y, this.rand));
     }
-    modelListener.fire(EventType.CREATED);
   }
 
   public reset() {
