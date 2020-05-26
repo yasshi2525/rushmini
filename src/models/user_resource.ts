@@ -1,4 +1,5 @@
-import ActionProxy from "./action";
+import { find, remove } from "../utils/common";
+import ActionProxy, { DeployTrainAction } from "./action";
 import cityResource from "./city_resource";
 import modelListener, { EventType } from "./listener";
 import Platform from "./platform";
@@ -21,7 +22,7 @@ export type StateListener = {
   onReset?: (ev: UserResource) => void;
 };
 
-const find = (state: ModelState, l: StateListener) => {
+const _find = (state: ModelState, l: StateListener) => {
   switch (state) {
     case ModelState.INITED:
       return l.onReset;
@@ -79,7 +80,7 @@ export class UserResource {
   protected setState(state: ModelState) {
     this.state = state;
     this.stateListeners
-      .map((l) => find(state, l))
+      .map((l) => _find(state, l))
       .filter((fn) => fn)
       .forEach((fn) => fn(this));
   }
@@ -209,9 +210,18 @@ export class UserResource {
     if (dept.trains.length === 0) {
       this.action.deployTrain(dept);
     } else if (!dept.next.isDeptTask()) {
-      // 終駅がある状態で end に入ると、すでに2台おかれている。1台を撤去する
+      // 終駅がある状態で end に入ると、すでに2台おかれている(deptとdept.nextに)。1台を撤去する
       // 1点nodeのときは撤去しない
-      dept.next.trains.forEach((t) => t._remove());
+      const lastTrainAction = find(
+        this.action.actions,
+        (a) =>
+          a instanceof DeployTrainAction && dept.next.trains.indexOf(a.t) !== -1
+      );
+      // branch時は電車挿入場所のため、lastTrainActionがみつからない
+      if (lastTrainAction) {
+        lastTrainAction.rollback();
+        remove(this.action.actions, lastTrainAction);
+      }
     }
   }
 

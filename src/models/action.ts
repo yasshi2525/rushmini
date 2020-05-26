@@ -134,7 +134,7 @@ export class InsertPlatformAction implements Transactional {
 }
 
 export class DeployTrainAction implements Transactional {
-  protected t: Train;
+  public t: Train;
 
   act(lt: LineTask) {
     const t = new Train(lt);
@@ -215,7 +215,7 @@ export class IncreaseTrain implements Transactional {
 }
 
 class ActionProxy {
-  protected readonly actions: Transactional[];
+  public readonly actions: Transactional[];
   protected readonly _line: RailLine;
   protected _tailNode: RailNode;
   protected _tailEdge: RailEdge;
