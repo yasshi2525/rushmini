@@ -300,6 +300,7 @@ const handleScored = (_c: Controller) => {
 const handleAutoBuildBonus = (_c: Controller) => {
   cityResource.residence();
   _c.autoBldBonuses.shift();
+  modelListener.fire(ModelEventType.CREATED);
 };
 
 const handleBonusStarted = (_c: Controller) => {

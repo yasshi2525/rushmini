@@ -42,6 +42,7 @@ describe("city_resource", () => {
   it("residence and company is built on initialize", () => {
     const model = new CityResource();
     model.init(WIDTH, HEIGHT, (min, max) => random.random().get(min, max));
+    modelListener.fire(EventType.CREATED);
     expect(cs.length).toEqual(2);
     const c0 = cs[0];
     expect(c0.loc().x).toEqual(WIDTH - AREA);
@@ -61,8 +62,10 @@ describe("city_resource", () => {
   it("residence build randomly", () => {
     const model = new CityResource();
     model.init(WIDTH, HEIGHT, (min, max) => random.random().get(min, max));
+    modelListener.fire(EventType.CREATED);
 
     model.residence(); // NW
+    modelListener.fire(EventType.CREATED);
     expect(rs.length).toEqual(2);
     expect(rs[1].loc().x).toBeGreaterThanOrEqual(0);
     expect(rs[1].loc().x).toBeLessThanOrEqual(WIDTH / 2);
@@ -70,6 +73,7 @@ describe("city_resource", () => {
     expect(rs[1].loc().y).toBeLessThanOrEqual(HEIGHT / 2);
 
     model.residence(); // SW
+    modelListener.fire(EventType.CREATED);
     expect(rs.length).toEqual(3);
     expect(rs[2].loc().x).toBeGreaterThanOrEqual(0);
     expect(rs[2].loc().x).toBeLessThanOrEqual(WIDTH / 2);
@@ -77,6 +81,7 @@ describe("city_resource", () => {
     expect(rs[2].loc().y).toBeLessThanOrEqual(HEIGHT);
 
     model.residence(); // NE
+    modelListener.fire(EventType.CREATED);
     expect(rs.length).toEqual(4);
     expect(rs[3].loc().x).toBeGreaterThanOrEqual(WIDTH / 2);
     expect(rs[3].loc().x).toBeLessThanOrEqual(WIDTH);
@@ -84,6 +89,7 @@ describe("city_resource", () => {
     expect(rs[3].loc().y).toBeLessThanOrEqual(HEIGHT / 2);
 
     model.residence(); // SW
+    modelListener.fire(EventType.CREATED);
     expect(rs.length).toEqual(5);
     expect(rs[4].loc().x).toBeGreaterThanOrEqual(WIDTH / 2);
     expect(rs[4].loc().x).toBeLessThanOrEqual(WIDTH);
