@@ -1,6 +1,6 @@
 {
   "name": "@yasshi2525/rushmini",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "commuters simulation game",
   "scripts": {
     "build": "rimraf ./script ./tmp && tsc && akashic scan asset script",
@@ -13,7 +13,8 @@
     "export": "akashic export html --output ../rushmini-latest.zip --atsumaru",
     "test": "jest",
     "report": "rimraf ./report && jest --config jest-report.config.js",
-    "package": "rimraf ./tmp ./lib && tsc -p tsconfig-pkg.json"
+    "package": "rimraf ./tmp ./lib && tsc -p tsconfig-pkg.json",
+    "doc": "typedoc --out docs src --excludeExternals --externalPattern \"**/node_modules/**\" --includeDeclarations node_modules/@akashic/akashic-engine/lib/main.d.ts"
   },
   "author": "yasshi2525",
   "license": "MIT License",
@@ -56,6 +57,7 @@
     "raf": "^3.4.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^25.5.1",
+    "typedoc": "^0.17.7",
     "typescript": "^3.8.3",
     "web-audio-test-api": "^0.5.2"
   },

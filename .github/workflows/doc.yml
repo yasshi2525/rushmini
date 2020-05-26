@@ -1,4 +1,4 @@
-name: report
+name: doc
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [master]
 
 jobs:
-  report:
-    name: report
+  doc:
+    name: doc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,12 +17,9 @@ jobs:
           node-version: "14"
       - run: npm install -g @akashic/akashic-cli @akashic/akashic-sandbox
       - run: npm install
-      - run: npm run build
-      - run: npm test
-      - name: report
-        run: npm run report
-      - name: Upload score report
+      - run: npm run doc
+      - name: Upload documents
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: score_report-v1.4.4
-          path: report
+          name: docs-v1.4.4
+          path: docs
