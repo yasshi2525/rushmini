@@ -5,9 +5,9 @@ import ticker from "../utils/ticker";
 
 const WAIT_SEC = 15;
 
-const createInstructionScene = () => {
+const createInstructionScene = (isAtsumaru: boolean) => {
   const scene = new g.Scene({ game: g.game });
-  ticker.register(scene);
+  if (!isAtsumaru) ticker.register(scene);
   scene.loaded.add(() => {
     scene.pointUpCapture.add(() => {
       scenes.replace(SceneType.GAME);
