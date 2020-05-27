@@ -14,12 +14,12 @@ describe("instruction", () => {
   });
 
   it("create scene", () => {
-    const scene = createInstructionScene();
+    const scene = createInstructionScene(false);
     expect(scene).not.toBeUndefined();
   });
 
   it("load instruction scene", () => {
-    const scene = createInstructionScene();
+    const scene = createInstructionScene(false);
     g.game.pushScene(scene);
     // just register
     expect(scene.isCurrentScene()).toBeFalsy();
@@ -32,7 +32,7 @@ describe("instruction", () => {
 
   it("point down change to next scene", () => {
     scenes.put(SceneType.GAME, () => new g.Scene({ game: g.game }));
-    const scene = createInstructionScene();
+    const scene = createInstructionScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(scene);
@@ -44,7 +44,7 @@ describe("instruction", () => {
 
   it("do nothing 15 seconds changes to next scene", () => {
     scenes.put(SceneType.GAME, () => new g.Scene({ game: g.game }));
-    const scene = createInstructionScene();
+    const scene = createInstructionScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(scene);

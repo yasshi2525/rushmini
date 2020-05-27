@@ -14,12 +14,12 @@ describe("title", () => {
   });
 
   it("create scene", () => {
-    const scene = createTitleScene();
+    const scene = createTitleScene(false);
     expect(scene).not.toBeUndefined();
   });
 
   it("load title scene", () => {
-    const scene = createTitleScene();
+    const scene = createTitleScene(false);
     g.game.pushScene(scene);
     // just register
     expect(scene.isCurrentScene()).toBeFalsy();
@@ -33,7 +33,7 @@ describe("title", () => {
 
   it("point down change to next scene", () => {
     scenes.put(SceneType.INSTRUCTION, () => new g.Scene({ game: g.game }));
-    const scene = createTitleScene();
+    const scene = createTitleScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(scene);
@@ -46,7 +46,7 @@ describe("title", () => {
 
   it("do nothing 6 seconds changes to next scene", () => {
     scenes.put(SceneType.INSTRUCTION, () => new g.Scene({ game: g.game }));
-    const scene = createTitleScene();
+    const scene = createTitleScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
     expect(g.game.scene()).toEqual(scene);
@@ -60,7 +60,7 @@ describe("title", () => {
   });
 
   it("toggle mute", () => {
-    const scene = createTitleScene();
+    const scene = createTitleScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
     scene.children[1].children[0].pointUp.fire();
