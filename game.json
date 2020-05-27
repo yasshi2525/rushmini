@@ -811,27 +811,6 @@
 			"path": "script/index.js",
 			"global": true
 		},
-		"traindiscardbug_20200525_1_txt": {
-			"type": "image",
-			"width": 572,
-			"height": 37,
-			"path": "image/traindiscardbug_20200525_1_txt.png",
-			"global": true
-		},
-		"traindiscardbug_20200525_2_txt": {
-			"type": "image",
-			"width": 581,
-			"height": 37,
-			"path": "image/traindiscardbug_20200525_2_txt.png",
-			"global": true
-		},
-		"traindiscardbug_20200525_3_txt": {
-			"type": "image",
-			"width": 170,
-			"height": 22,
-			"path": "image/traindiscardbug_20200525_3_txt.png",
-			"global": true
-		},
 		"speaker_off_img": {
 			"type": "image",
 			"width": 92,
