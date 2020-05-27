@@ -6,9 +6,9 @@ import ticker from "../utils/ticker";
 
 const WAIT_SEC = 6;
 
-const createTitleScene = () => {
+const createTitleScene = (isAtsumaru: boolean) => {
   const scene = new g.Scene({ game: g.game, name: "title" });
-  ticker.register(scene);
+  if (!isAtsumaru) ticker.register(scene);
   scene.loaded.add(() => {
     if (!scenes.isMute) (g.game.assets["start_sound"] as g.AudioAsset).play();
     scene.pointUpCapture.add((ev) => {

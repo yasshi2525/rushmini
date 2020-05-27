@@ -35,8 +35,8 @@ const init = (param: GameMainParameterObject) => {
 };
 
 const createScenes = (isAtsumaru: boolean) => {
-  scenes.put(SceneType.TITLE, createTitleScene);
-  scenes.put(SceneType.INSTRUCTION, createInstructionScene);
+  scenes.put(SceneType.TITLE, () => createTitleScene(isAtsumaru));
+  scenes.put(SceneType.INSTRUCTION, () => createInstructionScene(isAtsumaru));
   scenes.put(SceneType.GAME, () => createGameScene(isAtsumaru));
   scenes.put(SceneType.ENDING, () => createEndingScene(isAtsumaru));
   scenes.register(SceneType.ENDING, handleEnding);
