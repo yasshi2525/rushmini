@@ -7,6 +7,7 @@ import Train from "../models/train";
 import createPointableView from "./point_view";
 import { registerRailEdgeView } from "./rail_edge_view";
 import { createSquareSprite } from "./sprite";
+import { generateStationCreator } from "./station_view";
 import { generateTrainCreator } from "./train_view";
 
 export type ViewCreator<T extends Pointable> = (
@@ -78,9 +79,7 @@ const creators = {
     creators.put(Residence, (scene, _) =>
       createSquareSprite(scene, "residence_basic")
     );
-    creators.put(Station, (scene, _) =>
-      createSquareSprite(scene, "station_basic")
-    );
+    creators.put(Station, generateStationCreator);
     creators.put(Train, generateTrainCreator);
     creators.put(Human, (scene, _) => createSquareSprite(scene, "human_basic"));
     registerRailEdgeView();

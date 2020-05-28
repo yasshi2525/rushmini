@@ -45,7 +45,6 @@ export {
   createWorkingArea,
   appendInstruction,
   appnedWarning,
-  animateFull,
 } from "./entities/rectangle";
 export { default as createReplay } from "./entities/replay";
 export { default as createResidenceBuilder } from "./entities/residence_builder";

@@ -64,6 +64,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
     }
     while (this.inQueue.length > 0) {
       const h = this.inQueue.shift();
+      modelListener.add(EventType.MODIFIED, this.station);
       // 途中で再経路探索され、目的地が変わった場合は無視
       // => 必ず h.step()でコンコースに
       if (h._getNext() === this && this.outQueue.indexOf(h) === -1) {
@@ -145,6 +146,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
     if (subject._seek(this)) {
       // 到着したならば、入場待機列に移動させる
       this.inQueue.push(subject);
+      modelListener.add(EventType.MODIFIED, this.station);
       subject.state(HumanState.WAIT_ENTER_GATE);
     } else {
       subject.state(HumanState.MOVE);
@@ -154,6 +156,7 @@ class Gate extends RoutableObject implements Pointable, Steppable {
   public _giveup(subject: Human) {
     // 改札に入りたかった人を取り除く。改札へ移動中の人の場合何もしない
     removeIf(this.inQueue, subject);
+    modelListener.add(EventType.MODIFIED, this.station);
     // 改札を出たかった人を取り除く
     removeIf(this.outQueue, subject);
   }

@@ -2,7 +2,6 @@ import EdgeTask from "../models/edge_task";
 import RailEdge from "../models/rail_edge";
 import Train from "../models/train";
 import { ViewObject } from "./factory";
-import { animateFull } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
 const SLIDE = 20;
@@ -44,45 +43,57 @@ const getAngle = (re: RailEdge) => {
 };
 
 export const trainModifer = (vo: ViewObject<Train>) => {
-  const sprite = vo.viewer.children[0];
+  const panel = vo.viewer.children[0];
   const t = vo.subject;
   const e = edge(t, true);
-  sprite.x = getX(e);
-  sprite.y = getY(e);
-  sprite.angle = getAngle(edge(t, false));
-  sprite.modified();
+  panel.x = getX(e);
+  panel.y = getY(e);
+  panel.angle = getAngle(edge(t, false));
+  panel.modified();
   if (t.passengers.length === Train.CAPACITY) {
-    animateFull(sprite, () => t.passengers.length < Train.CAPACITY);
+    panel.children[0].hide();
+    panel.children[1].show();
+  } else {
+    panel.children[0].show();
+    panel.children[1].hide();
   }
 };
 
 const SHAKE = [2.5, 7.5, 15, 7.5, 2.5, 0, -2.5, -7.5, -15, -7.5, -2.5, 0];
 
 export const riddenModifer = (vo: ViewObject<Train>) => {
-  const sprite = vo.viewer.children[0];
-  if (sprite.update.length > 0) {
+  const panel = vo.viewer.children[0];
+  if (panel.update.length > 0) {
     return;
   }
   let count = 0;
   const baseAngle = getAngle(edge(vo.subject, false));
   const shake = () => {
     if (count < SHAKE.length) {
-      sprite.angle = baseAngle + SHAKE[count];
+      panel.angle = baseAngle + SHAKE[count];
     } else {
-      sprite.update.remove(shake);
+      panel.update.remove(shake);
     }
-    sprite.modified();
+    panel.modified();
     count++;
   };
-  sprite.update.add(shake);
+  panel.update.add(shake);
 };
 
 export const generateTrainCreator = (scene: g.Scene, t: Train) => {
+  const panel = new g.E({ scene });
   const sprite = createSquareSprite(scene, "train_basic");
+  panel.append(sprite);
+  const spriteFull = createSquareSprite(scene, "crowed_train_img");
+  spriteFull.hide();
+  panel.append(spriteFull);
+
   const e = edge(t, true);
-  sprite.x = getX(e);
-  sprite.y = getY(e);
-  sprite.angle = getAngle(edge(t, false));
-  sprite.modified();
-  return sprite;
+  panel.width = sprite.width;
+  panel.height = sprite.height;
+  panel.x = getX(e);
+  panel.y = getY(e);
+  panel.angle = getAngle(edge(t, false));
+  panel.modified();
+  return panel;
 };
