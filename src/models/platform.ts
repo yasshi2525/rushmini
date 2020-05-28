@@ -118,10 +118,6 @@ class Platform extends RoutableObject {
       subject._setGate(undefined);
       subject._complete();
       this.inQueue.push(subject);
-      // 満員になったら通知
-      if (this.numUsed() === Platform.CAPACITY) {
-        modelListener.add(EventType.MODIFIED, this.station);
-      }
       subject.state(HumanState.WAIT_ENTER_DEPTQUEUE);
       subject._setPlatform(this);
       return true;

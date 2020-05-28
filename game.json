@@ -705,13 +705,6 @@
 			"path": "image/statics_7_txt.png",
 			"global": true
 		},
-		"full_basic": {
-			"type": "image",
-			"width": 37,
-			"height": 37,
-			"path": "image/full_basic.png",
-			"global": true
-		},
 		"tweet": {
 			"type": "script",
 			"path": "script/utils/tweet.js",
@@ -828,6 +821,27 @@
 		"speaker": {
 			"type": "script",
 			"path": "script/entities/speaker.js",
+			"global": true
+		},
+		"crowed_level1_img": {
+			"type": "image",
+			"width": 60,
+			"height": 60,
+			"path": "image/crowed_level1_img.png",
+			"global": true
+		},
+		"crowed_level2_img": {
+			"type": "image",
+			"width": 81,
+			"height": 81,
+			"path": "image/crowed_level2_img.png",
+			"global": true
+		},
+		"crowed_train_img": {
+			"type": "image",
+			"width": 70,
+			"height": 70,
+			"path": "image/crowed_train_img.png",
 			"global": true
 		}
 	},
