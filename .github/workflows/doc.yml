@@ -21,5 +21,5 @@ jobs:
       - name: Upload documents
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: rushmini-docs-v1.5.1
+          name: rushmini-docs-v1.5.2
           path: docs
