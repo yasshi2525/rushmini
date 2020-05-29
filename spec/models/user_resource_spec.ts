@@ -282,7 +282,7 @@ describe("user_resource", () => {
 
     it("end not discards long distance lastPos", () => {
       instance.start(0, 0);
-      instance.extend(50, 50); // lastPos = (50, 50)
+      instance.extend(100, 100); // lastPos = (100, 100)
       instance.end();
       expect(sts.length).toEqual(2);
       expect(ts.length).toEqual(2);
@@ -291,8 +291,8 @@ describe("user_resource", () => {
 
     it("end builds station in lastPos", () => {
       instance.start(0, 0);
-      instance.extend(11, 0);
-      instance.extend(12, 0); // lastPos = (12, 0)
+      instance.extend(100, 0);
+      instance.extend(102, 0); // lastPos = (102, 0)
       instance.end();
       expect(sts.length).toEqual(2);
       expect(ts.length).toEqual(2);
@@ -595,7 +595,7 @@ describe("user_resource", () => {
 
     it("rollback delete branching", () => {
       userResource.start(0, 0);
-      userResource.extend(13, 4);
+      userResource.extend(100, 4);
       userResource.end();
 
       expect(rns.length).toEqual(2);

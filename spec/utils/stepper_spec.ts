@@ -16,17 +16,20 @@ import ticker from "utils/ticker";
 const FPS = 15;
 const oldINTERVAL = Residence.INTERVAL_SEC;
 const oldDIST = UserResource.DIST;
+const oldTERMINAL = UserResource.TERMINAL_INTERVAL;
 
 beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
   UserResource.DIST = 1;
+  UserResource.TERMINAL_INTERVAL = 1;
 });
 
 afterAll(() => {
   ticker.reset();
   Residence.INTERVAL_SEC = oldINTERVAL;
   UserResource.DIST = oldDIST;
+  UserResource.TERMINAL_INTERVAL = oldTERMINAL;
 });
 
 describe("stepper", () => {
