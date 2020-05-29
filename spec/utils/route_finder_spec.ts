@@ -21,17 +21,20 @@ import transportFinder from "utils/transport_finder";
 const FPS = 15;
 const oldRAND = Human.RAND;
 const oldDIST = UserResource.DIST;
+const oldInterval = UserResource.TERMINAL_INTERVAL;
 
 beforeAll(() => {
   random.init(new g.XorshiftRandomGenerator(0));
   ticker.init(FPS);
   Human.RAND = 0;
   UserResource.DIST = 1;
+  UserResource.TERMINAL_INTERVAL = 1;
 });
 
 afterAll(() => {
   Human.RAND = oldRAND;
   UserResource.DIST = oldDIST;
+  UserResource.TERMINAL_INTERVAL = oldInterval;
 });
 
 describe("route_finder", () => {

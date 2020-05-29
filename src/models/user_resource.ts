@@ -36,6 +36,7 @@ const _find = (state: ModelState, l: StateListener) => {
 export class UserResource {
   public static STATION_INTERVAL: number = 250;
   public static TRAIN_INTERVAL: number = 2;
+  public static TERMINAL_INTERVAL: number = 95;
   protected action: ActionProxy;
 
   protected state: ModelState;
@@ -179,22 +180,27 @@ export class UserResource {
   }
 
   protected insertTerminal() {
-    // 建設抑止していた場合、最後にクリックした地点まで延伸する
-    // ただし直前に駅がある場合は二重にできて不便のため延伸しない
-    // 本当はもっと手前をみるべきだが、ロールバックを要するので対応見送り
-
     if (!this.lastPos) {
       // extendしていない場合は何もしない
       return;
     }
 
-    // 保留分 tail -> lastPos を延伸する
-    // ただし、tailが駅で、lastPosまで近ければ延伸しない
-    if (
-      distance(this.lastPos, this.action.tail().loc()) > 0 &&
-      (!this.action.tail().platform ||
-        distance(this.lastPos, this.action.tail().loc()) > UserResource.DIST)
-    ) {
+    // 最後に駅を作ってからカーソルまで距離が短い場合、
+    // 駅作成までロールバックする
+    let dist = distance(this.lastPos, this.action.tail().loc());
+    let tail = this.action.tail();
+    while (tail.platform !== this.action.tailPlatform()) {
+      const out = find(tail.in, (re) => re.isOutbound);
+      dist += out.arrow.length();
+      tail = out.from;
+    }
+
+    if (dist < UserResource.TERMINAL_INTERVAL - DELTA) {
+      while (this.action.tail().platform !== this.action.tailPlatform()) {
+        this.action.actions.pop().rollback();
+      }
+    } else if (distance(this.lastPos, this.action.tail().loc()) > 0) {
+      // 建設抑止していた場合、最後にクリックした地点まで延伸する
       this.action.extendRail(this.lastPos.x, this.lastPos.y);
       this.action.insertEdge();
     }

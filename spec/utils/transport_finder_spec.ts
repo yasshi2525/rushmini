@@ -16,14 +16,17 @@ import transportFinder from "utils/transport_finder";
 
 const FPS = 15;
 const oldDIST = UserResource.DIST;
+const oldTERMINAL = UserResource.TERMINAL_INTERVAL;
 
 beforeAll(() => {
   ticker.init(FPS);
   UserResource.DIST = 1;
+  UserResource.TERMINAL_INTERVAL = 1;
 });
 
 afterAll(() => {
   UserResource.DIST = oldDIST;
+  UserResource.TERMINAL_INTERVAL = oldTERMINAL;
 });
 
 describe("transport_finder", () => {
