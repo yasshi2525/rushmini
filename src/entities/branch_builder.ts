@@ -1,6 +1,8 @@
+import modelListener, { EventType } from "../models/listener";
+import Point, { distance } from "../models/point";
 import Station from "../models/station";
 import userResource from "../models/user_resource";
-import { find } from "../utils/common";
+import { find, remove } from "../utils/common";
 import routeFinder from "../utils/route_finder";
 import viewer, { ViewerEvent } from "../utils/viewer";
 import connect from "./connector";
@@ -13,6 +15,8 @@ import {
 } from "./rectangle";
 import { createSquareSprite } from "./sprite";
 
+const DIST = 62;
+
 const createEmphasis = (scene: g.Scene, subject: Station, name: string) => {
   const sprite = createSquareSprite(scene, name);
   const panel = adjust(scene, subject, sprite);
@@ -20,6 +24,12 @@ const createEmphasis = (scene: g.Scene, subject: Station, name: string) => {
 };
 
 const createBranchBuilder = (loadedScene: g.Scene) => {
+  const sts: Station[] = [];
+  modelListener.find(EventType.CREATED, Station).register((st) => sts.push(st));
+  modelListener
+    .find(EventType.DELETED, Station)
+    .register((st) => remove(sts, st));
+
   let started = false;
   const panel = createWorkingArea(loadedScene, {
     touchable: true,
@@ -55,16 +65,10 @@ const createBranchBuilder = (loadedScene: g.Scene) => {
       pointerId = ev.pointerId;
       warning.hide();
 
-      const obj = panel.findPointSourceByPoint(
-        { x: ev.point.x + panel.x, y: ev.point.y + panel.y },
-        undefined,
-        true
-      );
-      const found = find(
-        factory.children,
-        (vo) => vo.viewer.children[0] === obj?.target
-      );
-      if (found) {
+      const pos = new Point(ev.point.x, ev.point.y);
+      sts.sort((a, b) => distance(a.loc(), pos) - distance(b.loc(), pos));
+      if (distance(sts[0].loc(), pos) < DIST) {
+        const found = find(factory.children, (vo) => vo.subject === sts[0]);
         container.hide();
         pivot = createEmphasis(panel.scene, found.subject, "station_covered");
         panel.append(pivot);

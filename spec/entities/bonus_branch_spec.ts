@@ -150,12 +150,12 @@ describe("bonus_branch", () => {
       local: undefined,
       player: { id: "dummyPlayerID" },
       point: { x: 2, y: 2 },
-      prevDelta: { x: 100, y: 100 },
-      startDelta: { x: 100, y: 100 },
+      prevDelta: { x: 120, y: 100 },
+      startDelta: { x: 120, y: 100 },
       priority: 2,
       pointerId: 1,
       target: branch_builder,
-      type: g.EventType.PointDown,
+      type: g.EventType.PointMove,
     });
 
     expect(viewer.isBonusing).toBeTruthy();
@@ -167,7 +167,7 @@ describe("bonus_branch", () => {
       pointerId: 1,
       priority: 2,
       prevDelta: { x: 0, y: 0 },
-      startDelta: { x: 100, y: 100 },
+      startDelta: { x: 120, y: 100 },
       target: branch_builder,
       type: g.EventType.PointUp,
     });
