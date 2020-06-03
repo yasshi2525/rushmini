@@ -1,6 +1,6 @@
 {
   "name": "@yasshi2525/rushmini",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "commuters simulation game",
   "scripts": {
     "build": "rimraf ./script ./tmp && tsc && akashic scan asset script",
@@ -45,7 +45,7 @@
     "@akashic/game-driver": "^1.8.0",
     "@akashic/pdi-browser": "^1.9.0",
     "@types/jest": "^25.2.3",
-    "@types/node": "^14.0.5",
+    "@types/node": "^14.0.9",
     "btoa": "^1.2.1",
     "canvas": "^2.6.1",
     "fs": "0.0.1-security",
@@ -56,7 +56,7 @@
     "prettier-plugin-import-sort": "0.0.4",
     "raf": "^3.4.1",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.0.0",
+    "ts-jest": "^26.1.0",
     "typedoc": "^0.17.7",
     "typescript": "^3.9.3",
     "web-audio-test-api": "^0.5.2"
