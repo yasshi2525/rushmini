@@ -11,7 +11,7 @@ const createInstructionScene = (isAtsumaru: boolean) => {
   if (!isAtsumaru) ticker.register(scene);
   scene.loaded.add(() => {
     scene.pointUpCapture.add((ev) => {
-      if (!ev.target) scenes.replace(SceneType.GAME);
+      if (!ev?.target?.touchable) scenes.replace(SceneType.GAME);
     });
     scene.append(createInstruction(scene));
     scene.append(createAdviceBar(scene));

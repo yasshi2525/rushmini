@@ -69,19 +69,19 @@ const createAdviceView = (loadedScene: g.Scene) => {
 
     if (adv.pointer) {
       pointer = createSquareSprite(loadedScene, "advice_pointer_img");
-      pointer.x = adv.pointer.x - 50 + g.game.width * 0.1;
-      pointer.y = adv.pointer.y - 50 + g.game.height * 0.1;
+      pointer.x = -panel.x + adv.pointer.x - 50 + g.game.width * 0.1;
+      pointer.y = -panel.y + adv.pointer.y - 50 + g.game.height * 0.1;
       pointer.update.add(() => {
         if (adv.pointer === undefined) {
           pointer.hide();
           return;
         }
-        pointer.x = adv.pointer.x - 50 + g.game.width * 0.1;
-        pointer.y = adv.pointer.y - 50 + g.game.height * 0.1;
+        pointer.x = -panel.x + adv.pointer.x - 50 + g.game.width * 0.1;
+        pointer.y = -panel.y + adv.pointer.y - 50 + g.game.height * 0.1;
         pointer.modified();
         pointer.show();
       });
-      loadedScene.append(pointer);
+      panel.append(pointer);
     }
     suspend = ticker.fps() * SUSPEND_SEC;
     panel.show();
