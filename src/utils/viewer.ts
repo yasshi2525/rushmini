@@ -1,3 +1,4 @@
+import advices from "../models/advice";
 import cityResource from "../models/city_resource";
 import modelListener, {
   EventType as ModelEventType,
@@ -61,6 +62,10 @@ export enum ViewerType {
    * 作業領域の枠
    */
   FRAME,
+  /**
+   * アドバイスを表示
+   */
+  ADVICES,
   /**
    * ボーナス選択画面
    */
@@ -244,6 +249,7 @@ const parent = (_c: Controller, key: ViewerType, scene: g.Scene) => {
 };
 
 const initController = (width: number, height: number) => {
+  advices.init();
   statics.init();
   transportFinder.init();
   routeFinder.init();

@@ -63,9 +63,9 @@ describe("title", () => {
     const scene = createTitleScene(false);
     g.game.pushScene(scene);
     g.game.tick(false);
-    scene.children[1].children[0].pointUp.fire();
+    scene.children[2].children[0].pointUp.fire();
     expect(scenes.isMute).toBeTruthy();
-    scene.children[1].children[1].pointUp.fire();
+    scene.children[2].children[1].pointUp.fire();
     expect(scenes.isMute).toBeFalsy();
     expect(g.game.scene()).toEqual(scene);
   });

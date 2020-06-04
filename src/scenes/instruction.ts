@@ -1,3 +1,4 @@
+import createAdviceBar from "../entities/advice_bar";
 import createInstruction from "../entities/instruction_guide";
 import createStartButton from "../entities/start";
 import scenes, { SceneType } from "../utils/scene";
@@ -9,10 +10,11 @@ const createInstructionScene = (isAtsumaru: boolean) => {
   const scene = new g.Scene({ game: g.game });
   if (!isAtsumaru) ticker.register(scene);
   scene.loaded.add(() => {
-    scene.pointUpCapture.add(() => {
-      scenes.replace(SceneType.GAME);
+    scene.pointUpCapture.add((ev) => {
+      if (!ev?.target?.touchable) scenes.replace(SceneType.GAME);
     });
     scene.append(createInstruction(scene));
+    scene.append(createAdviceBar(scene));
     scene.append(createStartButton(scene));
 
     let cnt = 0;

@@ -1,4 +1,6 @@
 // entities
+export { default as createAdviceBar } from "./entities/advice_bar";
+export { default as createAdviceView } from "./entities/advice_view";
 export { default as createBonusBadge } from "./entities/bonus_badge";
 export { default as createBonusBranch } from "./entities/bonus_branch";
 export { default as createBonusComponent } from "./entities/bonus_component";
@@ -21,7 +23,10 @@ export { default as ViewObjectFactory, ViewObject } from "./entities/factory";
 export { default as createFont } from "./entities/font";
 export { default as createFrame } from "./entities/frame";
 export { default as createHelp } from "./entities/help";
-export { default as createHumanDespawner } from "./entities/human_despawner";
+export {
+  default as createHumanDespawner,
+  DespawnEvent,
+} from "./entities/human_despawner";
 export { humanModifier } from "./entities/human_view";
 export { default as createInstruction } from "./entities/instruction_guide";
 export { default as preserveEntityCreator } from "./entities/loader";
@@ -48,7 +53,10 @@ export {
 } from "./entities/rectangle";
 export { default as createReplay } from "./entities/replay";
 export { default as createResidenceBuilder } from "./entities/residence_builder";
-export { default as createScoreViewer } from "./entities/score_view";
+export {
+  default as createScoreViewer,
+  ScoreViewEvent,
+} from "./entities/score_view";
 export { default as createScoreLabel } from "./entities/score";
 export { default as createShadow } from "./entities/shadow";
 export { default as createSpeakerButton } from "./entities/speaker";
@@ -79,6 +87,18 @@ export {
   StartBranchAction,
   IncreaseTrain,
 } from "./models/action";
+export {
+  default as advices,
+  Advice,
+  InitialAdvice,
+  RollbackAdvice,
+  OpeningAdvice,
+  ScoredAdvice,
+  CrowdedTrainAdvice,
+  DespawnAdvice,
+  CrowdedStationAdvice,
+  DirectResidence,
+} from "./models/advice";
 export { default as cityResource, CityResource } from "./models/city_resource";
 export { default as Company } from "./models/company";
 export { default as DeptTask, DeptTaskRouter } from "./models/dept_task";

@@ -843,6 +843,189 @@
 			"height": 70,
 			"path": "image/crowed_train_img.png",
 			"global": true
+		},
+		"advice_view": {
+			"type": "script",
+			"path": "script/entities/advice_view.js",
+			"global": true
+		},
+		"advice_bar": {
+			"type": "script",
+			"path": "script/entities/advice_bar.js",
+			"global": true
+		},
+		"advice": {
+			"type": "script",
+			"path": "script/models/advice.js",
+			"global": true
+		},
+		"advice_mode_basic": {
+			"type": "image",
+			"width": 100,
+			"height": 100,
+			"path": "image/advice_mode_basic.png",
+			"global": true
+		},
+		"advice_off_img": {
+			"type": "image",
+			"width": 87,
+			"height": 84,
+			"path": "image/advice_off_img.png",
+			"global": true
+		},
+		"advice_on_img": {
+			"type": "image",
+			"width": 88,
+			"height": 88,
+			"path": "image/advice_on_img.png",
+			"global": true
+		},
+		"advice_crowded_station_1_txt": {
+			"type": "image",
+			"width": 511,
+			"height": 33,
+			"path": "image/advice_crowded_station_1_txt.png",
+			"global": true
+		},
+		"advice_crowded_station_2_txt": {
+			"type": "image",
+			"width": 577,
+			"height": 33,
+			"path": "image/advice_crowded_station_2_txt.png",
+			"global": true
+		},
+		"advice_crowded_station_train_1_txt": {
+			"type": "image",
+			"width": 511,
+			"height": 33,
+			"path": "image/advice_crowded_station_train_1_txt.png",
+			"global": true
+		},
+		"advice_crowded_station_train_2_txt": {
+			"type": "image",
+			"width": 533,
+			"height": 33,
+			"path": "image/advice_crowded_station_train_2_txt.png",
+			"global": true
+		},
+		"advice_crowded_train_1_txt": {
+			"type": "image",
+			"width": 577,
+			"height": 33,
+			"path": "image/advice_crowded_train_1_txt.png",
+			"global": true
+		},
+		"advice_crowded_train_2_txt": {
+			"type": "image",
+			"width": 467,
+			"height": 33,
+			"path": "image/advice_crowded_train_2_txt.png",
+			"global": true
+		},
+		"advice_despawn_1_txt": {
+			"type": "image",
+			"width": 489,
+			"height": 33,
+			"path": "image/advice_despawn_1_txt.png",
+			"global": true
+		},
+		"advice_despawn_2_txt": {
+			"type": "image",
+			"width": 643,
+			"height": 33,
+			"path": "image/advice_despawn_2_txt.png",
+			"global": true
+		},
+		"advice_directed_1_txt": {
+			"type": "image",
+			"width": 511,
+			"height": 33,
+			"path": "image/advice_directed_1_txt.png",
+			"global": true
+		},
+		"advice_directed_2_txt": {
+			"type": "image",
+			"width": 709,
+			"height": 33,
+			"path": "image/advice_directed_2_txt.png",
+			"global": true
+		},
+		"advice_init_1_txt": {
+			"type": "image",
+			"width": 621,
+			"height": 33,
+			"path": "image/advice_init_1_txt.png",
+			"global": true
+		},
+		"advice_init_2_txt": {
+			"type": "image",
+			"width": 533,
+			"height": 33,
+			"path": "image/advice_init_2_txt.png",
+			"global": true
+		},
+		"advice_opening_1_txt": {
+			"type": "image",
+			"width": 687,
+			"height": 33,
+			"path": "image/advice_opening_1_txt.png",
+			"global": true
+		},
+		"advice_opening_2_txt": {
+			"type": "image",
+			"width": 423,
+			"height": 33,
+			"path": "image/advice_opening_2_txt.png",
+			"global": true
+		},
+		"advice_rollback_1_txt": {
+			"type": "image",
+			"width": 533,
+			"height": 33,
+			"path": "image/advice_rollback_1_txt.png",
+			"global": true
+		},
+		"advice_rollback_2_txt": {
+			"type": "image",
+			"width": 313,
+			"height": 33,
+			"path": "image/advice_rollback_2_txt.png",
+			"global": true
+		},
+		"advice_scored_1_txt": {
+			"type": "image",
+			"width": 467,
+			"height": 33,
+			"path": "image/advice_scored_1_txt.png",
+			"global": true
+		},
+		"advice_scored_2_txt": {
+			"type": "image",
+			"width": 13,
+			"height": 33,
+			"path": "image/advice_scored_2_txt.png",
+			"global": true
+		},
+		"advice_txt": {
+			"type": "image",
+			"width": 97,
+			"height": 45,
+			"path": "image/advice_txt.png",
+			"global": true
+		},
+		"instructor_basic": {
+			"type": "image",
+			"width": 98,
+			"height": 98,
+			"path": "image/instructor_basic.png",
+			"global": true
+		},
+		"advice_pointer_img": {
+			"type": "image",
+			"width": 100,
+			"height": 100,
+			"path": "image/advice_pointer_img.png",
+			"global": true
 		}
 	},
 	"moduleMainScripts": {

@@ -19,7 +19,7 @@ const createLogo = (loadedScene: g.Scene) => {
 
   const img = createSquareSprite(loadedScene, "title_img");
   img.x = (panel.width - img.width) / 2;
-  img.y = panel.height * 0.4;
+  img.y = panel.height * 0.32;
   img.modified();
   panel.append(img);
 

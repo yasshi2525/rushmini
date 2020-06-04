@@ -1,3 +1,4 @@
+import createAdviceBar from "../entities/advice_bar";
 import createLogo from "../entities/logo";
 import createSpeakerButton from "../entities/speaker";
 import { createSquareSprite } from "../entities/sprite";
@@ -16,6 +17,7 @@ const createTitleScene = (isAtsumaru: boolean) => {
       if (!ev?.target?.touchable) scenes.replace(SceneType.INSTRUCTION);
     });
     scene.append(createLogo(scene));
+    scene.append(createAdviceBar(scene));
     scene.append(createSpeakerButton(scene));
 
     let cnt = 0;

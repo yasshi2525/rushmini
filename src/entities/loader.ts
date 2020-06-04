@@ -1,4 +1,5 @@
 import viewer, { ViewerType } from "../utils/viewer";
+import createAdviceView from "./advice_view";
 import createBonusPanel from "./bonus";
 import createBonusBadge from "./bonus_badge";
 import createBonusBranch from "./bonus_branch";
@@ -26,6 +27,7 @@ import createWaitPanel from "./waiter";
  */
 const preserveEntityCreator = () => {
   viewer.put(ViewerType.FRAME, createFrame);
+  viewer.put(ViewerType.ADVICES, createAdviceView);
   viewer.put(ViewerType.BONUS_BADGE, createBonusBadge);
   viewer.put(ViewerType.BONUS_BRANCH, createBonusBranch);
   viewer.put(ViewerType.BONUS_STATION, createBonusStation);
