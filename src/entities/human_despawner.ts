@@ -10,10 +10,23 @@ import { createSquareSprite } from "./sprite";
 const ANIMATION_SEC = 1;
 const ACCELERATION = 0.1;
 
+export class DespawnEvent {
+  public readonly panel: g.E;
+  public readonly sprite: g.E;
+  public readonly isArchived: boolean;
+  constructor(panel: g.E, sprite: g.E, isArchived: boolean) {
+    this.panel = panel;
+    this.sprite = sprite;
+    this.isArchived = isArchived;
+  }
+}
+
 const handleDeleted = (container: g.E, h: Human) => {
   const scene = container.scene;
   const sprite = createSquareSprite(scene, "human_basic");
   const panel = adjust(scene, h, sprite);
+  const ev = new DespawnEvent(panel, sprite, h.state() === HumanState.ARCHIVED);
+  modelListener.add(EventType.CREATED, ev);
 
   let velocity = 0;
   const initPanelLoc = new Point(panel.x, panel.y);
@@ -40,6 +53,7 @@ const handleDeleted = (container: g.E, h: Human) => {
     if (panel.opacity === 0) {
       container.remove(panel);
       scene.update.remove(update);
+      modelListener.add(EventType.DELETED, ev);
     }
 
     velocity += ACCELERATION;

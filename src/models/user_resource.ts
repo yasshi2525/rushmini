@@ -20,6 +20,7 @@ export type StateListener = {
   onFixed?: (ev: UserResource) => void;
   onRollback?: (ev: UserResource) => void;
   onReset?: (ev: UserResource) => void;
+  onCommitted?: (ev: UserResource) => void;
 };
 
 const _find = (state: ModelState, l: StateListener) => {
@@ -307,6 +308,10 @@ export class UserResource {
     this.action.commit();
     this.committed_state = this.state;
     this.committed_length = this.action.line().length();
+    this.stateListeners
+      .map((l) => l.onCommitted)
+      .filter((fn) => fn)
+      .forEach((fn) => fn(this));
   }
 
   public rollback() {

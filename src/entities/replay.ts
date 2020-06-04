@@ -1,3 +1,4 @@
+import advices from "../models/advice";
 import cityResource from "../models/city_resource";
 import modelListener from "../models/listener";
 import userResource from "../models/user_resource";
@@ -31,6 +32,7 @@ const replay = () => {
   cityResource.reset();
   statics.reset();
   tweet.reset();
+  advices.reset();
   modelListener.unregisterAll();
   modelListener.flush();
   ticker.reset();

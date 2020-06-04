@@ -1,3 +1,4 @@
+import modelListener, { EventType } from "../models/listener";
 import { ScoreEvent } from "../utils/scorer";
 import ticker from "../utils/ticker";
 import connect from "./connector";
@@ -7,6 +8,17 @@ import createFont from "./font";
 import { createWorkingArea } from "./rectangle";
 
 const SPEED = 30;
+
+export class ScoreViewEvent {
+  public readonly value: number;
+  public readonly panel: g.E;
+  public readonly sprite: g.E;
+  constructor(panel: g.E, sprite: g.E, value: number) {
+    this.panel = panel;
+    this.sprite = sprite;
+    this.value = value;
+  }
+}
 
 const createScorePanel = (scene: g.Scene, ev: ScoreEvent) => {
   const font =
@@ -22,10 +34,15 @@ const createScorePanel = (scene: g.Scene, ev: ScoreEvent) => {
     text,
   });
 
+  const result = adjust(scene, ev, sprite);
+  const event = new ScoreViewEvent(result, sprite, ev.value);
+  modelListener.add(EventType.CREATED, event);
+
   let counter = 0;
   const mv = () => {
     if (counter > ticker.fps()) {
       sprite.update.remove(mv);
+      modelListener.add(EventType.DELETED, event);
       sprite.destroy();
       return;
     } else {
@@ -35,7 +52,8 @@ const createScorePanel = (scene: g.Scene, ev: ScoreEvent) => {
     counter++;
   };
   sprite.update.add(mv);
-  return adjust(scene, ev, sprite);
+
+  return result;
 };
 
 const createScoreViewer = (loadedScene: g.Scene) => {
