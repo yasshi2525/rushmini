@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 1.6.1
+
+**Bug Fixes:**
+
+- EdgeTask#insertPlatform 時の prev 更新漏れを修正
+
 ## 1.6.0
 
 **Features:**
