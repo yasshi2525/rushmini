@@ -1,6 +1,6 @@
 {
   "name": "@yasshi2525/rushmini",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "commuters simulation game",
   "scripts": {
     "build": "rimraf ./script ./tmp && tsc && akashic scan asset script",
@@ -44,7 +44,7 @@
     "@akashic/akashic-sandbox": "^0.16.10",
     "@akashic/game-driver": "^1.8.0",
     "@akashic/pdi-browser": "^1.9.0",
-    "@types/jest": "^25.2.3",
+    "@types/jest": "^26.0.0",
     "@types/node": "^14.0.9",
     "btoa": "^1.2.1",
     "canvas": "^2.6.1",

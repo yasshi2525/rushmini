@@ -73,6 +73,7 @@ class EdgeTask extends LineTask {
     const next = this.next;
     const dept = new DeptTask(this.parent, platform, this);
     dept.next = next;
+    next.prev = dept;
   }
 }
 
