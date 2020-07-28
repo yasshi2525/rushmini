@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@akashic/akashic-engine": "^2.6.3",
-    "@akashic/amflow": "^1.0.0"
+    "@akashic/amflow": "^3.0.0"
   },
   "importSort": {
     ".ts": {
