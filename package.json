@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@akashic/akashic-pdi": "^2.8.0",
-    "@akashic/akashic-sandbox": "^0.16.10",
+    "@akashic/akashic-sandbox": "^0.17.20",
     "@akashic/game-driver": "^1.8.0",
     "@akashic/pdi-browser": "^1.9.0",
     "@types/jest": "^26.0.0",
